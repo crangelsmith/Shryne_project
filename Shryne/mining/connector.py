@@ -17,18 +17,15 @@ class ConnectDB(object):
         self._make_connection()
 
     def _make_connection(self):
-        # try:
+        '''
+        Creates a connection to a predifined Postgresql database
+        '''
         self.server = SSHTunnelForwarder((self.remote_host, self.remote_port),
                                     ssh_private_key=self.path_to_private_key,
                                     ssh_username=self.user_name,
                                     local_bind_address=self.local_bind_address,
                                     remote_bind_address=self.remote_bind_address)
-        # params = {
-        #   'database': self.dbname,
-        #   'user': self.user_name,
-        #   'host': self.remote_host,
-        #   'port': self.port
-        # }
+
         self.server.start()
         params = {
             'database': 'dreikanter_production',
@@ -40,10 +37,6 @@ class ConnectDB(object):
 
         self.conn = conn
 
-    # except Exception as e:
-    #    print("failed with Error", e)
-
-
     def get_connection(self):
         return self.conn
 
@@ -53,30 +46,18 @@ class ConnectDB(object):
 
 
 def main():
-    print("we're in main")
+    '''
+    Quick main script to test out whether or not
+    we can connect to the database
+    :return: None
+    '''
 
     dbconnection = ConnectDB("/home/sophie/.ssh/id_rsa.pub")
-    print("we have a connection")
-
     conn = dbconnection.get_connection()
-    print("we should definitely have a connection")
-
-    # create a cursor
     c = conn.cursor()
-    print("cursor")
-
-    # execute a command
     c.execute("SELECT * FROM feed_items LIMIT 1")
-    print("command executed")
-
     result = [row for row in c.fetchall()]
-    print("results are in result object")
-
     print(result)
-
     dbconnection.close_connection()
-
-    print("done")
-
 
 main()
