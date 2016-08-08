@@ -1,8 +1,8 @@
 import psycopg2
 from sshtunnel import SSHTunnelForwarder
 
-class ConnectDB(object):
 
+class ConnectDB(object):
     def __init__(self, path_to_private_key):
         self.port = 5432
         self.path_to_private_key = path_to_private_key
@@ -13,44 +13,46 @@ class ConnectDB(object):
         self.remote_host = 'dreikanter.production.devguru.co'
         self.remote_port = 22
         self.conn = None
-
+        self.server = None
         self._make_connection()
 
     def _make_connection(self):
+        # try:
+        self.server = SSHTunnelForwarder((self.remote_host, self.remote_port),
+                                    ssh_private_key=self.path_to_private_key,
+                                    ssh_username=self.user_name,
+                                    local_bind_address=self.local_bind_address,
+                                    remote_bind_address=self.remote_bind_address)
+        # params = {
+        #   'database': self.dbname,
+        #   'user': self.user_name,
+        #   'host': self.remote_host,
+        #   'port': self.port
+        # }
+        self.server.start()
+        params = {
+            'database': 'dreikanter_production',
+            'user': 'analytics',
+            'host': 'localhost',
+            'port': 5432
+        }
+        conn = psycopg2.connect(**params)
 
-        try:
-            with SSHTunnelForwarder((self.remote_host, self.remote_port),
-                                    ssh_private_key = self.path_to_private_key,
-                                    ssh_username = self.user_name,
-                                    local_bind_address = self.local_bind_address,
-                                    remote_bind_address = self.remote_bind_address):
-                #params = {
-                 #   'database': self.dbname,
-                 #   'user': self.user_name,
-                 #   'host': self.remote_host,
-                 #   'port': self.port
-                #}
-                params = {
-                    'database': 'dreikanter_production',
-                    'user': 'analytics',
-                    'host': 'localhost',
-                    'port': 5432
-                }
-                conn = psycopg2.connect(**params)
+        self.conn = conn
 
+    # except Exception as e:
+    #    print("failed with Error", e)
 
-                self.conn = conn
-        except Exception as e:
-            print("failed with Error",e)
 
     def get_connection(self):
         return self.conn
 
     def close_connection(self):
         self.conn.close()
+        self.server.stop()
+
 
 def main():
-
     print("we're in main")
 
     dbconnection = ConnectDB("/home/sophie/.ssh/id_rsa.pub")
@@ -73,5 +75,8 @@ def main():
     print(result)
 
     dbconnection.close_connection()
+
+    print("done")
+
 
 main()
