@@ -53,9 +53,11 @@ class ConnectDB(object):
 
 
 def main():
+    from query import Query
+
     print("we're in main")
 
-    dbconnection = ConnectDB("/home/sophie/.ssh/id_rsa.pub")
+    dbconnection = ConnectDB("/Users/Camila/.ssh/ssh_key.pub")
     print("we have a connection")
 
     conn = dbconnection.get_connection()
@@ -66,12 +68,20 @@ def main():
     print("cursor")
 
     # execute a command
-    c.execute("SELECT * FROM feed_items LIMIT 1")
+    c.execute("SELECT * FROM feed_items LIMIT 10")
     print("command executed")
 
     result = [row for row in c.fetchall()]
     print("results are in result object")
 
+    print(result)
+
+    query_test = Query(conn, 'select * from feed_items limit 10;')
+
+    list_s=query_test.get_query_list()
+
+    result = [row for row in list_s.fetchall()]
+    print("results 2 are in result object")
     print(result)
 
     dbconnection.close_connection()
