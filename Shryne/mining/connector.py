@@ -4,15 +4,15 @@ from sshtunnel import SSHTunnelForwarder
 class ConnectDB(object):
 
     def __init__(self, path_to_private_key):
-        self.port = 5432
-        self.path_to_private_key = path_to_private_key
-        self.remote_bind_address = ('localhost', 5432)
-        self.local_bind_address = ('localhost', 5432)
-        self.user_name = 'analytics'
-        self.dbname = 'dreikanter_production'
-        self.remote_host = 'dreikanter.production.devguru.co'
-        self.remote_port = 22
-        self.conn = None
+        self.port=5432
+        self.path_to_private_key=path_to_private_key
+        self.remote_bind_address=('localhost', 5432)
+        self.local_bind_address=('localhost', 5432)
+        self.user_name='analytics'
+        self.dbname='dreikanter_production'
+        self.remote_host='dreikanter.production.devguru.co'
+        self.remote_port=22
+        self.conn=None
 
         self._make_connection()
 
