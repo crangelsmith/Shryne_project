@@ -22,9 +22,6 @@ class Query(object):
         except Exception as e:
             print ("Error in query,", e)
 
-    def get_query_cursor(self):
-        return self.cursor
-
     def get_query_list(self):
         return self.query_list
 
@@ -44,7 +41,6 @@ def main():
     dbconnection = connector.ConnectDB()
     conn = dbconnection.get_connection()
     query = Query(conn, q)
-    query_cursor = query.get_query_cursor()
     query_list = query.get_query_list()
     query_df = query.get_query_dataframe()
     query.write_df_to_csv()
