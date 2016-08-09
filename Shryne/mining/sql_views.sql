@@ -51,7 +51,7 @@ GROUP BY fakes.is_fake;
 Anne Fuller
 Connor Hayes
 Danielle Park
-Behtany Lewis
+Bethany Lewis
 Garrett Jones
 Ethan Lau
 Cody Stewart
@@ -84,3 +84,16 @@ NOT IN ('Connor', 'Danielle', 'Garrett','Anne','Ethan','Bethany','Cody');
    7872 | Moor          | Hayes
    9100 | Anna          | K.
    7471 | Aldeize       | Serra de santa
+
+-- getting analytics scores
+
+SELECT sent_by_user, sent_by_contact, sent_total
+FROM analytics_metrics
+JOIN analytics_scores
+ON analytics_metrics.analytics_score_id = analytics_scores.id
+JOIN contacts
+ON analytics_scores.contact_id = contacts.id
+JOIN users
+ON contacts.user_id = users.id
+WHERE users.first_name = 'Alexander'
+AND users.last_name = 'Green';
