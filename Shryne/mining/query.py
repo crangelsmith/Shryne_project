@@ -5,7 +5,7 @@ class Query(object):
     def __init__(self, conn, query):
         self.conn = conn
         self.query = query
-        self.query_file_name = '_'.join(query.split()) + '.csv'
+        self.query_file_name = '_'.join(query.replace('*', 'ALL').replace(';', '').split()) + '.csv'
         self.cursor = conn.cursor()
 
         # hardcoded data folder location, dye to shared file structure
@@ -40,9 +40,9 @@ def main():
 
     dbconnection = connector.ConnectDB()
     conn = dbconnection.get_connection()
-    query = Query(conn, 'select * from feed_items limit 10;')
+    query = Query(conn, 'select * from feed_items limit 10')
     query_cursor = query.get_query_cursor()
-    query_list =    query.get_query_list()
+    query_list = query.get_query_list()
     query_df = query.get_query_dataframe()
     query.write_df_to_csv()
 
