@@ -42,36 +42,6 @@ class ConnectDB(object):
 
     def close_connection(self):
         self.conn.close()
-<<<<<<< HEAD
-
-
-def main():
-
-    print("we're in main")
-
-    dbconnection = ConnectDB("/home/sophie/.ssh/id_rsa.pub")
-    print("we have a connection")
-
-    conn = dbconnection.get_connection()
-    print("we should definitely have a connection")
-
-    # create a cursor
-    c = conn.cursor()
-    print("cursor")
-
-    # execute a command
-    c.execute("SELECT * FROM feed_items LIMIT 1")
-    print("command executed")
-
-    result = [row for row in c.fetchall()]
-    print("results are in result object")
-
-    print(result)
-
-    dbconnection.close_connection()
-
-main()
-=======
         self.server.stop()
 
 
@@ -91,4 +61,3 @@ main()
 #     dbconnection.close_connection()
 #
 # main()
->>>>>>> 625adc7b1e5e00b010671360c4e36cd6575154a5
