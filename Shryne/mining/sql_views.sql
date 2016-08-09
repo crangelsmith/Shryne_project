@@ -38,7 +38,8 @@ SELECT users.id AS userid, contacts.id AS contactid, contacts.is_fake
    WHERE contacts.is_fake = false;
 
 -- in theory, there should be no users with contacts who are both real and fake
--- however, by running the following we found that there are 4724 who are in both
+-- however, by running the following we found that there are 4724 who have both
+-- fake and real friends
 
 SELECT COUNT(DISTINCT fakes.userid)
 FROM fakes
@@ -46,6 +47,43 @@ JOIN reals
 ON fakes.userid = reals.userid
 GROUP BY fakes.is_fake;
 
+-- in addition, the vast majority of the fake accounts have the following names
+Anne Fuller
+Connor Hayes
+Danielle Park
+Behtany Lewis
+Garrett Jones
+Ethan Lau
+Cody Stewart
+
+-- finally, those contacts who have names different from those above, but are still fake are]
+
+SELECT DISTINCT userid, first_name, last_name
+FROM fakes_names
+WHERE first_name
+NOT IN ('Connor', 'Danielle', 'Garrett','Anne','Ethan','Bethany','Cody');
+
+
+ userid |  first_name   |      last_name
+--------+---------------+---------------------
+  12081 | Jeremy        | Mandell
+  11994 | Anneb         | Fuller
+   6459 | Jancos Archiv | Jancovic
+   4867 | Piggy         | Huang
+   6065 | Carlos        | Sutter
+  11985 | Danielle edit | Park edit
+   7078 | Paulo         | Capelo
+   7098 | Molly         | Derichs
+   7717 | Sawsan        | Seikaly
+   8119 | Pieter        | Hayes
+   8050 | @@@@@@@@@@@   | &&&&&&&&&&&&&&&&&&&
+   6139 | Connorhj      | Hayes
+   7264 | Schatz        | I love you
+   6458 | Me & Houma    | Love
+   6190 |       מישהו    |     פעם
+   7872 | Moor          | Hayes
+   9100 | Anna          | K.
+   7471 | Aldeize       | Serra de santa
 
 
 
