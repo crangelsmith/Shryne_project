@@ -9,17 +9,19 @@ article](https://ldocao.wordpress.com/2015/11/06/optimize-the-code-structure-of-
 
 A reminder for what we should store, and where: 
 
-- setup: you can define here all path, filenames etc
-- mining: scripts to gather your data (eg: crawling), this should be fairly small (say a couple of files). If not, it means it’s a whole 
+- **setup**: you can define here all path, filenames etc
+- **mining**: scripts to gather your data (eg: crawling), this should be fairly small (say a couple of files). If not, it means it’s a 
+whole 
 project by itself, and should be move out into a separate repo.
-- data: the data you will analyze (eg: all the name of your clients who had an affair). Let me emphasize that your data should be in 
+- **data**: the data you will analyze (eg: all the name of your clients who had an affair). Let me emphasize that your data should be in 
 read-only mode. If it’s a constantly updated data, it means you should use a database or something more robust than your hard drive to store 
 your data. In this case, you would put here a link to your database.
-- cleaning: everything you need to do because someone else hasn’t done his job (features engineering included). Due to the lego principle, 
+- **cleaning**: everything you need to do because someone else hasn’t done his job (features engineering included). Due to the lego 
+principle, 
 you might want to write a separate function in which you just call a series of functions to apply all the cleaning to you data.
-- analytics: the fancy machine learning algorithm that you will use
-- out: any temporary files that you want to create (eg: to save time, or give to someone else)
-- figures: all plots and visualisations
+- **analytics**: the fancy machine learning algorithm that you will use
+- **out**: any temporary files that you want to create (eg: to save time, or give to someone else)
+- **figures**: all plots and visualisations
 
 
 Also bear in mind: Everything which is in analytics do not “see” the functions inside cleaning for example. This is a problem because most 
