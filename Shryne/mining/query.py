@@ -1,14 +1,18 @@
 import connector
+import pandas as pd
 
 class Query(object):
     def __init__(self, conn, query):
         self.conn = conn
         self.query = query
+        self.query_file_name = '_'.join(query.split()) + '.csv'
         self.cursor = conn.cursor()
 
         # self.list_of_lists
         # self.df
-        # self.csv_file_path
+
+        # hardcoded data folder location, dye to shared file structure
+        self.csv_file_path = '../data/' + self.query_file_name
 
         self._run_query()
 
@@ -18,49 +22,30 @@ class Query(object):
         except Exception as e:
             print ("Error in query,", e)
 
-    def get_query_list(self):
+    def get_query_cursor(self):
         return self.cursor
 
-    def get_dataframe(self):
-        pass
+    def get_query_list(self):
+        return self.cursor.fetchall()
 
-    def dump_to_csv(self):
-        pass
+    def get_query_dataframe(self):
+        return pd.DataFrame(self.get_query_list(), columns=self.cursor.description)
+
+    def write_df_to_csv(self):
+        self.get_query_dataframe().to_csv(self.csv_file_path)
 
 
 def main():
 
-
-    print("we're in main")
-
-    dbconnection = connector.ConnectDB("/home/sophie/.ssh/id_rsa.pub")
-    print("we have a connection")
-
+    dbconnection = connector.ConnectDB()
     conn = dbconnection.get_connection()
-    print("we should definitely have a connection")
+    query = Query(conn, 'select * from feed_items limit 10;')
+    query_cursor = query.get_query_cursor()
+    query_list =    query.get_query_list()
+    query_df = query.get_query_dataframe()
+    query.write_df_to_csv()
 
-    query_test = Query(conn, 'select * from feed_items limit 10;')
-    result = query_test.get_query_list()
-
-    print (result.fetchall())
-
-    # # create a cursor
-    # c = conn.cursor()
-    # print("cursor")
-    #
-    # # execute a command
-    # c.execute("SELECT * FROM feed_items LIMIT 10")
-    # print("command executed")
-    #
-    # result = [row for row in c.fetchall()]
-    # print("results are in result object")
-    #
-    # print(result)
-    #
-    # dbconnection.close_connection()
-    #
-    # print("done")
-
+    print (query_list)
 
 main()
 
