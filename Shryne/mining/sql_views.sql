@@ -84,10 +84,3 @@ NOT IN ('Connor', 'Danielle', 'Garrett','Anne','Ethan','Bethany','Cody');
    7872 | Moor          | Hayes
    9100 | Anna          | K.
    7471 | Aldeize       | Serra de santa
-
-
-
-
-
-
-
