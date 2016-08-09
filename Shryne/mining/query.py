@@ -33,7 +33,7 @@ def main():
 
     print("we're in main")
 
-    dbconnection = connector.ConnectDB("/Users/Camila/.ssh/ssh_key.pub")
+    dbconnection = connector.ConnectDB("/home/sophie/.ssh/id_rsa.pub")
     print("we have a connection")
 
     conn = dbconnection.get_connection()
@@ -42,7 +42,7 @@ def main():
     query_test = Query(conn, 'select * from feed_items limit 10;')
     result = query_test.get_query_list()
 
-    print result.fetchall()
+    print (result.fetchall())
 
     # # create a cursor
     # c = conn.cursor()
