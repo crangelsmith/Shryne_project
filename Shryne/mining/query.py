@@ -45,7 +45,5 @@ def main():
     query_df = query.get_query_dataframe()
     query.write_df_to_csv()
 
-    print (query_list)
-
 main()
 
