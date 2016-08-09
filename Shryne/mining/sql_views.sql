@@ -13,6 +13,33 @@ WHERE users.first_name = 'string' AND users.last_name =
 'string' LIMIT 1
 
 
+-- This view gives us a list of users which have both real and fake accounts
+CREATE VIEW real_fake_users AS
+SELECT DISTINCT fakes.userid from fakes, reals
+WHERE fakes.userid = reals.userid
+
+
+-- This tells us how many users have fake and real accounts (might be a bug)
+-- and uses. This returns a count of 4724.
+
+SELECT count(*) FROM real_fake_users
+
+-- This give us the names of users that have both real and fake 
+SELECT users.first_name, users.last_name from users
+JOIN contacts ON
+users.id = contacts.user_id
+JOIN real_fake_users
+ON real_fake_users.userid = contacts.id
+
+-- to get no_of_messages_by_total for Alex
+SELECT analytics_metrics.no_of_message_responses_by_total FROM analytics_metrics
+JOIN analytics_scores ON analytics_scores.id = 
+analytics_metrics.analytics_score_id
+JOIN contacts ON contacts.id = analytics_scores.contact_id
+JOIN users ON users.id = contacts.user_id
+WHERE users.first_name = 'Alexander'
+AND users.last_name = 'Green';
+
 -- To get a list of the table names in alphabetical order. 
 -- The names in the pdf schema are different to those actually in the database
 -- I use a list comprehension in python to make it easier to read
@@ -21,21 +48,25 @@ SELECT table_name FROM information_schema.tables ORDER BY table_name
 -- What input options are there to column item_type in table feed_items
 SELECT DISTINCT(item_type) FROM feed_items
 
+
+-- Find the names of columns in a table
+SELECT column_name,data_type 
+FROM information_schema.columns 
+WHERE table_name = 'table_name';
+
 -- created a view named reals, which contains all of the user.ids, contacts.ids
 -- for all users and their contacts, where is_fake = false
 -- likewise for a view named fake
 
 -- fakes
- SELECT users.id AS userid, contacts.id AS contactid, contacts.is_fake
-   FROM users
-   JOIN contacts ON users.id = contacts.user_id
-   WHERE contacts.is_fake = true;
+SELECT users.id AS userid, contacts.id AS contactid, contacts.is_fake
+FROM users JOIN contacts ON users.id = contacts.user_id
+WHERE contacts.is_fake = true;
 
 -- reals
 SELECT users.id AS userid, contacts.id AS contactid, contacts.is_fake
-   FROM users
-   JOIN contacts ON users.id = contacts.user_id
-   WHERE contacts.is_fake = false;
+FROM users JOIN contacts ON users.id = contacts.user_id
+WHERE contacts.is_fake = false;
 
 -- in theory, there should be no users with contacts who are both real and fake
 -- however, by running the following we found that there are 4724 who have both
@@ -48,6 +79,7 @@ ON fakes.userid = reals.userid
 GROUP BY fakes.is_fake;
 
 -- in addition, the vast majority of the fake accounts have the following names
+
 Anne Fuller
 Connor Hayes
 Danielle Park
