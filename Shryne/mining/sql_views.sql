@@ -48,10 +48,84 @@ SELECT table_name FROM information_schema.tables ORDER BY table_name
 -- What input options are there to column item_type in table feed_items
 SELECT DISTINCT(item_type) FROM feed_items
 
+
 -- Find the names of columns in a table
 SELECT column_name,data_type 
 FROM information_schema.columns 
 WHERE table_name = 'table_name';
 
+-- created a view named reals, which contains all of the user.ids, contacts.ids
+-- for all users and their contacts, where is_fake = false
+-- likewise for a view named fake
+
+-- fakes
+SELECT users.id AS userid, contacts.id AS contactid, contacts.is_fake
+FROM users JOIN contacts ON users.id = contacts.user_id
+WHERE contacts.is_fake = true;
+
+-- reals
+SELECT users.id AS userid, contacts.id AS contactid, contacts.is_fake
+FROM users JOIN contacts ON users.id = contacts.user_id
+WHERE contacts.is_fake = false;
+
+-- in theory, there should be no users with contacts who are both real and fake
+-- however, by running the following we found that there are 4724 who have both
+-- fake and real friends
+
+SELECT COUNT(DISTINCT fakes.userid)
+FROM fakes
+JOIN reals
+ON fakes.userid = reals.userid
+GROUP BY fakes.is_fake;
+
+-- in addition, the vast majority of the fake accounts have the following names
+
+Anne Fuller
+Connor Hayes
+Danielle Park
+Bethany Lewis
+Garrett Jones
+Ethan Lau
+Cody Stewart
+
+-- finally, those contacts who have names different from those above, but are still fake are]
+
+SELECT DISTINCT userid, first_name, last_name
+FROM fakes_names
+WHERE first_name
+NOT IN ('Connor', 'Danielle', 'Garrett','Anne','Ethan','Bethany','Cody');
 
 
+ userid |  first_name   |      last_name
+--------+---------------+---------------------
+  12081 | Jeremy        | Mandell
+  11994 | Anneb         | Fuller
+   6459 | Jancos Archiv | Jancovic
+   4867 | Piggy         | Huang
+   6065 | Carlos        | Sutter
+  11985 | Danielle edit | Park edit
+   7078 | Paulo         | Capelo
+   7098 | Molly         | Derichs
+   7717 | Sawsan        | Seikaly
+   8119 | Pieter        | Hayes
+   8050 | @@@@@@@@@@@   | &&&&&&&&&&&&&&&&&&&
+   6139 | Connorhj      | Hayes
+   7264 | Schatz        | I love you
+   6458 | Me & Houma    | Love
+   6190 |       מישהו    |     פעם
+   7872 | Moor          | Hayes
+   9100 | Anna          | K.
+   7471 | Aldeize       | Serra de santa
+
+-- getting analytics scores
+
+SELECT sent_by_user, sent_by_contact, sent_total
+FROM analytics_metrics
+JOIN analytics_scores
+ON analytics_metrics.analytics_score_id = analytics_scores.id
+JOIN contacts
+ON analytics_scores.contact_id = contacts.id
+JOIN users
+ON contacts.user_id = users.id
+WHERE users.first_name = 'Alexander'
+AND users.last_name = 'Green';

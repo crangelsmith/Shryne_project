@@ -3,9 +3,8 @@ from sshtunnel import SSHTunnelForwarder
 
 
 class ConnectDB(object):
-    def __init__(self, path_to_private_key):
+    def __init__(self):
         self.port = 5432
-        self.path_to_private_key = path_to_private_key
         self.remote_bind_address = ('localhost', 5432)
         self.local_bind_address = ('localhost', 5432)
         self.user_name = 'analytics'
@@ -21,7 +20,6 @@ class ConnectDB(object):
         Creates a connection to a predifined Postgresql database
         '''
         self.server = SSHTunnelForwarder((self.remote_host, self.remote_port),
-                                    ssh_private_key=self.path_to_private_key,
                                     ssh_username=self.user_name,
                                     local_bind_address=self.local_bind_address,
                                     remote_bind_address=self.remote_bind_address)
@@ -45,19 +43,21 @@ class ConnectDB(object):
         self.server.stop()
 
 
-def main():
-     '''
-     Quick main script to test out whether or not
-     we can connect to the database
-     :return: None
-     '''
+# def main():
+#     '''
+#     Quick main script to test out whether or not
+#     we can connect to the database
+#     :return: None
+#     '''
+#
+#     dbconnection = ConnectDB()
+#     conn = dbconnection.get_connection()
+#     c = conn.cursor()
+#     c.execute("SELECT * FROM feed_items LIMIT 1")
+#     result = [row for row in c.fetchall()]
+#     print(result)
+#     dbconnection.close_connection()
+#
+#
+# main()
 
-     dbconnection = ConnectDB("/home/sophie/.ssh/id_rsa.pub")
-     conn = dbconnection.get_connection()
-     c = conn.cursor()
-     c.execute("SELECT * FROM feed_items LIMIT 1")
-     result = [row for row in c.fetchall()]
-     print(result)
-     dbconnection.close_connection()
-
-main()
