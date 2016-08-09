@@ -6,6 +6,10 @@ class Query(object):
         self.query = query
         self.cursor = conn.cursor()
 
+        # self.list_of_lists
+        # self.df
+        # self.csv_file_path
+
         self._run_query()
 
     def _run_query(self):
@@ -16,6 +20,13 @@ class Query(object):
 
     def get_query_list(self):
         return self.cursor
+
+    def get_dataframe(self):
+        pass
+
+    def dump_to_csv(self):
+        pass
+
 
 def main():
 
