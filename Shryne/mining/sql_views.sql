@@ -21,6 +21,24 @@ SELECT table_name FROM information_schema.tables ORDER BY table_name
 -- What input options are there to column item_type in table feed_items
 SELECT DISTINCT(item_type) FROM feed_items
 
+-- created a view named reals, which contains all of the user.ids, contacts.ids
+-- for all users and their contacts, where is_fake = false
+-- likewise for a view named fake
+
+-- fakes
+ SELECT users.id AS userid, contacts.id AS contactid, contacts.is_fake
+   FROM users
+   JOIN contacts ON users.id = contacts.user_id
+   WHERE contacts.is_fake = true;
+
+-- reals
+SELECT users.id AS userid, contacts.id AS contactid, contacts.is_fake
+   FROM users
+   JOIN contacts ON users.id = contacts.user_id
+   WHERE contacts.is_fake = false;
+
+
+
 
 
 
