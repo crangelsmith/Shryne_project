@@ -51,7 +51,7 @@ GROUP BY fakes.is_fake;
 Anne Fuller
 Connor Hayes
 Danielle Park
-Behtany Lewis
+Bethany Lewis
 Garrett Jones
 Ethan Lau
 Cody Stewart
