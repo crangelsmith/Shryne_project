@@ -152,8 +152,12 @@ if __name__ == "__main__":
     splitted_sentences = splitter.split(text)
     pprint(splitted_sentences)
 
+    print("step 1")
+
     pos_tagged_sentences = postagger.pos_tag(splitted_sentences)
     pprint(pos_tagged_sentences)
+
+    print("step 2")
 
     dict_tagged_sentences = dicttagger.tag(pos_tagged_sentences)
     pprint(dict_tagged_sentences)
