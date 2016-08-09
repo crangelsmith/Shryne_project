@@ -37,6 +37,16 @@ SELECT users.id AS userid, contacts.id AS contactid, contacts.is_fake
    JOIN contacts ON users.id = contacts.user_id
    WHERE contacts.is_fake = false;
 
+-- in theory, there should be no users with contacts who are both real and fake
+-- however, by running the following we found that there are 4724 who are in both
+
+SELECT COUNT(DISTINCT fakes.userid)
+FROM fakes
+JOIN reals
+ON fakes.userid = reals.userid
+GROUP BY fakes.is_fake;
+
+
 
 
 
