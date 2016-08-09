@@ -61,20 +61,3 @@ class ConnectDB(object):
 #     dbconnection.close_connection()
 #
 # main()
-
-def main():
-    '''
-    Quick main script to test out whether or not
-    we can connect to the database
-    :return: None
-    '''
-
-    dbconnection = ConnectDB("/home/daniel/.ssh/id_rsa.pub")
-    conn = dbconnection.get_connection()
-    c = conn.cursor()
-    c.execute("SELECT * FROM feed_items LIMIT 1")
-    result = [row for row in c.fetchall()]
-    print(result)
-    dbconnection.close_connection()
-
-main()
