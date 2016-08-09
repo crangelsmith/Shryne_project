@@ -1,4 +1,3 @@
-import connector
 import pandas as pd
 
 class Query(object):
@@ -38,9 +37,13 @@ class Query(object):
 
 def main():
 
+    import connector
+
+    q = "SELECT DISTINCT userid, first_name, last_name FROM fakes_names WHERE first_name NOT IN (\'Connor\', \'Danielle\', \'Garrett\',\'Anne\',\'Ethan\',\'Bethany\',\'Cody\');"
+
     dbconnection = connector.ConnectDB()
     conn = dbconnection.get_connection()
-    query = Query(conn, 'select * from feed_items limit 10')
+    query = Query(conn, q)
     query_cursor = query.get_query_cursor()
     query_list = query.get_query_list()
     query_df = query.get_query_dataframe()
