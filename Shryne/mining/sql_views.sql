@@ -135,10 +135,13 @@ AND users.last_name = 'Green';
 -- It creates one row per message in the database
 -- Schema is
 -- user_id | contact_id | relationship | channel | sent_at
+-- Should be able to use this to make initial histograms
+-- Can call this is SELECT * FROM all_messages_metadata
 
-CREATE VIEW all_messages_metadata AS SELECT users.id AS user_id, contacts.id
-AS contact_id, contact_types.name AS relationship, channels.name AS channel,
-feed_items.send_at AS sent_at
+
+CREATE VIEW all_messages_metadata AS SELECT DISTINCT users.id AS user_id,
+contacts.id AS contact_id, contact_types.name AS relationship, channels.name
+AS channel, feed_items.send_at AS sent_at
 FROM feed_items
 JOIN channels
 ON feed_items.channel_id = channels.id
