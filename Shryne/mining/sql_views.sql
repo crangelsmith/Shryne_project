@@ -169,3 +169,4 @@ ON contacts.contact_type_id = contact_types.id
 JOIN users
 ON contacts.user_id = users.id
 WHERE contacts.is_fake = false;
+
