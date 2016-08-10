@@ -22,7 +22,7 @@ if __name__ == "__main__":
     import Shryne.mining.connector as connector
     import Shryne.mining.query as query
 
-    q = "SELECT * FROM feed_items limit 10"
+    q = "SELECT * FROM feed_items LIMIT 10"
 
     dbconnection = connector.ConnectDB()
     conn = dbconnection.get_connection()
