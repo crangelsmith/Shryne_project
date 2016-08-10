@@ -19,10 +19,10 @@ class SentimentAnalyser(object):
 
 if __name__ == "__main__":
 
-    import connector
-    import query
+    import Shryne.mining.connector as connector
+    import Shryne.mining.query as query
 
-    q = "SELECT DISTINCT userid, first_name, last_name FROM fakes_names WHERE first_name NOT IN (\'Connor\', \'Danielle\', \'Garrett\',\'Anne\',\'Ethan\',\'Bethany\',\'Cody\');"
+    q = "SELECT * FROM feed_items limit 10"
 
     dbconnection = connector.ConnectDB()
     conn = dbconnection.get_connection()

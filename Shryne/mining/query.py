@@ -32,18 +32,18 @@ class Query(object):
         self.query_df.to_csv(self.csv_file_path)
 
 
-def main():
-
-    import connector
-
-    q = "SELECT DISTINCT userid, first_name, last_name FROM fakes_names WHERE first_name NOT IN (\'Connor\', \'Danielle\', \'Garrett\',\'Anne\',\'Ethan\',\'Bethany\',\'Cody\');"
-
-    dbconnection = connector.ConnectDB()
-    conn = dbconnection.get_connection()
-    query = Query(conn, q)
-    query_list = query.get_query_list()
-    query_df = query.get_query_dataframe()
-    query.write_df_to_csv()
-
-main()
+# def main():
+#
+#     import connector
+#
+#     q = "SELECT DISTINCT userid, first_name, last_name FROM fakes_names WHERE first_name NOT IN (\'Connor\', \'Danielle\', \'Garrett\',\'Anne\',\'Ethan\',\'Bethany\',\'Cody\');"
+#
+#     dbconnection = connector.ConnectDB()
+#     conn = dbconnection.get_connection()
+#     query = Query(conn, q)
+#     query_list = query.get_query_list()
+#     query_df = query.get_query_dataframe()
+#     query.write_df_to_csv()
+#
+# main()
 
