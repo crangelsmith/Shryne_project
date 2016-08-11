@@ -150,3 +150,23 @@ JOIN users
 ON contacts.user_id = users.id
 WHERE contacts.is_fake = false;
 
+
+-- What relationships from the contacts table have NO COMMUNICATION in 
+-- feed_items? The LEFT JOIN excludes contacts from contacts table which don't 
+-- contact_id in feed_items
+SELECT contacts.id FROM contacts
+LEFT OUTER JOIN all_messages_metadata
+ON contacts.id = all_messages_metadata.contact_id
+WHERE all_messages_metadata.contact_id IS NULL
+AND contacts.is_fake = false
+
+-- Same as above but gives just the count.
+SELECT contacts.id FROM contacts
+LEFT OUTER JOIN all_messages_metadata
+ON contacts.id = all_messages_metadata.contact_id
+WHERE all_messages_metadata.contact_id IS NULL
+AND contacts.is_fake = false
+
+
+
+
