@@ -141,7 +141,7 @@ AND users.last_name = 'Green';
 
 CREATE VIEW all_messages_metadata AS SELECT DISTINCT users.id AS user_id,
 contacts.id AS contact_id, contact_types.name AS relationship, channels.name
-AS channel, feed_items.send_at AS sent_at feed_items.id AS message_id
+AS channel, feed_items.send_at AS sent_at, feed_items.id AS message_id
 FROM feed_items
 JOIN channels
 ON feed_items.channel_id = channels.id
@@ -158,7 +158,8 @@ WHERE contacts.is_fake = false;
 -- user_id | contact_id | relationship | channel | sent_at | message
 CREATE VIEW all_messages AS SELECT DISTINCT users.id AS user_id,
 contacts.id AS contact_id, contact_types.name AS relationship, channels.name
-AS channel, feed_items.send_at AS sent_at, feed_items.body AS message
+AS channel, feed_items.send_at AS sent_at, feed_items.body AS message,
+feed_items.id AS message_id
 FROM feed_items
 JOIN channels
 ON feed_items.channel_id = channels.id
