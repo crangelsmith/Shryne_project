@@ -6,13 +6,13 @@ from highcharts import Highchart
 
 def main():
    
-    df = pandas.read_csv('test.csv') 
+    df = pandas.read_csv('../data/SELECT_ALL_FROM_all_messages_metadata.csv')
     # setup pandas dataframe. It's not necessary, so replace this with what ever data source you have.
 
     charts = Highchart() 
     # create highcharts instance
     
-    time_field = 'stop_time'
+    time_field = 'sent_at'
   
     if isinstance(df[time_field].tolist()[0], str):
         df[time_field] = pandas.to_datetime(df[time_field])
@@ -21,7 +21,7 @@ def main():
         
     # This converts the string in the time field to a datetime, this will probably need changing
 
-    x_day = df[time_field].value_counts().resample('D').sum().index.values.tolist()
+    x_day = df[time_field].value_counts().resample('D',how="sum").index.values.tolist()
     y_day = df[time_field].value_counts().resample('D').sum().tolist()
     x_day = [int(i)/1000000 for i in x_day]
     df_day = pandas.DataFrame(list(zip(x_day, y_day)), columns=['date', 'counts'])
