@@ -35,16 +35,16 @@ def highchart_analyser(df, period='D'):
     x = [int(i)/1000000 for i in x]
 
     # communication count
-    y_count = df[time_field].value_counts().resample(period, how=_sum).tolist()
+    y_count = df[time_field].value_counts().resample('D', how=_sum).tolist()
 
     # mean sentiments
     df.set_index(time_field, inplace=True)
-    y_pos = df["positive"].resample(period, how=_average).tolist()
-    y_neg = df["negative"].resample(period, how=_average).tolist()
-    y_neu = df["neutral"].resample(period, how=_average).tolist()
+    y_pos = df["positive"].resample('D', how=_average).tolist()
+    y_neg = df["negative"].resample('D', how=_average).tolist()
+    y_neu = df["neutral"].resample('D', how=_average).tolist()
 
     # total length
-    y_word_count = df["word_count"].resample(period, how=_sum).tolist()
+    y_word_count = df["word_count"].resample('D', how=_sum).tolist()
 
     if period == 'M':
         #TODO still need to fix the monthly processing as it is not working as it should
@@ -55,10 +55,10 @@ def highchart_analyser(df, period='D'):
         df_day.set_index('date', inplace=True)
         x = df_day.resample('M', how=_sum).index.tolist()
         y_count = df_day.counts.resample('M', how=_sum).tolist()
-        y_pos = df_day["positive"].resample(period, how=_average).tolist()
-        y_neg = df_day["negative"].resample(period, how=_average).tolist()
-        y_neu = df_day["neutral"].resample(period, how=_average).tolist()
-        y_word_count = df_day["word_count"].resample(period, how=_sum).tolist()
+        y_pos = df_day["positive"].resample('M', how=_average).tolist()
+        y_neg = df_day["negative"].resample('M', how=_average).tolist()
+        y_neu = df_day["neutral"].resample('M', how=_average).tolist()
+        y_word_count = df_day["word_count"].resample('M', how=_sum).tolist()
 
     # remove time field from either of the headers lists
     options = {
@@ -162,7 +162,7 @@ def main():
         sub_df = df[df['contact_id'] == unique_contact]
 
         # plot in highchart
-        highchart_analyser(sub_df, period='D')
+        highchart_analyser(sub_df, period='M')
 
         # TODO remove this break!
         break
