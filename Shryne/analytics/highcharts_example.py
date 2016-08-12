@@ -22,15 +22,15 @@ def main():
     # This converts the string in the time field to a datetime, this will probably need changing
 
     x_day = df[time_field].value_counts().resample('D',how="sum").index.values.tolist()
-    y_day = df[time_field].value_counts().resample('D').sum().tolist()
+    y_day = df[time_field].value_counts().resample('D',how="sum").tolist()
     x_day = [int(i)/1000000 for i in x_day]
     df_day = pandas.DataFrame(list(zip(x_day, y_day)), columns=['date', 'counts'])
 
     df_day.date = pandas.to_datetime(df_day.date, unit='ms')
     df_day.set_index('date', inplace=True)
     df_month = pandas.DataFrame()
-    df_month['x_month'] = df_day.resample('M').sum().index.tolist()
-    df_month['y_month'] = df_day.counts.resample('M').ffill().mean()
+    df_month['x_month'] = df_day.resample('M',how="sum").index.tolist()
+    df_month['y_month'] = df_day.counts.resample('D',how="mean", fill_method="ffill")
 
     # remove time field from either of the headers lists
     options = {'chart': {
