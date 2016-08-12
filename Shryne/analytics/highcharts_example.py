@@ -47,7 +47,6 @@ def highchart_analyser(df, period='D'):
     y_word_count = df["word_count"].resample('D', how=_sum).tolist()
 
     if period == 'M':
-        #TODO still need to fix the monthly processing as it is not working as it should
         df_day = pandas.DataFrame(list(zip(x, y_count, y_pos, y_neg, y_neu, y_word_count)),
                                   columns=['date', 'counts', 'positive',
                                            'negative', 'neutral', 'word_count'])
@@ -138,7 +137,7 @@ def highchart_analyser(df, period='D'):
 
     charts.set_dict_options(options)
     charts.add_data_set(time_vs_pos_sent, 'column', name="Positive", yAxis=2, stack='sentiment', color='rgba(178,34,34, .9)')
-    charts.add_data_set(time_vs_neu_sent, 'column', name="Neutral", yAxis=2, stack='sentiment', color='rgba(255,255,255, 1)')
+    #charts.add_data_set(time_vs_neu_sent, 'column', name="Neutral", yAxis=2, stack='sentiment', color='rgba(255,255,255, 1)')
     charts.add_data_set(time_vs_neg_sent, 'column', name="Negative", yAxis=2, stack='sentiment', color='rgba(0, 0, 0, .9)')
     charts.add_data_set(time_vs_counts, series_type='spline', yAxis=0, name="Message Count", color='rgba(0,191,255, 1)')
     charts.add_data_set(time_vs_word_length, series_type='spline', yAxis=1, name="Word Count", color='rgba(186,85,211, 1)')
