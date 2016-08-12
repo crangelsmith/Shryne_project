@@ -34,7 +34,6 @@ class SentimentAnalyser(object):
         return df
 
 
-
 if __name__ == "__main__":
 
     import Shryne.mining.connector as connector
