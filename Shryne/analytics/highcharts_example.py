@@ -108,16 +108,10 @@ def highchart_analyser(df, period='D'):
             'reversed': True,
             'gridLineWidth': 0,
             'title': {
-                'text': 'Sentiment',
-                'style': {
-                    'color': 'Highcharts.getOptions().colors[1]'
-                }
-            },
+                'enabled': False
+                },
             'labels': {
-                'format': '{value}',
-                'style': {
-                    'color': 'Highcharts.getOptions().colors[1]'
-                }
+                'enabled': False
             },
             'opposite': True
         }],
