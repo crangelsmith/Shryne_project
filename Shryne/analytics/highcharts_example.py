@@ -47,6 +47,7 @@ def highchart_analyser(df, period='D'):
     y_word_count = df["word_count"].resample(period, how=_sum).tolist()
 
     if period == 'M':
+        #TODO still need to fix the monthly processing as it is not working as it should
         df_day = pandas.DataFrame(list(zip(x, y_count, y_pos, y_neg, y_neu, y_word_count)),
                                   columns=['date', 'counts', 'positive',
                                            'negative', 'neutral', 'word_count'])
@@ -60,60 +61,81 @@ def highchart_analyser(df, period='D'):
         y_word_count = df_day["word_count"].resample(period, how=_sum).tolist()
 
     # remove time field from either of the headers lists
-    options = {'chart': {
-        'type': 'scatter',
-        'zoomType': 'x'
-    }, 'xAxis': {
-        'type': 'datetime'
-    }, 'credits': {
-        'enabled': False
-    }, 'title': {'text': str("daily and monthly")},
+    options = {
+        'chart': {
+            'zoomType': 'x'
+        },
+        'title': {
+            'text': 'Shryne User/Contact Statistics at Resolution: ' + period
+        },
+        'xAxis': {
+            'type': 'datetime',
+            'crosshair': True
+        }, 'credits': {
+            'enabled': False
+        },
         'yAxis': [{
             'labels': {
                 'format': '{value}',
-            'style': {
-                'color': 'Highcharts.getOptions().colors[2]'
+                'style': {
+                    'color': 'Highcharts.getOptions().colors[2]'
+                }
+            },
+            'title': {
+                'text': 'Number of Words',
+                'style': {
+                    'color': 'Highcharts.getOptions().colors[2]'
+                }
+            },
+            'opposite': True
+        },  {
+            'gridLineWidth': 0,
+            'title': {
+                'text': 'Number of Messages',
+                'style': {
+                    'color': 'Highcharts.getOptions().colors[0]'
+                }
+            },
+            'labels': {
+                'format': '{value}',
+                'style': {
+                    'color': 'Highcharts.getOptions().colors[0]'
+                }
             }
+        },  {
+            'gridLineWidth': 0,
+            'title': {
+                'text': 'Sentiment',
+                'style': {
+                    'color': 'Highcharts.getOptions().colors[1]'
+                }
+            },
+            'labels': {
+                'format': '{value}',
+                'style': {
+                    'color': 'Highcharts.getOptions().colors[1]'
+                }
+            },
+            'opposite': True
+        }],
+        'tooltip': {
+            'shared': True,
         },
-        'title': {
-            'text': 'Number of Words',
-            'style': {
-                'color': 'Highcharts.getOptions().colors[2]'
-            }
+        'legend': {
+            'layout': 'vertical',
+            'align': 'left',
+            'x': 80,
+            'verticalAlign': 'top',
+            'y': 55,
+            'floating': True,
+            'backgroundColor': "(Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'"
         },
-        'opposite': True
-
-    }, {
-        'gridLineWidth': 0,
-        'title': {
-            'text': 'Number of Messages',
-            'style': {
-                'color': 'Highcharts.getOptions().colors[0]'
-            }
-        },
-        'labels': {
-            'format': '{value}',
-            'style': {
-                'color': 'Highcharts.getOptions().colors[0]'
+        'plotOptions': {
+            'column': {
+                'stacking': 'normal'
             }
         }
-
-    }, {
-        'gridLineWidth': 0,
-        'title': {
-            'text': 'Sentiment',
-            'style': {
-                'color': 'Highcharts.getOptions().colors[1]'
-            }
-        },
-        'labels': {
-            'format': '{value}',
-            'style': {
-                'color': 'Highcharts.getOptions().colors[1]'
-            }
-        },
-        'opposite': True
-    }]}
+    }
 
 
     time_vs_counts = list(zip(x, y_count))
@@ -123,11 +145,11 @@ def highchart_analyser(df, period='D'):
     time_vs_word_length = list(zip(x, y_word_count))
 
     charts.set_dict_options(options)
-    charts.add_data_set(time_vs_counts, series_type='line', name="Message Count")
-    charts.add_data_set(time_vs_pos_sent, series_type='bar', name="Positive", stack='sentiment')
-    charts.add_data_set(time_vs_neu_sent, series_type='bar', name="Neutral", stack='sentiment')
-    charts.add_data_set(time_vs_neg_sent, series_type='bar', name="Negative", stack='sentiment')
-    charts.add_data_set(time_vs_word_length, series_type='line', name="Word Count")
+    charts.add_data_set(time_vs_counts, series_type='spline', yAxis=0, name="Message Count")
+    charts.add_data_set(time_vs_pos_sent, 'column', name="Positive", yAxis=2, stack='sentiment')
+    charts.add_data_set(time_vs_neu_sent, 'column', name="Neutral", yAxis=2, stack='sentiment')
+    charts.add_data_set(time_vs_neg_sent, 'column', name="Negative", yAxis=2, stack='sentiment')
+    charts.add_data_set(time_vs_word_length, series_type='spline', yAxis=1, name="Word Count")
 
     user_id = str(df['user_id'][0])
     contact_id = str(df['contact_id'][0])
@@ -140,16 +162,19 @@ def main():
     df = pandas.read_csv('../data/textsentiment.csv')
     # setup pandas dataframe. It's not necessary, so replace this with what ever data source you have.
 
-    df['word_count'] = 0
-
     # TODO split off dataframe by partner type
 
-    unique_contacts = df['contact_id'].unique()
+    #TODO make sure the analysis starts at 0, i.e. remove [1:]
+    unique_contacts = df['contact_id'].unique()[1:]
     for unique_contact in unique_contacts:
         sub_df = df[df['contact_id'] == unique_contact]
 
         # plot in highchart
-        highchart_analyser(sub_df, period='M')
+        highchart_analyser(sub_df, period='D')
+
+        # TODO remove this break!
+        break
+
 
 
         
