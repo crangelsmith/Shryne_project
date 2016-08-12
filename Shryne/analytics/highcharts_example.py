@@ -20,7 +20,7 @@ def _average(x):
 
 def highchart_analyser(df, period='D'):
 
-    charts = Highchart() 
+    charts = Highchart()
     # create highcharts instance
 
     time_field = 'sent_at'
@@ -75,34 +75,37 @@ def highchart_analyser(df, period='D'):
             'enabled': False
         },
         'yAxis': [{
+            'gridLineWidth': 0,
+            'title': {
+                'text': 'Number of Messages',
+                'style': {
+                    'color': 'Highcharts.getOptions().colors[5]'
+                }
+            },
             'labels': {
                 'format': '{value}',
                 'style': {
-                    'color': 'Highcharts.getOptions().colors[2]'
+                    'color': 'Highcharts.getOptions().colors[5]'
                 }
-            },
+            }
+        }, {
+
+            'gridLineWidth': 0,
             'title': {
                 'text': 'Number of Words',
                 'style': {
                     'color': 'Highcharts.getOptions().colors[2]'
                 }
             },
-            'opposite': True
-        },  {
-            'gridLineWidth': 0,
-            'title': {
-                'text': 'Number of Messages',
-                'style': {
-                    'color': 'Highcharts.getOptions().colors[0]'
-                }
-            },
             'labels': {
                 'format': '{value}',
                 'style': {
-                    'color': 'Highcharts.getOptions().colors[0]'
+                    'color': 'Highcharts.getOptions().colors[1]'
                 }
-            }
+            },
+            'opposite': True
         },  {
+
             'gridLineWidth': 0,
             'title': {
                 'text': 'Sentiment',
@@ -121,6 +124,11 @@ def highchart_analyser(df, period='D'):
         'tooltip': {
             'shared': True,
         },
+        'plotOptions': {
+            'column': {
+                'stacking': 'normal'
+            }
+        },
         'legend': {
             'layout': 'vertical',
             'align': 'left',
@@ -129,11 +137,6 @@ def highchart_analyser(df, period='D'):
             'y': 55,
             'floating': True,
             'backgroundColor': "(Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'"
-        },
-        'plotOptions': {
-            'column': {
-                'stacking': 'normal'
-            }
         }
     }
 
@@ -145,11 +148,11 @@ def highchart_analyser(df, period='D'):
     time_vs_word_length = list(zip(x, y_word_count))
 
     charts.set_dict_options(options)
-    charts.add_data_set(time_vs_counts, series_type='spline', yAxis=0, name="Message Count")
-    charts.add_data_set(time_vs_pos_sent, 'column', name="Positive", yAxis=2, stack='sentiment')
-    charts.add_data_set(time_vs_neu_sent, 'column', name="Neutral", yAxis=2, stack='sentiment')
-    charts.add_data_set(time_vs_neg_sent, 'column', name="Negative", yAxis=2, stack='sentiment')
-    charts.add_data_set(time_vs_word_length, series_type='spline', yAxis=1, name="Word Count")
+    charts.add_data_set(time_vs_pos_sent, 'column', name="Positive", yAxis=2, stack='sentiment', color='rgba(178,34,34, .9)')
+    charts.add_data_set(time_vs_neu_sent, 'column', name="Neutral", yAxis=2, stack='sentiment', color='rgba(255,255,255, 1)')
+    charts.add_data_set(time_vs_neg_sent, 'column', name="Negative", yAxis=2, stack='sentiment', color='rgba(0, 0, 0, .9)')
+    charts.add_data_set(time_vs_counts, series_type='spline', yAxis=0, name="Message Count", color='rgba(0,191,255, 1)')
+    charts.add_data_set(time_vs_word_length, series_type='spline', yAxis=1, name="Word Count", color='rgba(186,85,211, 1)')
 
     user_id = str(df['user_id'][0])
     contact_id = str(df['contact_id'][0])
