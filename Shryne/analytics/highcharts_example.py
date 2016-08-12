@@ -79,13 +79,13 @@ def highchart_analyser(df, period='D'):
             'title': {
                 'text': 'Number of Messages',
                 'style': {
-                    'color': 'Highcharts.getOptions().colors[5]'
+                    'color': 'Highcharts.getOptions().colors[1]'
                 }
             },
             'labels': {
                 'format': '{value}',
                 'style': {
-                    'color': 'Highcharts.getOptions().colors[5]'
+                    'color': 'Highcharts.getOptions().colors[1]'
                 }
             }
         }, {
@@ -94,7 +94,7 @@ def highchart_analyser(df, period='D'):
             'title': {
                 'text': 'Number of Words',
                 'style': {
-                    'color': 'Highcharts.getOptions().colors[2]'
+                    'color': 'Highcharts.getOptions().colors[1]'
                 }
             },
             'labels': {
