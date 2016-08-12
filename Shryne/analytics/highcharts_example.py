@@ -50,6 +50,7 @@ def highchart_analyser(df, period='D'):
         df_day = pandas.DataFrame(list(zip(x, y_count, y_pos, y_neg, y_neu, y_word_count)),
                                   columns=['date', 'counts', 'positive',
                                            'negative', 'neutral', 'word_count'])
+        df_day.date = pandas.to_datetime(df_day.date, unit='ms')
         df_day.set_index('date', inplace=True)
         x = df_day.resample('M', how=_sum).index.tolist()
         y_count = df_day.counts.resample('M', how=_sum).tolist()
