@@ -105,7 +105,7 @@ def highchart_analyser(df, period='D'):
             },
             'opposite': True
         },  {
-
+            'reversed': True,
             'gridLineWidth': 0,
             'title': {
                 'text': 'Sentiment',
@@ -123,11 +123,6 @@ def highchart_analyser(df, period='D'):
         }],
         'tooltip': {
             'shared': True,
-        },
-        'plotOptions': {
-            'column': {
-                'stacking': 'normal'
-            }
         },
         'legend': {
             'layout': 'vertical',
