@@ -31,27 +31,32 @@ def highchart_analyser(df, period='D'):
         print("nothing to be done")
 
     # first set up the time axis analysis for either month or day
-    if period == 'D':
-        x = df[time_field].value_counts().resample('D',how=_sum).index.values.tolist()
-        x = [int(i)/1000000 for i in x]
-    else:
-        x_day = df[time_field].value_counts().resample('M', how=_sum).index.values.tolist()
-        x_day = [int(i) / 1000000 for i in x_day]
-        x = x_day.resample('M', how=_sum).index.tolist()
-        x = x_day.counts.resample('M', how=_sum).tolist()
-
+    x = df[time_field].value_counts().resample('D',how=_sum).index.values.tolist()
+    x = [int(i)/1000000 for i in x]
 
     # communication count
     y_count = df[time_field].value_counts().resample(period, how=_sum).tolist()
 
     # mean sentiments
-    y_pos = df["positive"].value_counts().resample(period, how=_average).tolist()
-    y_neg = df["negative"].value_counts().resample(period, how=_average).tolist()
-    y_neu = df["neutral"].value_counts().resample(period, how=_average).tolist()
+    df.set_index(time_field, inplace=True)
+    y_pos = df["positive"].resample(period, how=_average).tolist()
+    y_neg = df["negative"].resample(period, how=_average).tolist()
+    y_neu = df["neutral"].resample(period, how=_average).tolist()
 
     # total length
-    y_word_count = df["word_count"].value_counts().resample(period, how=_sum).tolist()
+    y_word_count = df["word_count"].resample(period, how=_sum).tolist()
 
+    if period == 'M':
+        df_day = pandas.DataFrame(list(zip(x, y_count, y_pos, y_neg, y_neu, y_word_count)),
+                                  columns=['date', 'counts', 'positive',
+                                           'negative', 'neutral', 'word_count'])
+        df_day.set_index('date', inplace=True)
+        x = df_day.resample('M', how=_sum).index.tolist()
+        y_count = df_day.counts.resample('M', how=_sum).tolist()
+        y_pos = df_day["positive"].resample(period, how=_average).tolist()
+        y_neg = df_day["negative"].resample(period, how=_average).tolist()
+        y_neu = df_day["neutral"].resample(period, how=_average).tolist()
+        y_word_count = df_day["word_count"].resample(period, how=_sum).tolist()
 
     # remove time field from either of the headers lists
     options = {'chart': {
@@ -123,16 +128,18 @@ def highchart_analyser(df, period='D'):
     charts.add_data_set(time_vs_neg_sent, series_type='bar', name="Negative", stack='sentiment')
     charts.add_data_set(time_vs_word_length, series_type='line', name="Word Count")
 
-    user_id = df['user_id'][0]
-    contact_id = df['contact_id'][0]
+    user_id = str(df['user_id'][0])
+    contact_id = str(df['contact_id'][0])
 
     charts.save_file(user_id+contact_id+'_time_series_'+period)
 
 
 def main():
 
-    df = pandas.read_csv('../data/SELECT_ALL_FROM_all_messages.csv')
+    df = pandas.read_csv('../data/textsentiment.csv')
     # setup pandas dataframe. It's not necessary, so replace this with what ever data source you have.
+
+    df['word_count'] = 0
 
     # TODO split off dataframe by partner type
 
@@ -141,7 +148,7 @@ def main():
         sub_df = df[df['contact_id'] == unique_contact]
 
         # plot in highchart
-        highchart_analyser(sub_df, period='D')
+        highchart_analyser(sub_df, period='M')
 
 
         
