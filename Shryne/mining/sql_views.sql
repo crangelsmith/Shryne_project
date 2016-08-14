@@ -156,10 +156,9 @@ WHERE contacts.is_fake = false;
 
 -- Same as above, but with the actual message instead of the message_id
 -- user_id | contact_id | relationship | channel | sent_at | message
-CREATE VIEW all_messages AS SELECT DISTINCT users.id AS user_id,
+CREATE VIEW all_messages_from_contacts AS SELECT DISTINCT users.id AS user_id,
 contacts.id AS contact_id, contact_types.name AS relationship, channels.name
-AS channel, feed_items.send_at AS sent_at, feed_items.body AS message,
-feed_items.id AS message_id
+AS channel, feed_items.send_at AS sent_at, feed_items.body AS message
 FROM feed_items
 JOIN channels
 ON feed_items.channel_id = channels.id
@@ -170,6 +169,51 @@ ON contacts.contact_type_id = contact_types.id
 JOIN users
 ON contacts.user_id = users.id
 WHERE contacts.is_fake = false;
+
+-- Get all messages, including those from users.
+-- You join to contacts as normal, then from contacts you find the user_id's 
+-- that are in feed items. 
+
+CREATE VIEW all_messages_from_users AS
+SELECT DISTINCT users.id AS user_id,
+contacts.id AS contact_id, contact_types.name AS relationship, channels.name
+AS channel, feed_items.send_at AS sent_at, feed_items.body AS message
+FROM feed_items
+JOIN channels ON feed_items.channel_id = channels.id
+JOIN feeds ON feeds.id = feed_items.feed_id
+JOIN contacts ON contacts.user_id = feeds.contact_id
+JOIN contact_types ON contacts.contact_type_id = contact_types.id
+JOIN users ON contacts.user_id = users.id
+WHERE contacts.is_fake = false;
+
+
+-- One view which gets all messages from both users and contacts in order
+CREATE VIEW all_msgs_from_contacts_users AS 
+SELECT DISTINCT users.id AS user_id,
+contacts.id AS contact_id, contact_types.name AS relationship, channels.name
+AS channel, feed_items.send_at AS sent_at, feed_items.body AS message
+FROM feed_items
+JOIN channels
+ON feed_items.channel_id = channels.id
+JOIN contacts
+ON feed_items.from_id = contacts.id
+JOIN contact_types
+ON contacts.contact_type_id = contact_types.id
+JOIN users
+ON contacts.user_id = users.id
+WHERE contacts.is_fake = false
+UNION
+SELECT DISTINCT users.id AS user_id,
+contacts.id AS contact_id, contact_types.name AS relationship, channels.name
+AS channel, feed_items.send_at AS sent_at, feed_items.body AS message
+FROM feed_items
+JOIN channels ON feed_items.channel_id = channels.id
+JOIN feeds ON feeds.id = feed_items.feed_id
+JOIN contacts ON contacts.user_id = feeds.contact_id
+JOIN contact_types ON contacts.contact_type_id = contact_types.id
+JOIN users ON contacts.user_id = users.id
+WHERE contacts.is_fake = false
+ORDER BY user_id, contact_id, sent_at;
 
 
 -- What relationships from the contacts table have NO COMMUNICATION in 
@@ -187,6 +231,8 @@ LEFT OUTER JOIN all_messages_metadata
 ON contacts.id = all_messages_metadata.contact_id
 WHERE all_messages_metadata.contact_id IS NULL
 AND contacts.is_fake = false
+
+
 
 
 
