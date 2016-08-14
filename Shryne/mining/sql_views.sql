@@ -139,6 +139,23 @@ AND users.last_name = 'Green';
 -- Can call this is SELECT * FROM all_messages_metadata
 
 
+-- What relationships from the contacts table have NO COMMUNICATION in 
+-- feed_items? The LEFT JOIN excludes contacts from contacts table which don't 
+-- contact_id in feed_items
+SELECT contacts.id FROM contacts
+LEFT OUTER JOIN all_messages_metadata
+ON contacts.id = all_messages_metadata.contact_id
+WHERE all_messages_metadata.contact_id IS NULL
+AND contacts.is_fake = false
+
+-- Same as above but gives just the count.
+SELECT contacts.id FROM contacts
+LEFT OUTER JOIN all_messages_metadata
+ON contacts.id = all_messages_metadata.contact_id
+WHERE all_messages_metadata.contact_id IS NULL
+AND contacts.is_fake = false
+
+
 CREATE VIEW all_messages_metadata AS SELECT DISTINCT users.id AS user_id,
 contacts.id AS contact_id, contact_types.name AS relationship, channels.name
 AS channel, feed_items.send_at AS sent_at, feed_items.id AS message_id
@@ -214,25 +231,6 @@ JOIN contact_types ON contacts.contact_type_id = contact_types.id
 JOIN users ON contacts.user_id = users.id
 WHERE contacts.is_fake = false
 ORDER BY user_id, contact_id, sent_at;
-
-
--- What relationships from the contacts table have NO COMMUNICATION in 
--- feed_items? The LEFT JOIN excludes contacts from contacts table which don't 
--- contact_id in feed_items
-SELECT contacts.id FROM contacts
-LEFT OUTER JOIN all_messages_metadata
-ON contacts.id = all_messages_metadata.contact_id
-WHERE all_messages_metadata.contact_id IS NULL
-AND contacts.is_fake = false
-
--- Same as above but gives just the count.
-SELECT contacts.id FROM contacts
-LEFT OUTER JOIN all_messages_metadata
-ON contacts.id = all_messages_metadata.contact_id
-WHERE all_messages_metadata.contact_id IS NULL
-AND contacts.is_fake = false
-
-
 
 
 
