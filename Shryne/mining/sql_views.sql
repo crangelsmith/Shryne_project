@@ -232,6 +232,108 @@ JOIN users ON contacts.user_id = users.id
 WHERE contacts.is_fake = false
 ORDER BY user_id, contact_id, sent_at;
 
+-- Checking our query works properly by iteration
+-- between Alex (user id 12284)  and Chris (contact id (33098)
+-- checking that connor isn't popping up
+-- and checking that we have messages in both directions
+
+-- Query one
+SELECT body
+FROM feed_items
+WHERE from_id = 33098
+ORDER BY send_at;
+
+-- correctly gets emails from the email address I registered with chris
+-- correctly ignores others in the email thread
+-- counts 649 messages
+-- only gets messages from chris to me
+-- doesn't get connor's
+
+-- Query two
+SELECT body
+FROM feed_items
+JOIN channels ON feed_items.channel_id = channels.id
+WHERE from_id = 33098
+ORDER BY send_at;
+-- all five points above OK
+
+-- Query three
+SELECT body
+FROM feed_items
+JOIN channels ON feed_items.channel_id = channels.id
+JOIN contacts ON feed_items.from_id = contacts.id
+WHERE from_id = 33098
+ORDER BY send_at;
+-- all five points above OK
 
 
+-- we get up to this query, still with everything we expected to see from the db
+-- lost three messages when we put 'distinct'. This is OK, probably repeat
+-- sends of message
+CREATE VIEW all_msgs_from_contacts_users AS
+SELECT DISTINCT users.id AS user_id,
+contacts.id AS contact_id, contact_types.name AS relationship, channels.name
+AS channel, feed_items.send_at AS sent_at, feed_items.body AS message
+FROM feed_items
+JOIN channels ON feed_items.channel_id = channels.id
+JOIN contacts ON feed_items.from_id = contacts.id
+JOIN contact_types ON contacts.contact_type_id = contact_types.id
+JOIN users ON contacts.user_id = users.id
+WHERE contacts.is_fake = false
 
+
+-- changing
+JOIN contacts ON contacts.user_id = feeds.contact_id
+
+-- to
+
+JOIN contacts ON contacts.id = feeds.contact_id
+
+-- in the second part of the union gets rid of the confusion in contact_id
+-- and user_id columns
+
+-- it also highlights the problem of 'third-party' people in email chains
+
+-- trying to rectify this by setting contacts.id > 0
+
+----------- the second part with a better join via feeds to find out the
+-- contact id and from_id = 0 to select from user to contact
+SELECT DISTINCT users.id AS user_id,
+contacts.id AS contact_id, contact_types.name AS relationship, channels.name
+AS channel, feed_items.send_at AS sent_at, feed_items.body AS message
+FROM feed_items
+JOIN channels ON feed_items.channel_id = channels.id
+JOIN feeds ON feeds.id = feed_items.feed_id
+JOIN contacts ON contacts.id = feeds.contact_id
+JOIN contact_types ON contacts.contact_type_id = contact_types.id
+JOIN users ON contacts.user_id = users.id
+WHERE contacts.is_fake = false
+AND feed_items.from_id = 0
+AND user_id = 12284
+ORDER BY user_id, contact_id, sent_at;
+
+CREATE VIEW all_msgs_from_contacts_users AS
+SELECT DISTINCT users.id AS user_id,
+contacts.id AS contact_id, contact_types.name AS relationship, channels.name
+AS channel, feed_items.send_at AS sent_at, feed_items.body AS message
+FROM feed_items
+JOIN channels ON feed_items.channel_id = channels.id
+JOIN contacts ON feed_items.from_id = contacts.id
+JOIN contact_types ON contacts.contact_type_id = contact_types.id
+JOIN users ON contacts.user_id = users.id
+WHERE contacts.is_fake = false
+AND user_id = 12284
+UNION
+SELECT DISTINCT users.id AS user_id,
+contacts.id AS contact_id, contact_types.name AS relationship, channels.name
+AS channel, feed_items.send_at AS sent_at, feed_items.body AS message
+FROM feed_items
+JOIN channels ON feed_items.channel_id = channels.id
+JOIN feeds ON feeds.id = feed_items.feed_id
+JOIN contacts ON contacts.id = feeds.contact_id
+JOIN contact_types ON contacts.contact_type_id = contact_types.id
+JOIN users ON contacts.user_id = users.id
+WHERE contacts.is_fake = false
+AND feed_items.from_id = 0
+AND user_id = 12284
+ORDER BY user_id, contact_id, sent_at;
