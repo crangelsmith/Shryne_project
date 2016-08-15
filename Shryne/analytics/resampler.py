@@ -29,7 +29,12 @@ def resampler_dataframe(df, period='D'):
     df["sentiment_mag"] = (df["positive"] - df["negative"])
 
     # first set up the time axis analysis for either month or day
-    output_df["time"] = df[time_field].value_counts().resample(period)
+    output_df["time"] = df[time_field].value_counts().resample(period,how=_sum)
+   # x = df[time_field].value_counts().resample(period,how=_sum)#.index.values.tolist()
+
+    #x = [int(i)/1000000 for i in x]
+
+    #output_df["time"]=pd.Series(x)
     output_df["message_count"] = df[time_field].value_counts().resample(period, how=_sum)
     output_df["message_count_user"] = df[df["is_user"] == True][time_field].value_counts().resample(period, how=_sum)
     output_df["message_count_contact"] = df[df["is_user"] == False][time_field].value_counts().resample(period,
