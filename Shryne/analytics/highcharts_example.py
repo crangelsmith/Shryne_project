@@ -1,6 +1,8 @@
 import pandas
 from highcharts import Highchart
 import resampler
+import numpy as np
+
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
 
 # This converts the string in the time field to a datetime, this will probably need changing
@@ -103,7 +105,7 @@ def main():
 
     # TODO split off dataframe by partner type
 
-    df["is_user"]=True
+    df["is_user"]= np.random.randint(2,size=df["contact_id"].size)
 
     #TODO make sure the analysis starts at 0, i.e. remove [1:]
     unique_contacts = df['contact_id'].unique()[1:]
