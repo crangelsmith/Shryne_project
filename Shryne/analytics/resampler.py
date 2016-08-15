@@ -71,11 +71,26 @@ def resampler_dataframe(df, period = 'D'):
 
 def find_ratio(df,variable):
 
-    ratio_array = np.array(df[variable+"_user"].size)
+    numerator_array = np.array(df[variable+"_user"].size)
+    denominator_array = np.array(df[variable+"_user"].size)
+
+    # here find the indexes where the assoicated user value is larger than the contact
     index = df[variable+"_user"].values > df[variable+"_contact"].values
 
-    ratio_array[index] = df[variable+"_contact"][index].values / df[variable+"_user"][index].values
-    ratio_array[~index] = df[variable+"_user"][~index].values / df[variable+"_contact"][~index].values
+    # where the above index is true (i.e. the user variable > contact variable)
+    # place the user variable into the denominator and the contact variable in the
+    # numerator.
+    denominator_array[index] = df[variable+"_user"][index].values
+    numerator_array[index] = df[variable+"_contact"][index].values
+
+    # now for the indexes where the contact variable is > user variable
+    # place it into the denominator and the user variable into the numerator.
+    denominator_array[~index] = df[variable+"_contact"][~index].values
+    numerator_array[~index] =  df[variable+"_user"][~index].values
+
+    # prevent div by 0 and compute ratio
+    denominator_array[denominator_array == 0] = 1
+    ratio_array = numerator_array/denominator_array
 
     return ratio_array
 
