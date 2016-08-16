@@ -104,9 +104,10 @@ def highchart_analyser(df, period='M'):
     x = df["time"].index.values.tolist()
     x = [int(i)/1000000 for i in x]
 
-    time_vs_counts = list(zip(x, df["message_count"]))
+
+    time_vs_counts = list(zip(x, df["message_count"]/(df["message_count"].sum(axis=0))))
     time_vs_pos_sent = list(zip(x, df["sentiment_mag"]))
-    time_vs_word_length = list(zip(x, df["word_count"]))
+    time_vs_word_length = list(zip(x, df["word_count"]/(df["word_count"].sum(axis=0))))
 
     time_vs_sentiment_reciprocity = list(zip(x, df["sentiment_reciprocity"]))
     time_vs_message_reciprocity = list(zip(x, df["message_count_reciprocity"]))
@@ -125,7 +126,7 @@ def highchart_analyser(df, period='M'):
     charts.add_data_set(time_vs_word_length_reciprocity, series_type='spline', yAxis=1, name="Word Count reciprocity",
                         color='rgba(186,85,211, 1)')
 
-    charts.add_data_set(time_vs_pos_sent, 'column', name="Positive", yAxis=1, stack='sentiment', color='rgba(178,34,34, .9)')
+    charts.add_data_set(time_vs_pos_sent, 'column', name="Positive", yAxis=2, stack='sentiment', color='rgba(178,34,34, .9)')
 
     #user_id = str(df['user_id'][0])
     #contact_id = str(df['contact_id'][0])
@@ -150,7 +151,7 @@ def main():
 
         new_df = resampler.resampler_dataframe(sub_df, "M")
 
-
+        print (sub_df)
         # plot in highchart
         highchart_analyser(new_df)
 
