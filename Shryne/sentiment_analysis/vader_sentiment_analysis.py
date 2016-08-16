@@ -16,7 +16,7 @@ class SentimentAnalyser(object):
         neutral_list = []
         compound_list = []
 
-        for index, row in df.iterrows():
+        for i, row in df.iterrows():
             #TODO decide whether to remove string assigment following set up of df cleaning
             senti_result = self.ss.polarity_scores(str(row[col]))
 
