@@ -136,18 +136,30 @@ def highchart_analyser(df, period='M'):
 
 def main():
 
-    df = pandas.read_csv('../data/textsentiment.csv')
+    import Shryne.sentiment_analysis.vader_sentiment_analysis as vsa
+    sentiment_analyser = vsa.SentimentAnalyser()
+
+    df = pandas.read_pickle('../data/all_messages_to_from_pickled')
+
+    df_no_email = df[df['channel'] != 'gmail']
+    df_no_email = df_no_email[df_no_email['channel'] != 'camera']
+    df_no_email = df_no_email[df_no_email['message'] != '        ']
+    b = [len(str(x).split()) for x in df_no_email['message']]
+    df_no_email['word_count'] = b
+
+    df_subset = df_no_email[df_no_email['contact_id'] == 16787]
+
+    updated_df = sentiment_analyser.run_vader(df_subset, 'message')
+
 
     # setup pandas dataframe. It's not necessary, so replace this with what ever data source you have.
 
     # TODO split off dataframe by partner type
 
-    df["is_user"]= np.random.randint(2,size=df["contact_id"].size)
-
     #TODO make sure the analysis starts at 0, i.e. remove [1:]
-    unique_contacts = df['contact_id'].unique()[1:]
+    unique_contacts = updated_df['contact_id'].unique()[1:]
     for unique_contact in unique_contacts:
-        sub_df = df[df['contact_id'] == unique_contact]
+        sub_df = updated_df[updated_df['contact_id'] == unique_contact]
 
         new_df = resampler.resampler_dataframe(sub_df, "M")
 
