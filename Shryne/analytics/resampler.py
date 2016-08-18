@@ -21,10 +21,6 @@ def _average_sentiment(x):
 
 
 def sentiment_cleaning(df):
-    # First find and screen where there is only neutral sentiment.
-    # These location indicate where vader cannot interpret the sentece
-    # or where the sentiment is actually neutral.
-
     mask_neutral = df["neutral"] == 1.0
     mask_zeroes = df[['positive', 'negative', 'neutral']].sum(axis=1) == 0
 
@@ -89,8 +85,8 @@ def resample_dataframe(df, period='D'):
 
     # get the message counts total and for the user and contact
     output_df["message_count"] = df[time_field].value_counts().resample(period).apply(_sum)
-    output_df["message_count_user"] = df[df["to_from"] == False][time_field].value_counts().resample(period).apply(_sum)
-    output_df["message_count_contact"] = df[df["to_from"] == True][time_field].value_counts().resample(period).apply(_sum)
+    output_df["message_count_user"] = df[~df["to_from"]][time_field].value_counts().resample(period).apply(_sum)
+    output_df["message_count_contact"] = df[df["to_from"]][time_field].value_counts().resample(period).apply(_sum)
 
     df.set_index(time_field, inplace=True)
 

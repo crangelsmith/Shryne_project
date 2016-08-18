@@ -2,6 +2,7 @@ import pandas
 from highcharts import Highchart
 import resampler
 import sys
+import feature_creation
 
 
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
@@ -141,9 +142,7 @@ def main():
 
     df = df[df['relationship'] == "Ex"]
 
-
-    df =
-    # TODO split off dataframe by partner type
+    df = feature_creation(df)
 
 
     #TODO make sure the analysis starts at 0, i.e. remove [1:]
