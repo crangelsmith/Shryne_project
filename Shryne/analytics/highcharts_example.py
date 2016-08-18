@@ -143,23 +143,6 @@ def main():
 
     # TODO split off dataframe by partner type
 
-    b = [len(str(x).split()) for x in df['message']]
-    df['word_count'] = b
-
-    I_count = [count_nouns(str(x),"I") for x in df['message']]
-    df['I_count'] = I_count
-
-    You_count = [count_nouns(str(x), "you") for x in df['message']]
-    df['You_count'] = You_count
-
-    We_count = [count_nouns(str(x), "we") for x in df['message']]
-    df['We_count'] = We_count
-
-    Us_count = [count_nouns(str(x), "us") for x in df['message']]
-    df['Us_count'] = Us_count
-
-    emoji_count = [count_emoji(str(x)) for x in df['message']]
-    df['emoji_count'] = emoji_count
 
     #TODO make sure the analysis starts at 0, i.e. remove [1:]
     unique_contacts = df['contact_id'].unique()
@@ -171,8 +154,6 @@ def main():
         user_id = str(sub_df['user_id'][0])
         contact_id = str(sub_df['contact_id'][0])
 
-        print (new_df)
-        print(user_id+contact_id)
         # plot in highchart
         highchart_analyser(new_df,"M",user_id+contact_id)
 
@@ -180,25 +161,6 @@ def main():
         break
 
 
-def count_nouns(msg,noun):
-
-    list_message = msg.split()
-
-    c=0
-    for i in list_message:
-        if i == noun:
-            c+=1
-
-    return c
-
-def count_emoji(msg):
-    count = 0
-
-    emoticons = set(range(int('1f600', 16), int('1f650', 16)))
-    for char in msg:
-        if ord(char) in emoticons:
-             count += 1
-    return count
 
         
 if __name__ == '__main__':
