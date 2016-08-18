@@ -144,7 +144,7 @@ def main():
     b = [len(str(x).split()) for x in df['message']]
     df['word_count'] = b
 
-    df = df[df['relationship'] == "Partner"]
+    df = df[df['relationship'] == "Ex"]
 
     #TODO make sure the analysis starts at 0, i.e. remove [1:]
     unique_contacts = df['contact_id'].unique()
@@ -163,6 +163,16 @@ def main():
 
         # TODO remove this break!
         #break
+
+
+#def count_nouns(df):
+
+#    msg = df['message']
+
+#    for i in range(0, len(sWord)):
+#        print(sWord[i])
+#        if sWord[i] == "d":
+#            print("Found a d")
 
 
 

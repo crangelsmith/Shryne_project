@@ -34,10 +34,10 @@ def resampler_dataframe(df, period='D'):
     output_df = pd.DataFrame()
 
 
-   # df["positive"][df["neutral"]==1.0]=np.nan
-   # df["negative"][df["neutral"]==1.0]=np.nan
-   # df["compound"][df["neutral"]==1.0]=np.nan
-   # df["compound"][df["neutral"]==1.0]=np.nan
+    df["positive"][df["neutral"]==1.0]=np.nan
+    df["negative"][df["neutral"]==1.0]=np.nan
+    df["neutral"][df["neutral"]==1.0]=np.nan
+    df["compound"][df["neutral"]==1.0]=np.nan
 
 
     # first set up the time axis analysis for either month or day
