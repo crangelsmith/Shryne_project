@@ -142,8 +142,8 @@ def main():
 
     df = df[df['relationship'] == "Ex"]
 
-    df = feature_creation(df)
-
+    word_count = [len(str(x).split()) for x in df['message']]
+    df['word_count'] = word_count
 
     #TODO make sure the analysis starts at 0, i.e. remove [1:]
     unique_contacts = df['contact_id'].unique()

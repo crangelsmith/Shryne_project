@@ -90,8 +90,10 @@ def resample_dataframe(df, period='D'):
 
     df.set_index(time_field, inplace=True)
 
-    # get the total words used by user and contact
+    # get the total word counts and for the user and contact
     output_df["word_count"] = df["word_count"].resample(period).apply(_sum)
+    output_df["word_count_user"] = df[~df["to_from"]]["word_count"].resample(period).apply(_sum)
+    output_df["word_count_contact"] = df[df["to_from"]]["word_count"].resample(period).apply(_sum)
 
     # get the sentiments overall and for the user and contact individually
     keys = ["positive", "negative", "neutral", "compound"]
@@ -100,13 +102,12 @@ def resample_dataframe(df, period='D'):
         output_df[k+"_user"] = df[~df["to_from"]][k].resample(period).apply(_average_sentiment)
         output_df[k+"_contact"] = df[df["to_from"]][k].resample(period).apply(_average_sentiment)
 
-    # user and contact word counts
-    output_df["word_count_user"] = df[~df["to_from"]]["word_count"].resample(period).apply(_sum)
-    output_df["word_count_contact"] = df[df["to_from"]]["word_count"].resample(period).apply(_sum)
-
     # now compute reciprocity between users
     output_df["sentiment_reciprocity"] = (output_df["compound_contact"] - output_df["compound_user"]).abs()
     output_df["message_count_reciprocity"] = find_ratio(output_df, "message_count")
     output_df["word_count_reciprocity"] = find_ratio(output_df, "word_count")
+
+
+    #TODO normalise dataframe
 
     return output_df
