@@ -1,6 +1,7 @@
 import pandas
 from highcharts import Highchart
 import resampler
+import feature_creation
 import sys
 
 
@@ -141,12 +142,14 @@ def main():
 
     df = df[df['relationship'] == "Ex"]
 
+    df = feature_creation.time_response(df)
 
-    df =
+
     # TODO split off dataframe by partner type
 
 
     #TODO make sure the analysis starts at 0, i.e. remove [1:]
+    list_df =[]
     unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
         sub_df = df[df['contact_id'] == unique_contact]
@@ -159,8 +162,11 @@ def main():
         # plot in highchart
         highchart_analyser(new_df,"M",user_id+contact_id)
 
+        list_df.append(new_df)
         # TODO remove this break!
         break
+
+    result = pandas.concat(list_df)
 
 
 
