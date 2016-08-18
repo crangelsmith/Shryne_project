@@ -1,17 +1,17 @@
 import pandas
 from highcharts import Highchart
 import resampler
-import numpy as np
+import sys
+
 
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
 
 # This converts the string in the time field to a datetime, this will probably need changing
 
-def highchart_analyser(df, period='M'):
+def highchart_analyser(df, period='M', name=""):
 
     charts = Highchart()
     # create highcharts instance
-
 
     # remove time field from either of the headers lists
     options = {
@@ -128,32 +128,36 @@ def highchart_analyser(df, period='M'):
 
     charts.add_data_set(time_vs_pos_sent, 'column', name="Positive", yAxis=2, stack='sentiment', color='rgba(178,34,34, .9)')
 
-    #user_id = str(df['user_id'][0])
-    #contact_id = str(df['contact_id'][0])
 
-    charts.save_file('_time_series_'+period)
+
+    charts.save_file('plot/_time_series_'+period+str(name))
 
 
 def main():
 
-    df = pandas.read_csv('../data/textsentiment.csv')
+    df = pandas.read_pickle('../data/result')
 
     # setup pandas dataframe. It's not necessary, so replace this with what ever data source you have.
 
+    df = df[df['relationship'] == "Ex"]
+
+
+    df =
     # TODO split off dataframe by partner type
 
-    df["is_user"]= np.random.randint(2,size=df["contact_id"].size)
 
     #TODO make sure the analysis starts at 0, i.e. remove [1:]
-    unique_contacts = df['contact_id'].unique()[1:]
+    unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
         sub_df = df[df['contact_id'] == unique_contact]
 
-        new_df = resampler.resampler_dataframe(sub_df, "M")
+        new_df = resampler.resample_dataframe(sub_df, "M")
 
-        print (sub_df)
+        user_id = str(sub_df['user_id'][0])
+        contact_id = str(sub_df['contact_id'][0])
+
         # plot in highchart
-        highchart_analyser(new_df)
+        highchart_analyser(new_df,"M",user_id+contact_id)
 
         # TODO remove this break!
         break

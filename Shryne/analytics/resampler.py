@@ -20,64 +20,18 @@ def _average_sentiment(x):
     return np.nanmean(x)
 
 
+def sentiment_cleaning(df):
+    # First find and screen where there is only neutral sentiment.
+    # These location indicate where vader cannot interpret the sentece
+    # or where the sentiment is actually neutral.
 
+    mask_neutral = df["neutral"] == 1.0
+    mask_zeroes = df[['positive', 'negative', 'neutral']].sum(axis=1) == 0
 
-def resampler_dataframe(df, period='D'):
-
-    time_field = 'sent_at'
-
-    if isinstance(df[time_field].tolist()[0], str):
-        df[time_field] = pd.to_datetime(df[time_field])
-    else:
-        print("nothing to be done")
-
-    output_df = pd.DataFrame()
-
-
-    df["positive"][df["neutral"]==1.0]=np.nan
-    df["negative"][df["neutral"]==1.0]=np.nan
-    df["compound"][df["neutral"]==1.0]=np.nan
-    df["compound"][df["neutral"]==1.0]=np.nan
-
-
-    # first set up the time axis analysis for either month or day
-    output_df["time"] = df[time_field].value_counts().resample(period,how=_sum)
-
-    output_df["message_count"] = df[time_field].value_counts().resample(period, how=_sum)
-    output_df["message_count_user"] = df[df["is_user"] == True][time_field].value_counts().resample(period, how=_sum)
-    output_df["message_count_contact"] = df[df["is_user"] == False][time_field].value_counts().resample(period,
-                                                                                                        how=_sum)
-
-    df.set_index(time_field, inplace=True)
-    output_df["sentiment_pos"] = df["positive"].resample(period, how=_average_sentiment)
-    output_df["sentiment_neg"] = df["negative"].resample(period, how=_average_sentiment)
-    output_df["sentiment_neu"] = df["neutral"].resample(period, how=_average_sentiment)
-    output_df["sentiment_comp"] = df["compound"].resample(period, how=_average_sentiment)
-
-    output_df["word_count"] = df["word_count"].resample(period, how=_sum)
-
-    output_df["sentiment_mag"] = df["compound"].resample(period, how=_average_sentiment)
-
-    # TODO: NEED TO DECIDE HOW TO DEFINE THIS SENTIMENT VARIABLE PROPERLY
-
-    output_df["sentiment_pos_user"] = df[df["is_user"] == True]["positive"].resample(period, how=_average_sentiment)
-    output_df["sentiment_neg_user"] = df[df["is_user"] == True]["negative"].resample(period, how=_average_sentiment)
-    output_df["sentiment_neu_user"] = df[df["is_user"] == True]["neutral"].resample(period, how=_average_sentiment)
-    output_df["sentiment_mag_user"] = df[df["is_user"] == True]["compound"].resample(period, how=_average_sentiment)
-    output_df["word_count_user"] = df[df["is_user"] == True]["word_count"].resample(period, how=_sum)
-
-    output_df["sentiment_pos_contact"] = df[df["is_user"] == False]["positive"].resample(period, how=_average_sentiment)
-    output_df["sentiment_neg_contact"] = df[df["is_user"] == False]["negative"].resample(period, how=_average_sentiment)
-    output_df["sentiment_neu_contact"] = df[df["is_user"] == False]["neutral"].resample(period, how=_average_sentiment)
-    output_df["sentiment_mag_contact"] = df[df["is_user"] == False]["compound"].resample(period, how=_average_sentiment)
-    output_df["word_count_contact"] = df[df["is_user"] == False]["word_count"].resample(period, how=_sum)
-
-    output_df["sentiment_reciprocity"] = (output_df["sentiment_mag_contact"] - output_df["sentiment_mag_user"]).abs()
-
-    output_df["message_count_reciprocity"] = find_ratio(output_df, "message_count")
-    output_df["word_count_reciprocity"] = find_ratio(output_df, "word_count")
-
-    return output_df
+    for col in ['positive', 'negative', 'neutral', 'compound']:
+        df[col].where(~mask_neutral, np.nan, inplace=True)
+        df[col].where(~mask_zeroes, np.nan, inplace=True)
+    return df
 
 
 def find_ratio(df, variable):
@@ -103,3 +57,60 @@ def find_ratio(df, variable):
     ratio_array = numerator_array / denominator_array
 
     return ratio_array
+
+
+def resample_dataframe(df, period='D'):
+    '''
+    This function resamples the features
+    in the dataframe to the defined timeseries
+
+    It create reciprocity features based on this
+    resampling
+
+    :param df: the dataframe to be resampled
+    :param period: the resampling time interval
+    :return: df with the resampled features
+    '''
+
+    #TODO perhaps this cleaning of sentiment should be outside the resampling of the dataframe
+    #TODO Should new features be constructed in here?
+    df = sentiment_cleaning(df)
+
+    time_field = 'sent_at'
+    if isinstance(df[time_field].tolist()[0], str):
+        df[time_field] = pd.to_datetime(df[time_field])
+    else:
+        print("nothing to be done")
+
+    output_df = pd.DataFrame()
+
+    # get the time series
+    output_df["time"] = df[time_field].value_counts().resample(period).apply(_sum)
+
+    # get the message counts total and for the user and contact
+    output_df["message_count"] = df[time_field].value_counts().resample(period).apply(_sum)
+    output_df["message_count_user"] = df[df["to_from"] == False][time_field].value_counts().resample(period).apply(_sum)
+    output_df["message_count_contact"] = df[df["to_from"] == True][time_field].value_counts().resample(period).apply(_sum)
+
+    df.set_index(time_field, inplace=True)
+
+    # get the total words used by user and contact
+    output_df["word_count"] = df["word_count"].resample(period).apply(_sum)
+
+    # get the sentiments overall and for the user and contact individually
+    keys = ["positive", "negative", "neutral", "compound"]
+    for k in keys:
+        output_df[k] = df[k].resample(period).apply(_average_sentiment)
+        output_df[k+"_user"] = df[~df["to_from"]][k].resample(period).apply(_average_sentiment)
+        output_df[k+"_contact"] = df[df["to_from"]][k].resample(period).apply(_average_sentiment)
+
+    # user and contact word counts
+    output_df["word_count_user"] = df[~df["to_from"]]["word_count"].resample(period).apply(_sum)
+    output_df["word_count_contact"] = df[df["to_from"]]["word_count"].resample(period).apply(_sum)
+
+    # now compute reciprocity between users
+    output_df["sentiment_reciprocity"] = (output_df["compound_contact"] - output_df["compound_user"]).abs()
+    output_df["message_count_reciprocity"] = find_ratio(output_df, "message_count")
+    output_df["word_count_reciprocity"] = find_ratio(output_df, "word_count")
+
+    return output_df
