@@ -108,12 +108,12 @@ def resample_dataframe(df, period='D'):
     feature_names = ["sentiment_pos", "sentiment_neg", "sentiment_neu", "sentiment_comp"]
     df_keys = ["positive", "negative", "neutral", "compound"]
     for f, k in zip(feature_names, df_keys):
-        output_df[f+"_user"] = df[df["to_from"] == False][k].resample(period, how=_average_sentiment)
-        output_df[f+"_contact"] = df[df["to_from"] == True][k].resample(period, how=_average_sentiment)
+        output_df[f+"_user"] = df[~df["to_from"]][k].resample(period, how=_average_sentiment)
+        output_df[f+"_contact"] = df[df["to_from"]][k].resample(period, how=_average_sentiment)
 
     # user and contact word counts
-    output_df["word_count_user"] = df[df["to_from"] == False]["word_count"].resample(period, how=_sum)
-    output_df["word_count_contact"] = df[df["to_from"] == True]["word_count"].resample(period, how=_sum)
+    output_df["word_count_user"] = df[~df["to_from"]]["word_count"].resample(period, how=_sum)
+    output_df["word_count_contact"] = df[df["to_from"]]["word_count"].resample(period, how=_sum)
 
     # now compute reciprocities
     output_df["sentiment_reciprocity"] = (output_df["sentiment_mag_contact"] - output_df["sentiment_mag_user"]).abs()

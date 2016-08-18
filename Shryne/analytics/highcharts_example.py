@@ -12,7 +12,6 @@ def highchart_analyser(df, period='M', name=""):
     charts = Highchart()
     # create highcharts instance
 
-
     # remove time field from either of the headers lists
     options = {
         'chart': {
