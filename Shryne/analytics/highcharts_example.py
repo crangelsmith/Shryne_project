@@ -7,7 +7,7 @@ import numpy as np
 
 # This converts the string in the time field to a datetime, this will probably need changing
 
-def highchart_analyser(df, period='M'):
+def highchart_analyser(df, period='M', name=""):
 
     charts = Highchart()
     # create highcharts instance
@@ -128,47 +128,51 @@ def highchart_analyser(df, period='M'):
 
     charts.add_data_set(time_vs_pos_sent, 'column', name="Positive", yAxis=2, stack='sentiment', color='rgba(178,34,34, .9)')
 
-    #user_id = str(df['user_id'][0])
-    #contact_id = str(df['contact_id'][0])
 
-    charts.save_file('_time_series_'+period)
+
+    charts.save_file('_time_series_'+period+str(name))
 
 
 def main():
 
-    import Shryne.sentiment_analysis.vader_sentiment_analysis as vsa
-    sentiment_analyser = vsa.SentimentAnalyser()
-
-    df = pandas.read_pickle('../data/all_messages_to_from_pickled')
-
-    df_no_email = df[df['channel'] != 'gmail']
-    df_no_email = df_no_email[df_no_email['channel'] != 'camera']
-    df_no_email = df_no_email[df_no_email['message'] != '        ']
-    b = [len(str(x).split()) for x in df_no_email['message']]
-    df_no_email['word_count'] = b
-
-    df_subset = df_no_email[df_no_email['contact_id'] == 16787]
-
-    updated_df = sentiment_analyser.run_vader(df_subset, 'message')
-
+    df = pandas.read_pickle('../data/result')
 
     # setup pandas dataframe. It's not necessary, so replace this with what ever data source you have.
 
     # TODO split off dataframe by partner type
 
+    b = [len(str(x).split()) for x in df['message']]
+    df['word_count'] = b
+
+    df = df[df['relationship'] == "Ex"]
+
     #TODO make sure the analysis starts at 0, i.e. remove [1:]
-    unique_contacts = updated_df['contact_id'].unique()[1:]
+    unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
-        sub_df = updated_df[updated_df['contact_id'] == unique_contact]
+        sub_df = df[df['contact_id'] == unique_contact]
 
         new_df = resampler.resampler_dataframe(sub_df, "M")
 
-        print (sub_df)
+        user_id = str(sub_df['user_id'][0])
+        contact_id = str(sub_df['contact_id'][0])
+
+        print (new_df)
+        print(user_id+contact_id)
         # plot in highchart
-        highchart_analyser(new_df)
+        highchart_analyser(new_df,"M",user_id+contact_id)
 
         # TODO remove this break!
-        break
+        #break
+
+
+#def count_nouns(df):
+
+#    msg = df['message']
+
+#    for i in range(0, len(sWord)):
+#        print(sWord[i])
+#        if sWord[i] == "d":
+#            print("Found a d")
 
 
 

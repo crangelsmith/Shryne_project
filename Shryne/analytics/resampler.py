@@ -36,7 +36,7 @@ def resampler_dataframe(df, period='D'):
 
     df["positive"][df["neutral"]==1.0]=np.nan
     df["negative"][df["neutral"]==1.0]=np.nan
-    df["compound"][df["neutral"]==1.0]=np.nan
+    df["neutral"][df["neutral"]==1.0]=np.nan
     df["compound"][df["neutral"]==1.0]=np.nan
 
 
@@ -44,8 +44,8 @@ def resampler_dataframe(df, period='D'):
     output_df["time"] = df[time_field].value_counts().resample(period,how=_sum)
 
     output_df["message_count"] = df[time_field].value_counts().resample(period, how=_sum)
-    output_df["message_count_user"] = df[df["is_user"] == True][time_field].value_counts().resample(period, how=_sum)
-    output_df["message_count_contact"] = df[df["is_user"] == False][time_field].value_counts().resample(period,
+    output_df["message_count_user"] = df[df["to_from"] == False][time_field].value_counts().resample(period, how=_sum)
+    output_df["message_count_contact"] = df[df["to_from"] == True][time_field].value_counts().resample(period,
                                                                                                         how=_sum)
 
     df.set_index(time_field, inplace=True)
@@ -60,17 +60,17 @@ def resampler_dataframe(df, period='D'):
 
     # TODO: NEED TO DECIDE HOW TO DEFINE THIS SENTIMENT VARIABLE PROPERLY
 
-    output_df["sentiment_pos_user"] = df[df["is_user"] == True]["positive"].resample(period, how=_average_sentiment)
-    output_df["sentiment_neg_user"] = df[df["is_user"] == True]["negative"].resample(period, how=_average_sentiment)
-    output_df["sentiment_neu_user"] = df[df["is_user"] == True]["neutral"].resample(period, how=_average_sentiment)
-    output_df["sentiment_mag_user"] = df[df["is_user"] == True]["compound"].resample(period, how=_average_sentiment)
-    output_df["word_count_user"] = df[df["is_user"] == True]["word_count"].resample(period, how=_sum)
+    output_df["sentiment_pos_user"] = df[df["to_from"] == False]["positive"].resample(period, how=_average_sentiment)
+    output_df["sentiment_neg_user"] = df[df["to_from"] == False]["negative"].resample(period, how=_average_sentiment)
+    output_df["sentiment_neu_user"] = df[df["to_from"] == False]["neutral"].resample(period, how=_average_sentiment)
+    output_df["sentiment_mag_user"] = df[df["to_from"] == False]["compound"].resample(period, how=_average_sentiment)
+    output_df["word_count_user"] = df[df["to_from"] == False]["word_count"].resample(period, how=_sum)
 
-    output_df["sentiment_pos_contact"] = df[df["is_user"] == False]["positive"].resample(period, how=_average_sentiment)
-    output_df["sentiment_neg_contact"] = df[df["is_user"] == False]["negative"].resample(period, how=_average_sentiment)
-    output_df["sentiment_neu_contact"] = df[df["is_user"] == False]["neutral"].resample(period, how=_average_sentiment)
-    output_df["sentiment_mag_contact"] = df[df["is_user"] == False]["compound"].resample(period, how=_average_sentiment)
-    output_df["word_count_contact"] = df[df["is_user"] == False]["word_count"].resample(period, how=_sum)
+    output_df["sentiment_pos_contact"] = df[df["to_from"] == True]["positive"].resample(period, how=_average_sentiment)
+    output_df["sentiment_neg_contact"] = df[df["to_from"] == True]["negative"].resample(period, how=_average_sentiment)
+    output_df["sentiment_neu_contact"] = df[df["to_from"] == True]["neutral"].resample(period, how=_average_sentiment)
+    output_df["sentiment_mag_contact"] = df[df["to_from"] == True]["compound"].resample(period, how=_average_sentiment)
+    output_df["word_count_contact"] = df[df["to_from"] == True]["word_count"].resample(period, how=_sum)
 
     output_df["sentiment_reciprocity"] = (output_df["sentiment_mag_contact"] - output_df["sentiment_mag_user"]).abs()
 
