@@ -1,7 +1,8 @@
 import pandas
 from highcharts import Highchart
 import resampler
-import numpy as np
+import sys
+
 
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
 
@@ -139,12 +140,27 @@ def main():
 
     # setup pandas dataframe. It's not necessary, so replace this with what ever data source you have.
 
+    df = df[df['relationship'] == "Ex"]
+
     # TODO split off dataframe by partner type
 
     b = [len(str(x).split()) for x in df['message']]
     df['word_count'] = b
 
-    df = df[df['relationship'] == "Ex"]
+    I_count = [count_nouns(str(x),"I") for x in df['message']]
+    df['I_count'] = I_count
+
+    You_count = [count_nouns(str(x), "you") for x in df['message']]
+    df['You_count'] = You_count
+
+    We_count = [count_nouns(str(x), "we") for x in df['message']]
+    df['We_count'] = We_count
+
+    Us_count = [count_nouns(str(x), "us") for x in df['message']]
+    df['Us_count'] = Us_count
+
+    emoji_count = [count_emoji(str(x)) for x in df['message']]
+    df['emoji_count'] = emoji_count
 
     #TODO make sure the analysis starts at 0, i.e. remove [1:]
     unique_contacts = df['contact_id'].unique()
@@ -162,19 +178,28 @@ def main():
         highchart_analyser(new_df,"M",user_id+contact_id)
 
         # TODO remove this break!
-        #break
+        break
 
 
-#def count_nouns(df):
+def count_nouns(msg,noun):
 
-#    msg = df['message']
+    list_message = msg.split()
 
-#    for i in range(0, len(sWord)):
-#        print(sWord[i])
-#        if sWord[i] == "d":
-#            print("Found a d")
+    c=0
+    for i in list_message:
+        if i == noun:
+            c+=1
 
+    return c
 
+def count_emoji(msg):
+    count = 0
+
+    emoticons = set(range(int('1f600', 16), int('1f650', 16)))
+    for char in msg:
+        if ord(char) in emoticons:
+             count += 1
+    return count
 
         
 if __name__ == '__main__':
