@@ -1,3 +1,6 @@
+import numpy as np
+import pandas as pd
+
 def drop_one_sided(df):
     """Drop any rows which are part of a one sided conversation
     i.e. messages only from a contact to a user or vice versa"""
@@ -12,24 +15,25 @@ def drop_one_sided(df):
 
 def create_features(df):
 
+    word_count = []
+    You_count = []
+    We_count = []
+    Us_count = []
+    I_count =[]
 
-    word_count = [len(str(x).split()) for x in df['message']]
+    for x in df['message']:
+
+        word_count.append(len(str(x).split()))
+        I_count.append(count_nouns(str(x),"I"))
+        You_count.append(count_nouns(str(x),"you"))
+        We_count.append(count_nouns(str(x),"we"))
+        Us_count.append(count_nouns(str(x),"us"))
+
     df['word_count'] = word_count
-
-    I_count = [count_nouns(str(x), "I") for x in df['message']]
     df['I_count'] = I_count
-
-    You_count = [count_nouns(str(x), "you") for x in df['message']]
     df['You_count'] = You_count
-
-    We_count = [count_nouns(str(x), "we") for x in df['message']]
     df['We_count'] = We_count
-
-    Us_count = [count_nouns(str(x), "us") for x in df['message']]
     df['Us_count'] = Us_count
-
-    # emoji_count = [count_emoji(str(x)) for x in df['message']]
-    # df['emoji_count'] = emoji_count
 
     return df
 
@@ -53,3 +57,28 @@ def count_emoji(msg):
         if ord(char) in emoticons:
              count += 1
     return count
+
+
+def time_response(df):
+    list_df=[]
+    unique_contacts = df['contact_id'].unique()
+    for unique_contact in unique_contacts:
+        sub_df = df[df['contact_id'] == unique_contact]
+        is_user = sub_df["to_from"].iloc[0]
+        time = sub_df["sent_at"].iloc[0]
+        list_times= []
+
+        for _, row in df.iterrows():
+            time_diff = np.nan
+            if row["to_from"]!=is_user:
+                time_diff = abs((time - row["sent_at"]).seconds)
+                if time_diff==0 or time_diff>10800:
+                    time_diff = np.nan
+                is_user = row["to_from"]
+                time = row["sent_at"]
+            list_times.append(time_diff)
+        sub_df['time_reponse'] = list_times
+        list_df.append(sub_df)
+
+    result = pd.concat(list_df)
+    return result

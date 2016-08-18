@@ -1,8 +1,8 @@
 import pandas
 from highcharts import Highchart
 import resampler
-import sys
 import feature_creation
+import sys
 
 
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
@@ -142,20 +142,34 @@ def main():
 
     df = df[df['relationship'] == "Ex"]
 
-    df = feature_creation.create_features(df)
+    df = feature_creation.time_response(df)
+
+
+    # TODO split off dataframe by partner type
+
 
     #TODO make sure the analysis starts at 0, i.e. remove [1:]
+    list_df =[]
     unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
-        sub_df = df[df['contact_id'] == 16787]
+        sub_df = df[df['contact_id'] == unique_contact]
 
         new_df = resampler.resample_dataframe(sub_df, "M")
 
-        # user_id = str(sub_df['user_id'][0])
-        # contact_id = str(sub_df['contact_id'][0])
-        #
-        # # plot in highchart
-        # highchart_analyser(new_df,"M",user_id+contact_id)
+        user_id = str(sub_df['user_id'][0])
+        contact_id = str(sub_df['contact_id'][0])
 
+        # plot in highchart
+        highchart_analyser(new_df,"M",user_id+contact_id)
+
+        list_df.append(new_df)
+        # TODO remove this break!
+        break
+
+    result = pandas.concat(list_df)
+
+
+
+        
 if __name__ == '__main__':
     main()
