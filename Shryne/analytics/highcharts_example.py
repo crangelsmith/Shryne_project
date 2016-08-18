@@ -151,7 +151,7 @@ def main():
     for unique_contact in unique_contacts:
         sub_df = df[df['contact_id'] == unique_contact]
 
-        new_df = resampler.resampler_dataframe(sub_df, "M")
+        new_df = resampler.resample_dataframe(sub_df, "M")
 
         user_id = str(sub_df['user_id'][0])
         contact_id = str(sub_df['contact_id'][0])
