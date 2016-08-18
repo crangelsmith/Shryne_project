@@ -23,11 +23,14 @@ def create_features(df):
 
     for x in df['message']:
 
-        word_count.append(len(str(x).split()))
-        I_count.append(count_nouns(str(x),"I"))
-        You_count.append(count_nouns(str(x),"you"))
-        We_count.append(count_nouns(str(x),"we"))
-        Us_count.append(count_nouns(str(x),"us"))
+        x = str(x)
+        split_string = x.split()
+
+        word_count.append(len(split_string))
+        I_count.append(x.lower().count(' i '))
+        You_count.append(x.lower().count(" you "))
+        We_count.append(x.lower().count(" we "))
+        Us_count.append(x.lower().count(" us "))
 
     df['word_count'] = word_count
     df['I_count'] = I_count
@@ -37,17 +40,6 @@ def create_features(df):
 
     return df
 
-
-def count_nouns(msg,noun):
-
-    list_message = msg.split()
-
-    c = 0
-    for i in list_message:
-        if i == noun:
-            c += 1
-
-    return c
 
 def count_emoji(msg):
     count = 0
