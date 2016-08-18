@@ -142,27 +142,20 @@ def main():
 
     df = df[df['relationship'] == "Ex"]
 
-    word_count = [len(str(x).split()) for x in df['message']]
-    df['word_count'] = word_count
+    df = feature_creation.create_features(df)
 
     #TODO make sure the analysis starts at 0, i.e. remove [1:]
     unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
-        sub_df = df[df['contact_id'] == unique_contact]
+        sub_df = df[df['contact_id'] == 16787]
 
         new_df = resampler.resample_dataframe(sub_df, "M")
 
-        user_id = str(sub_df['user_id'][0])
-        contact_id = str(sub_df['contact_id'][0])
+        # user_id = str(sub_df['user_id'][0])
+        # contact_id = str(sub_df['contact_id'][0])
+        #
+        # # plot in highchart
+        # highchart_analyser(new_df,"M",user_id+contact_id)
 
-        # plot in highchart
-        highchart_analyser(new_df,"M",user_id+contact_id)
-
-        # TODO remove this break!
-        break
-
-
-
-        
 if __name__ == '__main__':
     main()

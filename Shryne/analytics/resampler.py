@@ -80,9 +80,6 @@ def resample_dataframe(df, period='D'):
 
     output_df = pd.DataFrame()
 
-    # get the time series
-    output_df["time"] = df[time_field].value_counts().resample(period).apply(_sum)
-
     # get the message counts total and for the user and contact
     output_df["message_count"] = df[time_field].value_counts().resample(period).apply(_sum)
     output_df["message_count_user"] = df[~df["to_from"]][time_field].value_counts().resample(period).apply(_sum)
@@ -91,9 +88,11 @@ def resample_dataframe(df, period='D'):
     df.set_index(time_field, inplace=True)
 
     # get the total word counts and for the user and contact
-    output_df["word_count"] = df["word_count"].resample(period).apply(_sum)
-    output_df["word_count_user"] = df[~df["to_from"]]["word_count"].resample(period).apply(_sum)
-    output_df["word_count_contact"] = df[df["to_from"]]["word_count"].resample(period).apply(_sum)
+    keys = ["word_count", "I_count", "You_count", "We_count", "Us_count"]
+    for k in keys:
+        output_df[k] = df[k].resample(period).apply(_sum)
+        output_df[k + "_user"] = df[~df["to_from"]][k].resample(period).apply(_sum)
+        output_df[k + "_contact"] = df[df["to_from"]][k].resample(period).apply(_sum)
 
     # get the sentiments overall and for the user and contact individually
     keys = ["positive", "negative", "neutral", "compound"]
@@ -104,8 +103,9 @@ def resample_dataframe(df, period='D'):
 
     # now compute reciprocity between users
     output_df["sentiment_reciprocity"] = (output_df["compound_contact"] - output_df["compound_user"]).abs()
-    output_df["message_count_reciprocity"] = find_ratio(output_df, "message_count")
-    output_df["word_count_reciprocity"] = find_ratio(output_df, "word_count")
+    for k in ["message_count", "word_count", "I_count", "You_count",
+              "We_count", "Us_count"]:
+        output_df[k+"_reciprocity"] = find_ratio(output_df, k)
 
 
     #TODO normalise dataframe

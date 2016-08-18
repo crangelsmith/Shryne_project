@@ -28,8 +28,8 @@ def create_features(df):
     Us_count = [count_nouns(str(x), "us") for x in df['message']]
     df['Us_count'] = Us_count
 
-    emoji_count = [count_emoji(str(x)) for x in df['message']]
-    df['emoji_count'] = emoji_count
+    # emoji_count = [count_emoji(str(x)) for x in df['message']]
+    # df['emoji_count'] = emoji_count
 
     return df
 
