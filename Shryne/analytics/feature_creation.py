@@ -1,5 +1,3 @@
-import pandas
-
 
 def create_features(df):
 
