@@ -142,8 +142,8 @@ def main():
 
     df = df[df['relationship'] == "Ex"]
 
-    df = feature_creation.create_features(df)
-    # df = feature_creation.time_response(df)
+    #df = feature_creation.create_features(df)
+    df = feature_creation.time_response(df)
 
 
     # TODO split off dataframe by partner type
