@@ -20,6 +20,10 @@ def _average_sentiment(x):
     return np.nanmean(x)
 
 
+def _median_time(x):
+    return np.nanmedian(x)
+
+
 def sentiment_cleaning(df):
     mask_neutral = df["neutral"] == 1.0
     mask_zeroes = df[['positive', 'negative', 'neutral']].sum(axis=1) == 0
@@ -68,8 +72,8 @@ def resample_dataframe(df, period='D'):
     :return: df with the resampled features
     '''
 
-    #TODO perhaps this cleaning of sentiment should be outside the resampling of the dataframe
-    #TODO Should new features be constructed in here?
+    # TODO perhaps this cleaning of sentiment should be outside the resampling of the dataframe
+    # TODO Should new features be constructed in here?
     df = sentiment_cleaning(df)
 
     time_field = 'sent_at'
@@ -81,38 +85,44 @@ def resample_dataframe(df, period='D'):
     output_df = pd.DataFrame()
 
     # get the message counts total and for the user and contact
-    output_df["message_count"] = df[time_field].value_counts().resample(period,how=_sum)
-    output_df["message_count_user"] = df[~df["to_from"]][time_field].value_counts().resample(period,how=_sum)
-    output_df["message_count_contact"] = df[df["to_from"]][time_field].value_counts().resample(period,how=_sum)
+    output_df["message_count"] = df[time_field].value_counts().resample(period, how=_sum)
+    output_df["message_count_user"] = df[~df["to_from"]][time_field].value_counts().resample(period, how=_sum)
+    output_df["message_count_contact"] = df[df["to_from"]][time_field].value_counts().resample(period, how=_sum)
 
     df.set_index(time_field, inplace=True)
 
     # get the total word counts and for the user and contact
     keys = ["word_count", "I_count", "You_count", "We_count", "Us_count"]
     for k in keys:
-        output_df[k] = df[k].resample(period,how=_sum)
-        output_df[k + "_user"] = df[~df["to_from"]][k].resample(period,how=_sum)
-        output_df[k + "_contact"] = df[df["to_from"]][k].resample(period,how=_sum)
+        output_df[k] = df[k].resample(period, how=_sum)
+        output_df[k + "_user"] = df[~df["to_from"]][k].resample(period, how=_sum)
+        output_df[k + "_contact"] = df[df["to_from"]][k].resample(period, how=_sum)
 
     # get the sentiments overall and for the user and contact individually
     keys = ["positive", "negative", "neutral", "compound"]
     for k in keys:
-        output_df[k] = df[k].resample(period,how=_average_sentiment)
-        output_df[k+"_user"] = df[~df["to_from"]][k].resample(period,how=_average_sentiment)
-        output_df[k+"_contact"] = df[df["to_from"]][k].resample(period,how=_average_sentiment)
+        output_df[k] = df[k].resample(period, how=_average_sentiment)
+        output_df[k + "_user"] = df[~df["to_from"]][k].resample(period, how=_average_sentiment)
+        output_df[k + "_contact"] = df[df["to_from"]][k].resample(period, how=_average_sentiment)
+
+    # get the time differences
+    output_df["response_time"] = df["response_time"].value_counts().resample(period, how=_median_time)
+    output_df["response_time_user"] = df[~df["to_from"]]["response_time"].value_counts().resample(period,
+                                                                                                  how=_median_time)
+    output_df["response_time_contact"] = df[df["to_from"]]["response_time"].value_counts().resample(period,
+                                                                                                    how=_median_time)
 
     # now compute reciprocity between users
     output_df["sentiment_reciprocity"] = (output_df["compound_contact"] - output_df["compound_user"]).abs()
     for k in ["message_count", "word_count", "I_count", "You_count",
               "We_count", "Us_count"]:
-        output_df[k+"_reciprocity"] = find_ratio(output_df, k)
+        output_df[k + "_reciprocity"] = find_ratio(output_df, k)
 
     # now normalise number of mesages, words, etc
-
     keys = ["word_count", "I_count", "You_count", "We_count",
-            "Us_count","message_count","message_count_user","message_count_contact","word_count_user","word_count_contact"]
+            "Us_count", "message_count", "message_count_user",
+            "message_count_contact", "word_count_user", "word_count_contact"]
     for k in keys:
-        output_df[k] = output_df[k]/(output_df[k].sum(axis=0))
-
+        output_df[k] = output_df[k] / (output_df[k].sum(axis=0))
 
     return output_df

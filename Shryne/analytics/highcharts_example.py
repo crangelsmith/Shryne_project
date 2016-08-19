@@ -4,6 +4,8 @@ import resampler
 import feature_creation
 import sys
 import Shryne.cleaning.clean_df
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
@@ -146,6 +148,12 @@ def main():
     df = Shryne.cleaning.clean_df.drop_one_sided(df)
 
     df = feature_creation.create_features(df)
+    df = feature_creation.time_response(df)
+
+    df.dropna(inplace=True)
+    g = sns.pairplot(df, vars=["word_count", "response_time"])
+    plt.show()
+
 
     list_df =[]
     unique_contacts = df['contact_id'].unique()

@@ -76,10 +76,5 @@ def time_response(df):
     # shifted_change_times[0] = df['to_from'][0]
 
     # compute the time difference
-    time_diff = (change_times - shifted_change_times).values.astype('timedelta64[s]').astype('int')
-    df['time_response'] = 0
-    df['time_response'][new_communcation] = time_diff
-    df['time_response'][~new_communcation] = np.nan
-    df['time_response'][0] = np.nan  # set the fist communication to nan
-
+    df['response_time'] = (change_times - shifted_change_times).astype('timedelta64[s]')
     return df
