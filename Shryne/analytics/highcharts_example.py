@@ -147,16 +147,8 @@ def main():
 
     df = Shryne.cleaning.clean_df.drop_one_sided(df)
 
-    #df = feature_creation.create_features(df)
+    df = feature_creation.create_features(df)
     df = feature_creation.time_response(df)
-
-    df.dropna(inplace=True)
-    df = df[df['response_time'] != 0]
-    df = df[df['response_time'] < 1000]
-    print df['response_time'].describe()
-    g = sns.distplot(df['response_time'], kde=False)
-    plt.show()
-
 
     list_df =[]
     unique_contacts = df['contact_id'].unique()

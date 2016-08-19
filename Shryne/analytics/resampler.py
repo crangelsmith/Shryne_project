@@ -112,11 +112,9 @@ def resample_dataframe(df, period='D'):
         output_df[k + "_contact"] = df[df["to_from"]][k].resample(period, how=_average_sentiment)
 
     # get the time differences
-    output_df["response_time"] = df["response_time"].value_counts().resample(period, how=_average_time)
-    output_df["response_time_user"] = df[~df["to_from"]]["response_time"].value_counts().resample(period,
-                                                                                                  how=_average_time)
-    output_df["response_time_contact"] = df[df["to_from"]]["response_time"].value_counts().resample(period,
-                                                                                                    how=_average_time)
+    output_df["response_time"] = df["response_time"].resample(period, how=_average_time)
+    output_df["response_time_user"] = df[~df["to_from"]]["response_time"].resample(period, how=_average_time)
+    output_df["response_time_contact"] = df[df["to_from"]]["response_time"].resample(period, how=_average_time)
 
     # now compute reciprocity between users
     output_df["sentiment_reciprocity"] = (output_df["compound_contact"] - output_df["compound_user"]).abs()
@@ -135,7 +133,7 @@ def resample_dataframe(df, period='D'):
     # compute the relative difference of the response time over the course of the relationship
     keys = ["response_time", "response_time_user", "response_time_contact"]
     for k in keys:
-        mean_time = output_df[k].sum(axis=0) / output_df[k].size
+        mean_time = output_df[k].sum(axis=0) / output_df[k].dropna().size  # don't want to average with null months
         output_df[k] = (output_df[k] - mean_time) / mean_time
 
     return output_df
