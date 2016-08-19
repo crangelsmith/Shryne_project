@@ -20,7 +20,15 @@ def _average_sentiment(x):
     return np.nanmean(x)
 
 
-def _median_time(x):
+def _average_time(x):
+
+    #TODO we made need to tweak the time limit
+    time_limit = 1000  # in seconds
+    x_mean = np.mean(x)
+    if x_mean > time_limit:
+        return time_limit
+    else:
+        return x_mean
     return np.nanmedian(x)
 
 
@@ -106,11 +114,11 @@ def resample_dataframe(df, period='D'):
         output_df[k + "_contact"] = df[df["to_from"]][k].resample(period, how=_average_sentiment)
 
     # get the time differences
-    output_df["response_time"] = df["response_time"].value_counts().resample(period, how=_median_time)
+    output_df["response_time"] = df["response_time"].value_counts().resample(period, how=_average_time)
     output_df["response_time_user"] = df[~df["to_from"]]["response_time"].value_counts().resample(period,
-                                                                                                  how=_median_time)
+                                                                                                  how=_average_time)
     output_df["response_time_contact"] = df[df["to_from"]]["response_time"].value_counts().resample(period,
-                                                                                                    how=_median_time)
+                                                                                                    how=_average_time)
 
     # now compute reciprocity between users
     output_df["sentiment_reciprocity"] = (output_df["compound_contact"] - output_df["compound_user"]).abs()

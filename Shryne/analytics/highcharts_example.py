@@ -151,7 +151,10 @@ def main():
     df = feature_creation.time_response(df)
 
     df.dropna(inplace=True)
-    g = sns.pairplot(df, vars=["word_count", "response_time"])
+    df = df[df['response_time'] != 0]
+    df = df[df['response_time'] < 1000]
+    print df['response_time'].describe()
+    g = sns.distplot(df['response_time'], kde=False)
     plt.show()
 
 
