@@ -80,6 +80,6 @@ def time_response(df):
     df['time_response'] = 0
     df['time_response'][new_communcation] = time_diff
     df['time_response'][~new_communcation] = np.nan
-    df['time_response'][0] = np.nan  # set the last communication to 0
+    df['time_response'][0] = np.nan  # set the fist communication to nan
 
     return df
