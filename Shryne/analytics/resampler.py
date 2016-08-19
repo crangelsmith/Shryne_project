@@ -133,7 +133,11 @@ def resample_dataframe(df, period='D'):
     # compute the relative difference of the response time over the course of the relationship
     keys = ["response_time", "response_time_user", "response_time_contact"]
     for k in keys:
-        mean_time = output_df[k].sum(axis=0) / output_df[k].dropna().size  # don't want to average with null months
+        if output_df[k].dropna().size == 0:
+            denom = 1
+        else:
+            denom = output_df[k].dropna().size
+        mean_time = output_df[k].sum(axis=0) / denom  # don't want to average with null months
         output_df[k] = (output_df[k] - mean_time) / mean_time
 
     return output_df
