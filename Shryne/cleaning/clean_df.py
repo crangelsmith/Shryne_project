@@ -39,9 +39,9 @@ def drop_one_sided(df):
 
     group = df.groupby(['user_id', 'contact_id'])
 
-    new_df = group.filter(lambda x: len(x['to_from'].unique()) == 2)
+    df = group.filter(lambda x: len(x['to_from'].unique()) == 2)
 
-    return new_df
+    return df
 
 def clean_message(df):
     """Takes a dataframe which wants to clean
@@ -54,14 +54,14 @@ def clean_message(df):
     sep = ['\n--\n', 'Begin forwarded message', 'Forwarded message', '----------------------------------------']
 
     for s in sep:
-        df['message'] = df['message'].apply(lambda x: x.split(s, 1)[0])
+        df = df['message'].apply(lambda x: x.split(s, 1)[0])
 
     # Replace urls and other stuff
     subs = ["\n", "On\s[A-Z][a-z]{2}\s[0-9]{1,3}[\s\S]*", r'https?:\/\/[\S]*[\s\n\r]+', r'www\.[\S]*[\s\n\r]+',
             'Sent from my iPhone.*[\s\n\r]', r'Sent from my iPad.*[\s\n\r]', r'Sent from my Sony.*[\s\n\r]',
             r'Sent from my Samsung.*[\s\n\r]']
     for s in subs:
-        df['message'] = df['message'].str.replace(s, '', case=False, flags=re.MULTILINE)
+        df = df['message'].str.replace(s, ' ', case=False, flags=re.MULTILINE)
 
     return df
 
@@ -84,21 +84,4 @@ def remove_carriage_returns(df):
 def remove_tabs(df):
     return df['message'].str.replace('\t', ' ')
 
-    # First remove any message columns with None or Nan as
-    df = df[df['message'].notnull()]
-
-    # Get rid of anything after these strings.
-    sep = ['\n--\n', 'Begin forwarded message', 'Forwarded message', '----------------------------------------']
-
-    for s in sep:
-        df['message'] = df['message'].apply(lambda x: x.split(s, 1)[0])
-
-    # Replace urls and other stuff
-    subs = ["\n", "On\s[A-Z][a-z]{2}\s[0-9]{1,3}[\s\S]*", r'https?:\/\/[\S]*[\s\n\r]+', r'www\.[\S]*[\s\n\r]+',
-            'Sent from my iPhone.*[\s\n\r]', r'Sent from my iPad.*[\s\n\r]', r'Sent from my Sony.*[\s\n\r]',
-            r'Sent from my Samsung.*[\s\n\r]']
-    for s in subs:
-        df['message'] = df['message'].str.replace(s, '', case=False, flags=re.MULTILINE)
-
-    return df
 
