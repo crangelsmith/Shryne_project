@@ -29,7 +29,6 @@ def _average_time(x):
         return time_limit
     else:
         return x_mean
-    return np.nanmedian(x)
 
 
 def sentiment_cleaning(df):
