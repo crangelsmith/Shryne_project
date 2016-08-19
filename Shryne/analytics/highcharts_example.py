@@ -147,7 +147,7 @@ def main():
 
     df = Shryne.cleaning.clean_df.drop_one_sided(df)
 
-    pet_names = pandas.read_csv('pet_names.txt', delimiter='\n')
+    pet_names = pandas.read_csv('pet_names_short.txt', delimiter='\n')
     df = feature_creation.create_features(df, pet_names)
     df = feature_creation.time_response(df)
 
