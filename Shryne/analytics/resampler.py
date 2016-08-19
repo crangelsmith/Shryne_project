@@ -122,15 +122,21 @@ def resample_dataframe(df, period='D'):
     # now compute reciprocity between users
     output_df["sentiment_reciprocity"] = (output_df["compound_contact"] - output_df["compound_user"]).abs()
     for k in ["message_count", "word_count", "I_count", "You_count",
-              "We_count", "Us_count"]:
+              "We_count", "Us_count", "response_time"]:
         output_df[k + "_reciprocity"] = find_ratio(output_df, k)
 
     # now normalise number of mesages, words, etc
-
     keys = ["word_count", "I_count", "You_count", "We_count","I_count_contact","You_count_contact",
             "We_count_contact","Us_count_contact","I_count_user","You_count_user",
-            "We_count_user","Us_count_user", "Us_count","message_count","message_count_user","message_count_contact","word_count_user","word_count_contact"]
+            "We_count_user","Us_count_user", "Us_count","message_count","message_count_user",
+            "message_count_contact","word_count_user","word_count_contact"]
     for k in keys:
         output_df[k] = output_df[k] / (output_df[k].sum(axis=0))
+
+    # compute the relative difference of the response time over the course of the relationship
+    keys = ["response_time", "response_time_user", "response_time_contact"]
+    for k in keys:
+        mean_time = output_df[k].sum(axis=0) / output_df[k].size
+        output_df[k] = (output_df[k] - mean_time) / mean_time
 
     return output_df
