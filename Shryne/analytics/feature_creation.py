@@ -32,7 +32,7 @@ def create_features(df, pet_names):
     df['You_count'] = You_count
     df['We_count'] = We_count
     df['Us_count'] = Us_count
-    df['pet_names'] = pet_count
+    df['Pet_count'] = pet_count
 
     return df
 
