@@ -62,24 +62,28 @@ def time_response(df):
     :param df:  input dataframe
     :return:  dataframe with response time between users
     '''
-    #TODO this cannot work with hangouts as there are no time stamps so we need to deal with that
+    df['response_time'] = 0
 
-    # shift to_from and check if they are the same.  If they
-    # are not this indicates a change in the communicator
-    new_communcation = ~(df['to_from'].shift(1) == df['to_from'])
+    unique_contacts = df['contact_id'].unique()
+    for unique_contact in unique_contacts:
 
-    # extract the times associated with the change in communicator
-    change_times = df['sent_at'][new_communcation]
+        contact_mask = df['contact_id'] == unique_contact
+        contact_df = df[contact_mask]
 
-    # shift the times down one and an the first time to the list
-    shifted_change_times = change_times.shift(1)
-    # shifted_change_times[0] = df['to_from'][0]
+        # shift to_from and check if they are the same.  If they
+        # are not this indicates a change in the communicator
+        new_communcation = ~(contact_df['to_from'].shift(1) == contact_df['to_from'])
 
-    # compute the time difference
-    time_diff = (change_times - shifted_change_times).values.astype('timedelta64[s]').astype('int')
-    df['time_response'] = 0
-    df['time_response'][new_communcation] = time_diff
-    df['time_response'][~new_communcation] = np.nan
-    df['time_response'][0] = np.nan  # set the last communication to 0
+        # extract the times associated with the change in communicator
+        change_times = contact_df['sent_at'][new_communcation]
+
+        # shift the times down one and an the first time to the list
+        shifted_change_times = change_times.shift(1)
+        # shifted_change_times[0] = df['to_from'][0]
+
+        # compute the time difference
+        df['response_time'].where(~contact_mask,
+                                  (change_times - shifted_change_times).astype('timedelta64[s]').astype('float'),
+                                  inplace=True)
 
     return df
