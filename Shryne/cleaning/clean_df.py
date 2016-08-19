@@ -51,17 +51,18 @@ def clean_message(df):
     df = df[df['message'].notnull()]
 
     # Get rid of anything after these strings.
-    sep = ['\n--\n', 'Begin forwarded message', 'Forwarded message', '----------------------------------------']
+    sep = ['\n--\n', 'Begin forwarded message', 'Forwarded message', '----------------------------------------',
+           'Sent from my iPhone', 'Sent from my iPad', 'Sent from my Windows Phone', 'Sent from my Samsung']
 
     for s in sep:
-        df = df['message'].apply(lambda x: x.split(s, 1)[0])
+        df['message'] = df['message'].apply(lambda x: x.split(s, 1)[0])
 
     # Replace urls and other stuff
     subs = ["\n", "On\s[A-Z][a-z]{2}\s[0-9]{1,3}[\s\S]*", r'https?:\/\/[\S]*[\s\n\r]+', r'www\.[\S]*[\s\n\r]+',
-            'Sent from my iPhone.*[\s\n\r]', r'Sent from my iPad.*[\s\n\r]', r'Sent from my Sony.*[\s\n\r]',
+            'Sent from my iPhone.*[\s\n\r]', r'Sent from my iPad.*[\s\n\r]', r'Sent from my Windows Phone.*[\s\n\r]', r'Sent from my Sony.*[\s\n\r]',
             r'Sent from my Samsung.*[\s\n\r]']
     for s in subs:
-        df = df['message'].str.replace(s, ' ', case=False, flags=re.MULTILINE)
+        df['message'] = df['message'].str.replace(s, ' ', case=False, flags=re.MULTILINE)
 
     return df
 
@@ -70,18 +71,21 @@ def turn_emoji_to_emoticon(df, dictionary):
     # takes in a df looks for emojis in the 'message' column, in the messages
     # column
     # turns them into punctuation emoticons according to the dictionary provided
-    return df.replace({'message': dictionary})
+    return df.str.replace({'message': dictionary})
 
 
 def remove_newlines(df):
-    return df['message'].str.replace('\n', ' ')
+    df['message'] = df['message'].str.replace('\n', ' ')
+    return df
 
 
 def remove_carriage_returns(df):
-    return df['message'].str.replace('\r', ' ')
+    df['message'] = df['message'].str.replace('\r', ' ')
+    return df
 
 
 def remove_tabs(df):
-    return df['message'].str.replace('\t', ' ')
+    df['message'] = df['message'].str.replace('\t', ' ')
+    return df
 
 
