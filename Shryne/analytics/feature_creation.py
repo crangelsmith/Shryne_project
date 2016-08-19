@@ -83,7 +83,7 @@ def time_response(df):
 
         # compute the time difference
         df['response_time'].where(~contact_mask,
-                                  (change_times - shifted_change_times).astype('timedelta64[s]'),
+                                  (change_times - shifted_change_times).astype('timedelta64[s]').astype('float'),
                                   inplace=True)
 
     return df

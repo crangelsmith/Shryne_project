@@ -147,7 +147,7 @@ def main():
 
     df = Shryne.cleaning.clean_df.drop_one_sided(df)
 
-    df = feature_creation.create_features(df)
+    #df = feature_creation.create_features(df)
     df = feature_creation.time_response(df)
 
     df.dropna(inplace=True)
