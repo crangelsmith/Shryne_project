@@ -3,15 +3,13 @@ import pandas as pd
 
 
 def create_features(df):
-
     word_count = []
     You_count = []
     We_count = []
     Us_count = []
-    I_count =[]
+    I_count = []
 
     for x in df['message']:
-
         x = str(x)
         split_string = x.split()
 
@@ -36,16 +34,35 @@ def count_emoji(msg):
     emoticons = set(range(int('1f600', 16), int('1f650', 16)))
     for char in msg:
         if ord(char) in emoticons:
-             count += 1
+            count += 1
     return count
 
 
 def time_response(df):
+    '''
+    Vectorised response time calculator.  Algorithm is:
 
-    # this cannot work with hangouts as there are no time stamps
+    user  to_from  shift_tf  diff_tf  time  true_time shift_time  time_response
+    A     T        ~         T        1     1         ~           ~
+    B     F        T         T        2     2         1           1
+    B     F        F         F        3     ~         ~           ~
+    B     F        F         F        4     ~         ~           ~
+    A     T        F         T        5     5         2           3
+    B     F        T         T        6     6         5           1
 
-    # create a list for holding the times
-    result = np.zeros(df['to_from'].size)
+    user: user A or B
+    to_from: T is from A or F if from B (i.e. not from A)
+    shift_tf: shift to_from down by one row
+    diff_tf: True is to_from and shift_tf are difference, False otherwise
+    time: a unit of time
+    true_time: time where diff_tf is true
+    shift_time: shift true_time down by one row
+    time_response: true_time - shift_time giving the response time
+
+    :param df:  input dataframe
+    :return:  dataframe with response time between users
+    '''
+    #TODO this cannot work with hangouts as there are no time stamps so we need to deal with that
 
     # shift to_from and check if they are the same.  If they
     # are not this indicates a change in the communicator
@@ -56,37 +73,13 @@ def time_response(df):
 
     # shift the times down one and an the first time to the list
     shifted_change_times = change_times.shift(1)
-    #shifted_change_times[0] = df['to_from'][0]
+    # shifted_change_times[0] = df['to_from'][0]
 
     # compute the time difference
-    time_diff = change_times - shifted_change_times
+    time_diff = (change_times - shifted_change_times).values.astype('timedelta64[s]').astype('int')
+    df['time_response'] = 0
+    df['time_response'][new_communcation] = time_diff
+    df['time_response'][~new_communcation] = np.nan
+    df['time_response'][0] = np.nan  # set the last communication to 0
 
-    result[new_communcation] = time_diff.
-    result[~new_communcation] = np.nan
-
-    df['time_response'] = result
-
-
-
-    list_df=[]
-    unique_contacts = df['contact_id'].unique()
-    for unique_contact in unique_contacts:
-        sub_df = df[df['contact_id'] == unique_contact]
-        is_user = sub_df["to_from"].iloc[0]
-        time = sub_df["sent_at"].iloc[0]
-        list_times= []
-
-        for _, row in df.iterrows():
-            time_diff = np.nan
-            if row["to_from"]!=is_user:
-                time_diff = abs((time - row["sent_at"]).seconds)
-                if time_diff==0 or time_diff>10800:
-                    time_diff = np.nan
-                is_user = row["to_from"]
-                time = row["sent_at"]
-            list_times.append(time_diff)
-        sub_df['time_reponse'] = list_times
-        list_df.append(sub_df)
-
-    result = pd.concat(list_df)
-    return result
+    return df
