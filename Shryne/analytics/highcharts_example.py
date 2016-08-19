@@ -3,6 +3,7 @@ from highcharts import Highchart
 import resampler
 import feature_creation
 import sys
+import Shryne.cleaning.clean_df
 
 
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
@@ -106,9 +107,9 @@ def highchart_analyser(df, period='M', name=""):
     x = [int(i)/1000000 for i in x]
 
 
-    time_vs_counts = list(zip(x, df["message_count"]/(df["message_count"].sum(axis=0))))
-    time_vs_pos_sent = list(zip(x, df["sentiment_mag"]))
-    time_vs_word_length = list(zip(x, df["word_count"]/(df["word_count"].sum(axis=0))))
+    time_vs_counts = list(zip(x, df["message_count"]))
+    time_vs_pos_sent = list(zip(x, df["compound"]))
+    time_vs_word_length = list(zip(x, df["word_count"]))
 
     time_vs_sentiment_reciprocity = list(zip(x, df["sentiment_reciprocity"]))
     time_vs_message_reciprocity = list(zip(x, df["message_count_reciprocity"]))
@@ -123,11 +124,11 @@ def highchart_analyser(df, period='M', name=""):
     charts.add_data_set(time_vs_word_length, series_type='spline', yAxis=2, name="Word Count", color='rgba(186,85,211, 1)')
 
     charts.add_data_set(time_vs_message_reciprocity, series_type='spline', yAxis=1, name="Message Count reciprocity",
-                        color='rgba(0,85,255, 1)')
+                        color='red')
     charts.add_data_set(time_vs_word_length_reciprocity, series_type='spline', yAxis=1, name="Word Count reciprocity",
-                        color='rgba(186,85,211, 1)')
+                        color='black')
 
-    charts.add_data_set(time_vs_pos_sent, 'column', name="Positive", yAxis=2, stack='sentiment', color='rgba(178,34,34, .9)')
+    charts.add_data_set(time_vs_pos_sent, 'column', name="Positive", yAxis=2, stack='sentiment', color='yellow')
 
 
 
@@ -142,14 +143,10 @@ def main():
 
     df = df[df['relationship'] == "Ex"]
 
-    #df = feature_creation.create_features(df)
-    df = feature_creation.time_response(df)
+    df = Shryne.cleaning.clean_df.drop_one_sided(df)
 
+    df = feature_creation.create_features(df)
 
-    # TODO split off dataframe by partner type
-
-
-    #TODO make sure the analysis starts at 0, i.e. remove [1:]
     list_df =[]
     unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
@@ -164,10 +161,10 @@ def main():
         highchart_analyser(new_df,"M",user_id+contact_id)
 
         list_df.append(new_df)
-        # TODO remove this break!
-        break
 
     result = pandas.concat(list_df)
+
+    result.to_csv("../data/relationship_features_forclustering.csv")
 
 
 
