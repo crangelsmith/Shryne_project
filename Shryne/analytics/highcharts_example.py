@@ -4,6 +4,8 @@ import resampler
 import feature_creation
 import sys
 import Shryne.cleaning.clean_df
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
@@ -103,7 +105,7 @@ def highchart_analyser(df, period='M', name=""):
             'backgroundColor': "(Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'"
         }
     }
-    x = df["time"].index.values.tolist()
+    x = df["sent_at"].index.values.tolist()
     x = [int(i)/1000000 for i in x]
 
 
@@ -146,6 +148,7 @@ def main():
     df = Shryne.cleaning.clean_df.drop_one_sided(df)
 
     df = feature_creation.create_features(df)
+    df = feature_creation.time_response(df)
 
     list_df =[]
     unique_contacts = df['contact_id'].unique()
@@ -158,13 +161,13 @@ def main():
         contact_id = str(sub_df['contact_id'][0])
 
         # plot in highchart
-        highchart_analyser(new_df,"M",user_id+contact_id)
-
+        #highchart_analyser(new_df,"M",user_id+contact_id)
+        print("appending dataframe for relationship "+user_id+contact_id)
         list_df.append(new_df)
 
     result = pandas.concat(list_df)
 
-    result.to_csv("../data/relationship_features_forclustering.csv")
+    result.to_pickle("../data/relationship_features_forclustering.pandas_df")
 
 
 
