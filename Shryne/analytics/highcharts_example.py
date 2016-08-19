@@ -103,7 +103,7 @@ def highchart_analyser(df, period='M', name=""):
             'backgroundColor': "(Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'"
         }
     }
-    x = df["time"].index.values.tolist()
+    x = df["sent_at"].index.values.tolist()
     x = [int(i)/1000000 for i in x]
 
 
@@ -158,13 +158,13 @@ def main():
         contact_id = str(sub_df['contact_id'][0])
 
         # plot in highchart
-        highchart_analyser(new_df,"M",user_id+contact_id)
-
+        #highchart_analyser(new_df,"M",user_id+contact_id)
+        print("appending dataframe for relationship "+user_id+contact_id)
         list_df.append(new_df)
 
     result = pandas.concat(list_df)
 
-    result.to_csv("../data/relationship_features_forclustering.csv")
+    result.to_pickle("../data/relationship_features_forclustering.pandas_df")
 
 
 

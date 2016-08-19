@@ -69,7 +69,6 @@ def resample_dataframe(df, period='D'):
     '''
 
     #TODO perhaps this cleaning of sentiment should be outside the resampling of the dataframe
-    #TODO Should new features be constructed in here?
     df = sentiment_cleaning(df)
 
     time_field = 'sent_at'
@@ -85,7 +84,7 @@ def resample_dataframe(df, period='D'):
     output_df["message_count_user"] = df[~df["to_from"]][time_field].value_counts().resample(period,how=_sum)
     output_df["message_count_contact"] = df[df["to_from"]][time_field].value_counts().resample(period,how=_sum)
 
-    df.set_index(time_field, inplace=True)
+    df.set_index(time_field, inplace=True, drop=False)
 
     # get the total word counts and for the user and contact
     keys = ["word_count", "I_count", "You_count", "We_count", "Us_count"]
@@ -109,8 +108,9 @@ def resample_dataframe(df, period='D'):
 
     # now normalise number of mesages, words, etc
 
-    keys = ["word_count", "I_count", "You_count", "We_count",
-            "Us_count","message_count","message_count_user","message_count_contact","word_count_user","word_count_contact"]
+    keys = ["word_count", "I_count", "You_count", "We_count","I_count_contact","You_count_contact",
+            "We_count_contact","Us_count_contact","I_count_user","You_count_user",
+            "We_count_user","Us_count_user", "Us_count","message_count","message_count_user","message_count_contact","word_count_user","word_count_contact"]
     for k in keys:
         output_df[k] = output_df[k]/(output_df[k].sum(axis=0))
 
