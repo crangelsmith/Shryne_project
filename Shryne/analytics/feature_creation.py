@@ -12,11 +12,14 @@ def create_features(df):
 
     for x in df['message']:
 
-        word_count.append(len(str(x).split()))
-        I_count.append(count_nouns(str(x),"I"))
-        You_count.append(count_nouns(str(x),"you"))
-        We_count.append(count_nouns(str(x),"we"))
-        Us_count.append(count_nouns(str(x),"us"))
+        x = str(x)
+        split_string = x.split()
+
+        word_count.append(len(split_string))
+        I_count.append(x.lower().count(' i '))
+        You_count.append(x.lower().count(" you "))
+        We_count.append(x.lower().count(" we "))
+        Us_count.append(x.lower().count(" us "))
 
     df['word_count'] = word_count
     df['I_count'] = I_count
@@ -26,17 +29,6 @@ def create_features(df):
 
     return df
 
-
-def count_nouns(msg,noun):
-
-    list_message = msg.split()
-
-    c = 0
-    for i in list_message:
-        if i == noun:
-            c += 1
-
-    return c
 
 def count_emoji(msg):
     count = 0
@@ -49,6 +41,33 @@ def count_emoji(msg):
 
 
 def time_response(df):
+
+    # this cannot work with hangouts as there are no time stamps
+
+    # create a list for holding the times
+    result = np.zeros(df['to_from'].size)
+
+    # shift to_from and check if they are the same.  If they
+    # are not this indicates a change in the communicator
+    new_communcation = ~(df['to_from'].shift(1) == df['to_from'])
+
+    # extract the times associated with the change in communicator
+    change_times = df['sent_at'][new_communcation]
+
+    # shift the times down one and an the first time to the list
+    shifted_change_times = change_times.shift(1)
+    #shifted_change_times[0] = df['to_from'][0]
+
+    # compute the time difference
+    time_diff = change_times - shifted_change_times
+
+    result[new_communcation] = time_diff.
+    result[~new_communcation] = np.nan
+
+    df['time_response'] = result
+
+
+
     list_df=[]
     unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
