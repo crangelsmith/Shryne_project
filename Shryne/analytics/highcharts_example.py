@@ -142,14 +142,15 @@ def highchart_analyser(df, period='M', name=""):
 def main():
 
     df = pickle.load(open("../data/result", "rb"))
-    #df = pandas.read_pickle('../data/result')
+    # df = pandas.read_pickle('../data/result')
 
-    # setup pandas dataframe. It's not necessary, so replace this with what ever data source you have.
+    # setup pandas dataframe. It's not necessary, so replace this with what ever
+    #  data source you have.
 
     df = df[df['relationship'] == "Ex"]
 
     df = clean_df.drop_one_sided(df)
-
+    
     pet_names = pandas.read_csv('pet_names_short.txt', delimiter='\n')
     emoji_list = pickle.load(open("emoji_list.p", "rb"))
     df = feature_creation.create_features(df, pet_names, emoji_list)
