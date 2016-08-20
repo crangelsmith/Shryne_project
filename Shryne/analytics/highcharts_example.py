@@ -151,8 +151,7 @@ def main():
 
     pet_names = pandas.read_csv('pet_names_short.txt', delimiter='\n')
     emoji_list = pickle.load(open("emoji_list.p", "rb"))
-    df = feature_creation.create_features(df, pet_names)
-    df = feature_creation.create_features(df, emoji_list)
+    df = feature_creation.create_features(df, pet_names, emoji_list)
     df = feature_creation.time_response(df)
 
     # df.dropna(inplace=True)

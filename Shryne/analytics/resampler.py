@@ -129,7 +129,7 @@ def resample_dataframe(df, period='D'):
             "We_count_contact","Us_count_contact","I_count_user","You_count_user",
             "We_count_user","Us_count_user", "Us_count",
             "Pet_count_user","Pet_count_contact", "Pet_count",
-            "emoji_count_user","emoji_count_contact","emoji_count"
+            "emoji_count_user","emoji_count_contact","emoji_count",
             "message_count","message_count_user","message_count_contact",
             "word_count_user","word_count_contact"]
     for k in keys:
