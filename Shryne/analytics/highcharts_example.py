@@ -150,12 +150,7 @@ def main():
     df = df[df['relationship'] == "Ex"]
 
     df = clean_df.drop_one_sided(df)
-    df = clean_df.clean_message(df)
-    df = clean_df.turn_emoji_to_emoticon(df)
-    df = clean_df.remove_newlines(df)
-    df = clean_df.remove_carriage_returns(df)
-    df = clean_df.remove_tabs(df)
-
+    
     pet_names = pandas.read_csv('pet_names_short.txt', delimiter='\n')
     emoji_list = pickle.load(open("emoji_list.p", "rb"))
     df = feature_creation.create_features(df, pet_names, emoji_list)
