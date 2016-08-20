@@ -1,13 +1,13 @@
-import numpy as np
-import pandas as pd
+from collections import Counter
 
+def create_features(df, pet_names):
 
-def create_features(df):
     word_count = []
     You_count = []
     We_count = []
     Us_count = []
     I_count = []
+    pet_count = []
 
     for x in df['message']:
         x = str(x)
@@ -19,11 +19,20 @@ def create_features(df):
         We_count.append(x.lower().count(" we "))
         Us_count.append(x.lower().count(" us "))
 
+        # now do the pet name analysis on the string
+        total = 0
+        counts = dict(Counter(split_string).most_common())
+        intersection = filter(set(counts.keys()).__contains__, pet_names)
+        for item in intersection:
+            total += counts[item]
+        pet_count.append(total)
+
     df['word_count'] = word_count
     df['I_count'] = I_count
     df['You_count'] = You_count
     df['We_count'] = We_count
     df['Us_count'] = Us_count
+    df['Pet_count'] = pet_count
 
     return df
 
