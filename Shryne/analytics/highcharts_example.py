@@ -3,10 +3,12 @@ from highcharts import Highchart
 import resampler
 import feature_creation
 import sys
-import Shryne.cleaning.clean_df
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+sys.path.insert(0, '../cleaning')
+import clean_df
+import pickle
 
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
 
@@ -145,10 +147,12 @@ def main():
 
     df = df[df['relationship'] == "Ex"]
 
-    df = Shryne.cleaning.clean_df.drop_one_sided(df)
+    df = clean_df.drop_one_sided(df)
 
     pet_names = pandas.read_csv('pet_names_short.txt', delimiter='\n')
+    emoji_list = pickle.load(open("emoji_list.p", "rb"))
     df = feature_creation.create_features(df, pet_names)
+    df = feature_creation.create_features(df, emoji_list)
     df = feature_creation.time_response(df)
 
     # df.dropna(inplace=True)
