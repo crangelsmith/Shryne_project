@@ -29,12 +29,12 @@ def create_features(df, pet_names, emoji_list):
             total += counts[item]
         pet_count.append(total)
 
-        total_pet = 0
-        counts_pet = dict(Counter(split_string).most_common())
-        intersection_pet = filter(set(counts.keys()).__contains__, emoji_list)
-        for item in intersection_pet:
-            total_pet += counts[item]
-        emoji_count.append(total_pet)
+        total = 0
+        counts = dict(Counter(split_string).most_common())
+        intersection = filter(set(counts.keys()).__contains__, emoji_list)
+        for item in intersection:
+            total += counts[item]
+        emoji_count.append(total)
 
     df['word_count'] = word_count
     df['I_count'] = I_count
