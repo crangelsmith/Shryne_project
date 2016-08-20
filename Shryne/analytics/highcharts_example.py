@@ -141,7 +141,8 @@ def highchart_analyser(df, period='M', name=""):
 
 def main():
 
-    df = pandas.read_pickle('../data/result')
+    df = pickle.load(open("../data/result", "rb"))
+    #df = pandas.read_pickle('../data/result')
 
     # setup pandas dataframe. It's not necessary, so replace this with what ever data source you have.
 
