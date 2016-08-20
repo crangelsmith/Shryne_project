@@ -1,6 +1,7 @@
 from collections import Counter
 
-def create_features(df, pet_names):
+
+def create_features(df, pet_names, emoji_list):
 
     word_count = []
     You_count = []
@@ -8,6 +9,7 @@ def create_features(df, pet_names):
     Us_count = []
     I_count = []
     pet_count = []
+    emoji_count = []
 
     for x in df['message']:
         x = str(x)
@@ -27,24 +29,32 @@ def create_features(df, pet_names):
             total += counts[item]
         pet_count.append(total)
 
+        total_pet = 0
+        counts_pet = dict(Counter(split_string).most_common())
+        intersection_pet = filter(set(counts.keys()).__contains__, emoji_list)
+        for item in intersection_pet:
+            total_pet += counts[item]
+        emoji_count.append(total_pet)
+
     df['word_count'] = word_count
     df['I_count'] = I_count
     df['You_count'] = You_count
     df['We_count'] = We_count
     df['Us_count'] = Us_count
     df['Pet_count'] = pet_count
+    df['emoji_count'] = emoji_count
 
     return df
 
 
-def count_emoji(msg):
-    count = 0
-
-    emoticons = set(range(int('1f600', 16), int('1f650', 16)))
-    for char in msg:
-        if ord(char) in emoticons:
-            count += 1
-    return count
+# def count_emoji(msg):
+#     count = 0
+#
+#     emoticons = set(range(int('1f600', 16), int('1f650', 16)))
+#     for char in msg:
+#         if ord(char) in emoticons:
+#             count += 1
+#     return count
 
 
 def time_response(df):
