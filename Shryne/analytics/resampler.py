@@ -32,6 +32,9 @@ def _average_time(x):
 
 
 def sentiment_cleaning(df):
+    """Where neutral = 1 or if +ve, -ve
+    and neutral = 0 then replace with nan"""
+
     mask_neutral = df["neutral"] == 1.0
     mask_zeroes = df[['positive', 'negative', 'neutral']].sum(axis=1) == 0
 
