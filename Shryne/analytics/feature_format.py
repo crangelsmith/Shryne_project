@@ -122,7 +122,3 @@ def targetFeatureSplit( data ):
         features.append( item[1:] )
 
     return target, features
-
-
-
-
