@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link href="https://www.highcharts.com/highslide/highslide.css" rel="stylesheet" />
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
+        <script type="text/javascript" src="https://code.highcharts.com/highcharts-more.js"></script>
+        <script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
+    </head>
+    <body style="margin:0;padding:0">
+                <div id="container" style="">Loading....</div>
+
+
+    <script>
+        $(function(){
+
+
+ 
+
+
+
+
+            Highcharts.setOptions({"lang": {}, "global": {}});
+            var option = {"loading": {}, "subtitle": {}, "xAxis": {"type": "datetime", "crosshair": true}, "title": {"text": "Shryne User/Contact Statistics at Resolution: M"}, "series": {}, "labels": {}, "yAxis": [{"title": {"text": "Number of Messages", "style": {"color": Highcharts.getOptions().colors[1]}}, "labels": {"style": {"color": Highcharts.getOptions().colors[1]}, "format": "{value}"}, "gridLineWidth": 0}, {"title": {"text": "Reciprocity", "style": {"color": Highcharts.getOptions().colors[1]}}, "labels": {"style": {"color": Highcharts.getOptions().colors[1]}, "format": "{value}"}, "opposite": true, "gridLineWidth": 0}, {"title": {"text": "Number of Words", "style": {"color": Highcharts.getOptions().colors[1]}}, "labels": {"style": {"color": Highcharts.getOptions().colors[1]}, "format": "{value}"}, "opposite": true, "gridLineWidth": 0}, {"title": {"enabled": false}, "reversed": true, "labels": {"enabled": false}, "opposite": true, "gridLineWidth": 0}], "chart": {"zoomType": "x", "renderTo": "container"}, "tooltip": {"shared": true}, "plotOptions": {}, "credits": {"enabled": false}, "colors": {}, "pane": {}, "exporting": {}, "drilldown": {}, "navigation": {}, "legend": {"verticalAlign": "top", "backgroundColor": (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF', "y": 55, "x": 80, "align": "left", "floating": true, "layout": "vertical"}};
+
+
+            var data = [{"name": "sentiment", "yAxis": 2, "color": "yellow", "type": "column", "data": [[1409443200000, -0.19009999999999999], [1412035200000, -0.52669999999999995], [1414713600000, NaN], [1417305600000, NaN], [1419984000000, NaN], [1422662400000, 0.97809999999999997], [1425081600000, 0.77969999999999995], [1427760000000, 0.2994666666666666], [1430352000000, 0.45894444444444449], [1433030400000, 0.4199], [1435622400000, 0.35720000000000002], [1438300800000, 0.16327499999999998], [1440979200000, NaN]]}, {"name": "Message Count", "yAxis": 0, "color": "rgba(0,191,255, 1)", "type": "spline", "data": [[1409443200000, 0.011627906976744186], [1412035200000, 0.023255813953488372], [1414713600000, 0.16279069767441862], [1417305600000, 0.0], [1419984000000, 0.023255813953488372], [1422662400000, 0.058139534883720929], [1425081600000, 0.023255813953488372], [1427760000000, 0.12790697674418605], [1430352000000, 0.33720930232558138], [1433030400000, 0.011627906976744186], [1435622400000, 0.046511627906976744], [1438300800000, 0.093023255813953487], [1440979200000, 0.081395348837209308]]}, {"name": "Response time", "yAxis": 2, "color": "rgba(186,85,211, 1)", "type": "spline", "data": [[1409443200000, NaN], [1412035200000, NaN], [1414713600000, NaN], [1417305600000, NaN], [1419984000000, NaN], [1422662400000, 0.0], [1425081600000, 0.0], [1427760000000, NaN], [1430352000000, 0.0], [1433030400000, NaN], [1435622400000, 0.0], [1438300800000, 0.0], [1440979200000, 0.0]]}, {"name": "Message Count reciprocity", "yAxis": 1, "color": "red", "type": "spline", "data": [[1409443200000, NaN], [1412035200000, NaN], [1414713600000, NaN], [1417305600000, NaN], [1419984000000, NaN], [1422662400000, 0.0], [1425081600000, 1.0], [1427760000000, 0.0], [1430352000000, 0.035714285714285712], [1433030400000, 0.0], [1435622400000, 0.33333333333333331], [1438300800000, 0.59999999999999998], [1440979200000, NaN]]}, {"name": "response_time_reciprocity", "yAxis": 1, "color": "black", "type": "spline", "data": [[1409443200000, NaN], [1412035200000, NaN], [1414713600000, NaN], [1417305600000, NaN], [1419984000000, NaN], [1422662400000, NaN], [1425081600000, 1.0], [1427760000000, NaN], [1430352000000, NaN], [1433030400000, NaN], [1435622400000, NaN], [1438300800000, 1.0], [1440979200000, NaN]]}];
+            option.series = data;
+
+ 
+
+            var chart = new Highcharts.Chart(option);
+
+
+
+
+
+ 
+
+
+        
+    });
+        </script>
+
+    </body>
+</html>

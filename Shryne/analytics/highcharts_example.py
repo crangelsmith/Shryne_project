@@ -7,8 +7,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, '../cleaning')
+import cPickle as pickle
 import clean_df
-import pickle
 
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
 
@@ -113,26 +113,24 @@ def highchart_analyser(df, period='M', name=""):
 
     time_vs_counts = list(zip(x, df["message_count"]))
     time_vs_pos_sent = list(zip(x, df["compound"]))
-    time_vs_word_length = list(zip(x, df["word_count"]))
+    time_vs_word_length = list(zip(x, df["response_time"]))
 
-    time_vs_sentiment_reciprocity = list(zip(x, df["sentiment_reciprocity"]))
     time_vs_message_reciprocity = list(zip(x, df["message_count_reciprocity"]))
-    time_vs_word_length_reciprocity = list(zip(x, df["word_count_reciprocity"]))
+    time_vs_word_length_reciprocity = list(zip(x, df["response_time_reciprocity"]))
 
 
     charts.set_dict_options(options)
+    charts.add_data_set(time_vs_pos_sent, 'column', name="sentiment", yAxis=2, stack='sentiment', color='yellow')
+
     charts.add_data_set(time_vs_counts, series_type='spline', yAxis=0, name="Message Count", color='rgba(0,191,255, 1)')
 
-    charts.add_data_set(time_vs_sentiment_reciprocity, series_type='column', yAxis=1, name="sentiment reciprocity",
-                        color='rgba(178,85,211, 1)')
-    charts.add_data_set(time_vs_word_length, series_type='spline', yAxis=2, name="Word Count", color='rgba(186,85,211, 1)')
+    charts.add_data_set(time_vs_word_length, series_type='spline', yAxis=2, name="Response time", color='rgba(186,85,211, 1)')
 
     charts.add_data_set(time_vs_message_reciprocity, series_type='spline', yAxis=1, name="Message Count reciprocity",
                         color='red')
-    charts.add_data_set(time_vs_word_length_reciprocity, series_type='spline', yAxis=1, name="Word Count reciprocity",
+    charts.add_data_set(time_vs_word_length_reciprocity, series_type='spline', yAxis=1, name="response_time_reciprocity",
                         color='black')
 
-    charts.add_data_set(time_vs_pos_sent, 'column', name="Positive", yAxis=2, stack='sentiment', color='yellow')
 
 
 
@@ -142,7 +140,7 @@ def highchart_analyser(df, period='M', name=""):
 def main():
 
     df = pickle.load(open("../data/result", "rb"))
-    # df = pandas.read_pickle('../data/result')
+    #df = pandas.read_pickle('../data/result_19August')
 
     # setup pandas dataframe. It's not necessary, so replace this with what ever
     #  data source you have.
@@ -165,6 +163,9 @@ def main():
 
 
     list_df =[]
+    list_df_high =[]
+    list_df_low =[]
+
     unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
         sub_df = df[df['contact_id'] == unique_contact]
@@ -174,17 +175,36 @@ def main():
         user_id = str(sub_df['user_id'][0])
         contact_id = str(sub_df['contact_id'][0])
 
+        high =feature_creation.identify_high_low_quantile(new_df,"message_count",True)
+        low =feature_creation.identify_high_low_quantile(new_df,"message_count",False)
+
         # plot in highchart
+<<<<<<< HEAD
         highchart_analyser(new_df,"M",user_id+contact_id)
         print("appending dataframe for relationship "+user_id+contact_id)
+=======
+        highchart_analyser(new_df,"D",user_id+"_"+contact_id)
+        print("appending dataframe for relationship "+user_id+"_"+contact_id)
+>>>>>>> 42957714c31c3340d64e1086a575e050a5ec8c6b
         list_df.append(new_df)
+        list_df_high.append(high)
+        list_df_low.append(low)
 
+<<<<<<< HEAD
     #result = pandas.concat(list_df)
 
     #result.to_pickle("../data/relationship_features_forclustering.pandas_df")
 
 
+=======
+    result = pandas.concat(list_df)
+    result_high = pandas.concat(list_df_high)
+    result_low = pandas.concat(list_df_low)
 
-        
+    result.to_pickle("../data/relationship_features_forclustering_daily.pandas_df")
+    result_high.to_pickle("../data/relationship_features_high")
+    result_low.to_pickle("../data/relationship_features_low")
+>>>>>>> 42957714c31c3340d64e1086a575e050a5ec8c6b
+
 if __name__ == '__main__':
     main()

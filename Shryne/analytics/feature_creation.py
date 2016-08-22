@@ -4,45 +4,45 @@ from collections import Counter
 def create_features(df, pet_names, emoji_list):
 
     word_count = []
-    You_count = []
-    We_count = []
-    Us_count = []
-    I_count = []
-    pet_count = []
-    emoji_count = []
+    # You_count = []
+    # We_count = []
+    # Us_count = []
+    # I_count = []
+    # pet_count = []
+    # emoji_count = []
 
     for x in df['message']:
         x = str(x)
         split_string = x.split()
 
         word_count.append(len(split_string))
-        I_count.append(x.lower().count(' i '))
-        You_count.append(x.lower().count(" you "))
-        We_count.append(x.lower().count(" we "))
-        Us_count.append(x.lower().count(" us "))
-
-        # now do the pet name analysis on the string
-        total = 0
-        counts = dict(Counter(split_string).most_common())
-        intersection = filter(set(counts.keys()).__contains__, pet_names)
-        for item in intersection:
-            total += counts[item]
-        pet_count.append(total)
-
-        total = 0
-        counts = dict(Counter(split_string).most_common())
-        intersection = filter(set(counts.keys()).__contains__, emoji_list)
-        for item in intersection:
-            total += counts[item]
-        emoji_count.append(total)
+        # I_count.append(x.lower().count(' i '))
+        # You_count.append(x.lower().count(" you "))
+        # We_count.append(x.lower().count(" we "))
+        # Us_count.append(x.lower().count(" us "))
+        #
+        # # now do the pet name analysis on the string
+        # total = 0
+        # counts = dict(Counter(split_string).most_common())
+        # intersection = filter(set(counts.keys()).__contains__, pet_names)
+        # for item in intersection:
+        #     total += counts[item]
+        # pet_count.append(total)
+        #
+        # total = 0
+        # counts = dict(Counter(split_string).most_common())
+        # intersection = filter(set(counts.keys()).__contains__, emoji_list)
+        # for item in intersection:
+        #     total += counts[item]
+        # emoji_count.append(total)
 
     df['word_count'] = word_count
-    df['I_count'] = I_count
-    df['You_count'] = You_count
-    df['We_count'] = We_count
-    df['Us_count'] = Us_count
-    df['Pet_count'] = pet_count
-    df['emoji_count'] = emoji_count
+    # df['I_count'] = I_count
+    # df['You_count'] = You_count
+    # df['We_count'] = We_count
+    # df['Us_count'] = Us_count
+    # df['Pet_count'] = pet_count
+    # df['emoji_count'] = emoji_count
 
     return df
 
@@ -106,3 +106,16 @@ def time_response(df):
                                   inplace=True)
 
     return df
+
+
+def identify_high_low_quantile(df,column,large=True):
+
+    percentage = df.size/10;
+
+    if large == True:
+        new = df.nlargest(percentage,column)
+    else:
+        new = df.nsmallest(percentage,column)
+
+    return new
+
