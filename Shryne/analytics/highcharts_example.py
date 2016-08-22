@@ -169,10 +169,13 @@ def main():
     for unique_contact in unique_contacts:
         sub_df = df[df['contact_id'] == unique_contact]
 
-        new_df = resampler.resample_dataframe(sub_df, "M")
+        new_df = resampler.resample_dataframe(sub_df, "D")
 
         user_id = str(sub_df['user_id'][0])
         contact_id = str(sub_df['contact_id'][0])
+
+        new_df['user_id'] = user_id
+        new_df['contact_id'] = contact_id
 
         # plot in highchart
         #highchart_analyser(new_df,"M",user_id+contact_id)
@@ -182,6 +185,7 @@ def main():
     result = pandas.concat(list_df)
 
     result.to_pickle("../data/relationship_features_forclustering.pandas_df")
+
 
 
 
