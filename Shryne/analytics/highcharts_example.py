@@ -179,24 +179,17 @@ def main():
         low =feature_creation.identify_high_low_quantile(new_df,"message_count",False)
 
         # plot in highchart
-<<<<<<< HEAD
         highchart_analyser(new_df,"M",user_id+contact_id)
         print("appending dataframe for relationship "+user_id+contact_id)
-=======
-        highchart_analyser(new_df,"D",user_id+"_"+contact_id)
-        print("appending dataframe for relationship "+user_id+"_"+contact_id)
->>>>>>> 42957714c31c3340d64e1086a575e050a5ec8c6b
+
         list_df.append(new_df)
         list_df_high.append(high)
         list_df_low.append(low)
 
-<<<<<<< HEAD
     #result = pandas.concat(list_df)
 
     #result.to_pickle("../data/relationship_features_forclustering.pandas_df")
 
-
-=======
     result = pandas.concat(list_df)
     result_high = pandas.concat(list_df_high)
     result_low = pandas.concat(list_df_low)
@@ -204,7 +197,6 @@ def main():
     result.to_pickle("../data/relationship_features_forclustering_daily.pandas_df")
     result_high.to_pickle("../data/relationship_features_high")
     result_low.to_pickle("../data/relationship_features_low")
->>>>>>> 42957714c31c3340d64e1086a575e050a5ec8c6b
 
 if __name__ == '__main__':
     main()
