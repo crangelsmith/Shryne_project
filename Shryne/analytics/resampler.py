@@ -66,6 +66,8 @@ def find_ratio(df, variable):
     denominator_array[denominator_array == 0] = 1
     ratio_array = numerator_array / denominator_array
 
+    #TODO: IF DENOMINATOR IS ==0 WE SHOULD SET RATIO TO 0.
+
     return ratio_array
 
 
