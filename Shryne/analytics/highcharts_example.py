@@ -7,7 +7,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, '../cleaning')
-import cPickle as pickle
+import clean_df
+import pickle
 
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
 
@@ -148,9 +149,9 @@ def main():
 
     df = clean_df.drop_one_sided(df)
     
-    #pet_names = pandas.read_csv('pet_names_short.txt', delimiter='\n')
-    #emoji_list = pickle.load(open("emoji_list.p", "rb"))
-    #df = feature_creation.create_features(df, pet_names, emoji_list)
+    pet_names = pandas.read_csv('pet_names_short.txt', delimiter='\n')
+    emoji_list = pickle.load(open("emoji_list.p", "rb"))
+    df = feature_creation.create_features(df, pet_names, emoji_list)
     df = feature_creation.time_response(df)
 
     # df.dropna(inplace=True)
@@ -160,7 +161,11 @@ def main():
     # g = sns.distplot(df['response_time'], kde=False)
     # plt.show()
 
+
     list_df =[]
+    list_df_high =[]
+    list_df_low =[]
+
     unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
         sub_df = df[df['contact_id'] == unique_contact]
@@ -170,21 +175,23 @@ def main():
         user_id = str(sub_df['user_id'][0])
         contact_id = str(sub_df['contact_id'][0])
 
-        new_df['user_id'] = user_id
-        new_df['contact_id'] = contact_id
+        high =feature_creation.identify_high_low_quantile(new_df,"message_count",True)
+        low =feature_creation.identify_high_low_quantile(new_df,"message_count",False)
 
         # plot in highchart
         highchart_analyser(new_df,"M",user_id+"_"+contact_id)
         print("appending dataframe for relationship "+user_id+"_"+contact_id)
         list_df.append(new_df)
+        list_df_high.append(high)
+        list_df_low.append(low)
 
     result = pandas.concat(list_df)
+    result_high = pandas.concat(list_df_high)
+    result_low = pandas.concat(list_df_low)
 
     result.to_pickle("../data/relationship_features_forclustering.pandas_df")
-
-
-
-
+    result_high.to_pickle("../data/relationship_features_high")
+    result_low.to_pickle("../data/relationship_features_low")
 
 if __name__ == '__main__':
     main()

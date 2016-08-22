@@ -106,3 +106,16 @@ def time_response(df):
                                   inplace=True)
 
     return df
+
+
+def identify_high_low_quantile(df,column,large=True):
+
+    percentage = df.size/10;
+
+    if large == True:
+        new = df.nlargest(percentage,column)
+    else:
+        new = df.nlowest(percentage,column)
+
+    return new
+
