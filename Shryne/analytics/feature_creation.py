@@ -115,7 +115,7 @@ def identify_high_low_quantile(df,column,large=True):
     if large == True:
         new = df.nlargest(percentage,column)
     else:
-        new = df.nlowest(percentage,column)
+        new = df.nsmallest(percentage,column)
 
     return new
 
