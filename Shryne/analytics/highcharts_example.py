@@ -175,7 +175,7 @@ def main():
         user_id = str(sub_df['user_id'][0])
         contact_id = str(sub_df['contact_id'][0])
 
-        percentage = new_df.size / 10;
+        percentage = int(new_df.shape[0] /40.0);
 
         high =new_df.sort("message_count", ascending=False)[0:percentage]
         low =new_df.sort("message_count", ascending=True)[0:percentage]
