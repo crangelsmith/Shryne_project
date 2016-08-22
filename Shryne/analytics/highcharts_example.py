@@ -192,7 +192,9 @@ def main():
 
 
         # plot in highchart
-       # highchart_analyser(new_df,"D",user_id+"_"+contact_id)
+        new_df.to_csv("../data/user_df/data_frame_"+user_id+"_"+contact_id)
+
+        #highchart_analyser(new_df,"D",user_id+"_"+contact_id)
         print("appending dataframe for relationship "+user_id+"_"+contact_id)
         list_df.append(new_df)
         list_df_high.append(high)
