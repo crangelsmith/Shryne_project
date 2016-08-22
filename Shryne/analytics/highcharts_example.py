@@ -7,8 +7,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, '../cleaning')
-import clean_df
-import pickle
+import cPickle as pickle
 
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
 
@@ -151,9 +150,9 @@ def main():
 
     df = clean_df.drop_one_sided(df)
     
-    pet_names = pandas.read_csv('pet_names_short.txt', delimiter='\n')
-    emoji_list = pickle.load(open("emoji_list.p", "rb"))
-    df = feature_creation.create_features(df, pet_names, emoji_list)
+    #pet_names = pandas.read_csv('pet_names_short.txt', delimiter='\n')
+    #emoji_list = pickle.load(open("emoji_list.p", "rb"))
+    #df = feature_creation.create_features(df, pet_names, emoji_list)
     df = feature_creation.time_response(df)
 
     # df.dropna(inplace=True)
@@ -163,13 +162,12 @@ def main():
     # g = sns.distplot(df['response_time'], kde=False)
     # plt.show()
 
-
     list_df =[]
     unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
         sub_df = df[df['contact_id'] == unique_contact]
 
-        new_df = resampler.resample_dataframe(sub_df, "D")
+        new_df = resampler.resample_dataframe(sub_df, "M")
 
         user_id = str(sub_df['user_id'][0])
         contact_id = str(sub_df['contact_id'][0])
