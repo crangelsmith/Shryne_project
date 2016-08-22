@@ -134,7 +134,7 @@ def highchart_analyser(df, period='M', name=""):
 
 
 
-    charts.save_file('..plot/_time_series_'+period+str(name))
+    charts.save_file('plot/_time_series_'+period+str(name))
 
 
 def main():
