@@ -112,26 +112,24 @@ def highchart_analyser(df, period='M', name=""):
 
     time_vs_counts = list(zip(x, df["message_count"]))
     time_vs_pos_sent = list(zip(x, df["compound"]))
-    time_vs_word_length = list(zip(x, df["word_count"]))
+    time_vs_word_length = list(zip(x, df["response_time"]))
 
-    time_vs_sentiment_reciprocity = list(zip(x, df["sentiment_reciprocity"]))
     time_vs_message_reciprocity = list(zip(x, df["message_count_reciprocity"]))
-    time_vs_word_length_reciprocity = list(zip(x, df["word_count_reciprocity"]))
+    time_vs_word_length_reciprocity = list(zip(x, df["response_time_reciprocity"]))
 
 
     charts.set_dict_options(options)
+    charts.add_data_set(time_vs_pos_sent, 'column', name="sentiment", yAxis=2, stack='sentiment', color='yellow')
+
     charts.add_data_set(time_vs_counts, series_type='spline', yAxis=0, name="Message Count", color='rgba(0,191,255, 1)')
 
-    charts.add_data_set(time_vs_sentiment_reciprocity, series_type='column', yAxis=1, name="sentiment reciprocity",
-                        color='rgba(178,85,211, 1)')
-    charts.add_data_set(time_vs_word_length, series_type='spline', yAxis=2, name="Word Count", color='rgba(186,85,211, 1)')
+    charts.add_data_set(time_vs_word_length, series_type='spline', yAxis=2, name="Response time", color='rgba(186,85,211, 1)')
 
     charts.add_data_set(time_vs_message_reciprocity, series_type='spline', yAxis=1, name="Message Count reciprocity",
                         color='red')
-    charts.add_data_set(time_vs_word_length_reciprocity, series_type='spline', yAxis=1, name="Word Count reciprocity",
+    charts.add_data_set(time_vs_word_length_reciprocity, series_type='spline', yAxis=1, name="response_time_reciprocity",
                         color='black')
 
-    charts.add_data_set(time_vs_pos_sent, 'column', name="Positive", yAxis=2, stack='sentiment', color='yellow')
 
 
 
@@ -141,7 +139,7 @@ def highchart_analyser(df, period='M', name=""):
 def main():
 
     df = pickle.load(open("../data/result", "rb"))
-    # df = pandas.read_pickle('../data/result')
+    #df = pandas.read_pickle('../data/result_19August')
 
     # setup pandas dataframe. It's not necessary, so replace this with what ever
     #  data source you have.
@@ -176,8 +174,8 @@ def main():
         new_df['contact_id'] = contact_id
 
         # plot in highchart
-        #highchart_analyser(new_df,"M",user_id+contact_id)
-        print("appending dataframe for relationship "+user_id+contact_id)
+        highchart_analyser(new_df,"M",user_id+"_"+contact_id)
+        print("appending dataframe for relationship "+user_id+"_"+contact_id)
         list_df.append(new_df)
 
     result = pandas.concat(list_df)
@@ -187,6 +185,6 @@ def main():
 
 
 
-        
+
 if __name__ == '__main__':
     main()

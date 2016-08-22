@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link href="https://www.highcharts.com/highslide/highslide.css" rel="stylesheet" />
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script type="text/javascript" src="https://code.highcharts.com/highcharts.js"></script>
+        <script type="text/javascript" src="https://code.highcharts.com/highcharts-more.js"></script>
+        <script type="text/javascript" src="https://code.highcharts.com/modules/exporting.js"></script>
+    </head>
+    <body style="margin:0;padding:0">
+                <div id="container" style="">Loading....</div>
+
+
+    <script>
+        $(function(){
+
+
+ 
+
+
+
+
+            Highcharts.setOptions({"lang": {}, "global": {}});
+            var option = {"loading": {}, "subtitle": {}, "xAxis": {"type": "datetime", "crosshair": true}, "title": {"text": "Shryne User/Contact Statistics at Resolution: M"}, "series": {}, "labels": {}, "yAxis": [{"title": {"text": "Number of Messages", "style": {"color": Highcharts.getOptions().colors[1]}}, "labels": {"style": {"color": Highcharts.getOptions().colors[1]}, "format": "{value}"}, "gridLineWidth": 0}, {"title": {"text": "Reciprocity", "style": {"color": Highcharts.getOptions().colors[1]}}, "labels": {"style": {"color": Highcharts.getOptions().colors[1]}, "format": "{value}"}, "opposite": true, "gridLineWidth": 0}, {"title": {"text": "Number of Words", "style": {"color": Highcharts.getOptions().colors[1]}}, "labels": {"style": {"color": Highcharts.getOptions().colors[1]}, "format": "{value}"}, "opposite": true, "gridLineWidth": 0}, {"title": {"enabled": false}, "reversed": true, "labels": {"enabled": false}, "opposite": true, "gridLineWidth": 0}], "chart": {"zoomType": "x", "renderTo": "container"}, "tooltip": {"shared": true}, "plotOptions": {}, "credits": {"enabled": false}, "colors": {}, "pane": {}, "exporting": {}, "drilldown": {}, "navigation": {}, "legend": {"verticalAlign": "top", "backgroundColor": (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF', "y": 55, "x": 80, "align": "left", "floating": true, "layout": "vertical"}};
+
+
+            var data = [{"name": "Message Count", "yAxis": 0, "color": "rgba(0,191,255, 1)", "type": "spline", "data": [[1419984000000, 0.08478964401294499], [1422662400000, 0.26472491909385115], [1425081600000, 0.16194856072219382], [1427760000000, 0.090478623743825579], [1430352000000, 0.11248509623573497], [1433030400000, 0.086356668369954009], [1435622400000, 0.081008346107988419], [1438300800000, 0.11354113438937148], [1440979200000, 0.004667007324135582]]}, {"name": "sentiment reciprocity", "yAxis": 1, "color": "rgba(178,85,211, 1)", "type": "column", "data": [[1419984000000, 0.20000000000000001], [1422662400000, 0.59999999999999998], [1425081600000, 0.0], [1427760000000, 0.0], [1430352000000, 0.0], [1433030400000, 0.20000000000000001], [1435622400000, 0.0], [1438300800000, 0.0], [1440979200000, 0.0]]}, {"name": "Word Count", "yAxis": 2, "color": "rgba(186,85,211, 1)", "type": "spline", "data": [[1419984000000, 0.088440765368435342], [1422662400000, 0.25298955082100694], [1425081600000, 0.1555814900257837], [1427760000000, 0.089054145745691413], [1430352000000, 0.10756954810693445], [1433030400000, 0.096132446736327856], [1435622400000, 0.080651377391776358], [1438300800000, 0.12461935133668069], [1440979200000, 0.0049613244673632787]]}, {"name": "Message Count reciprocity", "yAxis": 1, "color": "red", "type": "spline", "data": [[1419984000000, 0.69665985003408315], [1422662400000, 0.85731357552581267], [1425081600000, 0.87165354330708666], [1427760000000, 0.92185238784370482], [1430352000000, 0.8718820861678005], [1433030400000, 0.81720430107526887], [1435622400000, 0.76278724981467749], [1438300800000, 0.76629570747217801], [1440979200000, 0.69135802469135799]]}, {"name": "Word Count reciprocity", "yAxis": 1, "color": "black", "type": "spline", "data": [[1419984000000, 0.79398810834617928], [1422662400000, 0.96845039489800233], [1425081600000, 0.8967639467937264], [1427760000000, 0.73443281530817206], [1430352000000, 0.87803260045489007], [1433030400000, 0.88464403533042457], [1435622400000, 0.7646080760095012], [1438300800000, 0.72694448623439145], [1440979200000, 0.76447876447876451]]}, {"name": "Positive", "yAxis": 2, "color": "yellow", "type": "column", "data": [[1419984000000, 0.15400872727272727], [1422662400000, 0.16207096933728982], [1425081600000, 0.13245171416769932], [1427760000000, 0.09716427536231885], [1430352000000, 0.088503575685339703], [1433030400000, 0.073394135567402902], [1435622400000, 0.099796850393700801], [1438300800000, 0.10935912240184757], [1440979200000, 0.13091875]]}];
+            option.series = data;
+
+ 
+
+            var chart = new Highcharts.Chart(option);
+
+
+
+
+
+ 
+
+
+        
+    });
+        </script>
+
+    </body>
+</html>
