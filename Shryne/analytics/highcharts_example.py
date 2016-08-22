@@ -151,7 +151,7 @@ def main():
     
     pet_names = pandas.read_csv('pet_names_short.txt', delimiter='\n')
     emoji_list = pickle.load(open("emoji_list.p", "rb"))
-    df = feature_creation.create_features(df, pet_names, emoji_list)
+    df = feature_creation.create_features(df)
     df = feature_creation.time_response(df)
 
     # df.dropna(inplace=True)
@@ -175,12 +175,14 @@ def main():
         user_id = str(sub_df['user_id'][0])
         contact_id = str(sub_df['contact_id'][0])
 
-        high =feature_creation.identify_high_low_quantile(new_df,"message_count",True)
-        low =feature_creation.identify_high_low_quantile(new_df,"message_count",False)
+        percentage = new_df.size / 10;
+
+        high =new_df.sort("message_count", ascending=False)[0:percentage]
+        low =new_df.sort("message_count", ascending=True)[0:percentage]
 
         # plot in highchart
+
         highchart_analyser(new_df,"M",user_id+contact_id)
-        print("appending dataframe for relationship "+user_id+contact_id)
 
         list_df.append(new_df)
         list_df_high.append(high)
