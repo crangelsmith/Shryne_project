@@ -98,6 +98,8 @@ def resample_dataframe(df, period='D'):
     output_df["message_count_user"] = df[~df["to_from"]][time_field].value_counts().resample(period, how=_sum)
     output_df["message_count_contact"] = df[df["to_from"]][time_field].value_counts().resample(period, how=_sum)
 
+    output_df['sent_at'] = df[time_field]
+
     df.set_index(time_field, inplace=True, drop=False)
 
     # get the total word counts and for the user and contact
