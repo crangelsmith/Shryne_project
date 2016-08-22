@@ -7,8 +7,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, '../cleaning')
+import cPickle as pickle
 import clean_df
-import pickle
 
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
 
@@ -179,7 +179,7 @@ def main():
         low =feature_creation.identify_high_low_quantile(new_df,"message_count",False)
 
         # plot in highchart
-        highchart_analyser(new_df,"M",user_id+"_"+contact_id)
+        highchart_analyser(new_df,"D",user_id+"_"+contact_id)
         print("appending dataframe for relationship "+user_id+"_"+contact_id)
         list_df.append(new_df)
         list_df_high.append(high)
@@ -189,7 +189,7 @@ def main():
     result_high = pandas.concat(list_df_high)
     result_low = pandas.concat(list_df_low)
 
-    result.to_pickle("../data/relationship_features_forclustering.pandas_df")
+    result.to_pickle("../data/relationship_features_forclustering_daily.pandas_df")
     result_high.to_pickle("../data/relationship_features_high")
     result_low.to_pickle("../data/relationship_features_low")
 
