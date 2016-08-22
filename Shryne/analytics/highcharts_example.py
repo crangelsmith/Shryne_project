@@ -136,7 +136,7 @@ def highchart_analyser(df, period='M', name=""):
 
 
 
-    charts.save_file('plot/_time_series_'+period+str(name))
+    charts.save_file('..plot/_time_series_'+period+str(name))
 
 
 def main():
@@ -175,13 +175,13 @@ def main():
         contact_id = str(sub_df['contact_id'][0])
 
         # plot in highchart
-        #highchart_analyser(new_df,"M",user_id+contact_id)
+        highchart_analyser(new_df,"M",user_id+contact_id)
         print("appending dataframe for relationship "+user_id+contact_id)
         list_df.append(new_df)
 
-    result = pandas.concat(list_df)
+    #result = pandas.concat(list_df)
 
-    result.to_pickle("../data/relationship_features_forclustering.pandas_df")
+    #result.to_pickle("../data/relationship_features_forclustering.pandas_df")
 
 
 
