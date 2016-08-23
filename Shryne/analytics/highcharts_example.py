@@ -179,12 +179,15 @@ def main():
 
         new_df = new_df[new_df["message_count"]!=0.0]
 
-        percentage = int(new_df.shape[0]*0.30);
+        percentage_30 = int(new_df.shape[0]*0.30);
 
-        high =new_df.sort_values("message_count", ascending=False)[0:percentage]
-        low =new_df.sort_values("message_count", ascending=True)[0:percentage]
+        percentage_50 = int(new_df.shape[0]*0.50);
 
-        percentage_reciprocity = int(high.shape[0]*0.50)
+
+        high =new_df.sort_values("message_count", ascending=False)[0:percentage_50]
+        low =new_df.sort_values("message_count", ascending=True)[0:percentage_30]
+
+        percentage_reciprocity = int(high.shape[0]*0.40)
 
         high_reciprocity = high.sort_values("message_count_reciprocity", ascending=False)[0:percentage_reciprocity]
         low_reciprocity = low.sort_values("message_count_reciprocity", ascending=False)[0:percentage_reciprocity]
