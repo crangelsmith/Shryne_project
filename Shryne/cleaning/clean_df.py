@@ -43,12 +43,58 @@ def drop_one_sided(df):
 
     return df
 
+
+def remove_empty_messages(df):
+    """
+    :param df - a pandas dataframe with a column containing a string named
+    message and columns of metadata
+    :return df - a pandas dataframe with no rows containing messages with
+    the type 'none' or 'nan':
+    """
+    df = df[df['message'].notnull()]
+    df = df.reset_index(drop=True)
+    return df
+
+
+def remove_signatures_and_after(df):
+    """
+    # Get rid of anything after these strings.
+    :param df - a pandas dataframe with a column containing a string named
+    message and columns of metadata:
+    :return the same df but with all messages cleaned of email signatures
+    that indicate the start of forwarded messages:
+    """
+    sep = ['\n--\n', 'Begin forwarded message', 'Forwarded message',
+           '------', 'Sent from my iPhone', 'Sent from my iPad',
+           'Sent from my Windows Phone', 'Sent from my Samsung']
+
+    for s in sep:
+        df['message'] = df['message'].apply(lambda x: x.split(s, 1)[0])
+
+    df = remove_excess_whitespace(df)
+
+    return df
+
+
+def remove_excess_whitespace(df):
+    """
+    :param df - a dataframe with a series named 'message' containing strings:
+    :return: df - as above but the strings have leading, trailing and excess
+    whitespace removed
+    """
+    df['message'] = df['message'].str.replace('[\s]+', ' ', case=False,
+                                              flags=re.MULTILINE)
+    df['message'] = df['message'].str.strip()
+
+    return df
+
+
 def clean_message(df):
     """Takes a dataframe which wants to clean
     a column labelled 'message'"""
 
     # First remove any message columns with None or Nan as
-    df = df[df['message'].notnull()]
+    ## df = df[df['message'].notnull()]
 
     # Get rid of anything after these strings.
     sep = ['\n--\n', 'Begin forwarded message', 'Forwarded message', '----------------------------------------',

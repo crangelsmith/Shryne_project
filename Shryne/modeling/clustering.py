@@ -8,10 +8,13 @@ import scipy.stats as stats
 
 
 df = pd.read_pickle('../data/relationship_features_forclustering.pandas_df')
-
-df.dropna(inplace = True)
-
+print df.columns()
 df_new = df[['message_count', 'word_count','compound','response_time','message_count_reciprocity']]
+
+df_new.dropna(inplace = True)
+
+
+
 
 pca = RandomizedPCA(n_components=2).fit(df_new) # pca is an instance of class randomizedPCA with data['data']
 
