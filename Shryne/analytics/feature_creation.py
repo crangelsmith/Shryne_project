@@ -72,18 +72,3 @@ def time_response(df):
     df['response_time'].where(~zero_mask, np.nan, inplace=True)
 
     return df
-
-
-def identify_high_low_quantile(df,column,large=True):
-
-
-    percentage = df.size/10;
-
-
-    if large == True:
-        new = df.sort(column, ascending=False)
-    else:
-        new = df.sort(column, ascending=True)
-
-    return new[:10]
-
