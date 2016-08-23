@@ -1,5 +1,5 @@
 import re
-import pandas as pd
+import numpy as np
 
 emoji_dictionary = {'\xe2\x9d\xa4\xef\xb8\x8f': u'<3',
  '\xf0\x9f\x91\xa8': u':3',
@@ -42,6 +42,7 @@ def drop_one_sided(df):
     df = group.filter(lambda x: len(x['to_from'].unique()) == 2)
 
     return df
+
 
 def clean_message(df):
     """Takes a dataframe which wants to clean
