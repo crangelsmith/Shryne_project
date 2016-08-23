@@ -139,8 +139,8 @@ def highchart_analyser(df, period='M', name=""):
 
 def main():
 
-    df = pickle.load(open("../data/result", "rb"))
-    #df = pandas.read_pickle('../data/result_19August')
+    #df = pandas.read_csv("../data/result_csv_no_message.csv")
+    df = pandas.read_pickle('../data/result_19August')
 
     # setup pandas dataframe. It's not necessary, so replace this with what ever
     #  data source you have.
@@ -152,9 +152,15 @@ def main():
 
     df = clean_df.drop_one_sided(df)
     
-    pet_names = pandas.read_csv('pet_names_short.txt', delimiter='\n')
-    emoji_list = pickle.load(open("emoji_list.p", "rb"))
+
     df = feature_creation.create_features(df)
+
+    time_field = 'sent_at'
+    if isinstance(df[time_field].tolist()[0], str):
+        df[time_field] = pandas.to_datetime(df[time_field])
+    else:
+        print("nothing to be done")
+
     df = feature_creation.time_response(df)
 
 
@@ -181,10 +187,10 @@ def main():
 
         percentage_30 = int(new_df.shape[0]*0.30);
 
-        percentage_50 = int(new_df.shape[0]*0.50);
+        percentage_40 = int(new_df.shape[0]*0.40);
 
 
-        high =new_df.sort_values("message_count", ascending=False)[0:percentage_50]
+        high =new_df.sort_values("message_count", ascending=False)[0:percentage_40]
         low =new_df.sort_values("message_count", ascending=True)[0:percentage_30]
 
         percentage_reciprocity = int(high.shape[0]*0.40)
