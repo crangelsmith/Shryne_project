@@ -179,37 +179,37 @@ def main():
 
         new_df = new_df[new_df["message_count"]!=0.0]
 
-        percentage = int(new_df.shape[0]*0.30);
+        percentage_30 = int(new_df.shape[0]*0.30);
 
-        high =new_df.sort_values("message_count", ascending=False)[0:percentage]
-        low =new_df.sort_values("message_count", ascending=True)[0:percentage]
+        percentage_50 = int(new_df.shape[0]*0.50);
 
-        percentage_reciprocity = int(high.shape[0]*0.50)
+
+        high =new_df.sort_values("message_count", ascending=False)[0:percentage_50]
+        low =new_df.sort_values("message_count", ascending=True)[0:percentage_30]
+
+        percentage_reciprocity = int(high.shape[0]*0.40)
 
         high_reciprocity = high.sort_values("message_count_reciprocity", ascending=False)[0:percentage_reciprocity]
         low_reciprocity = low.sort_values("message_count_reciprocity", ascending=False)[0:percentage_reciprocity]
 
 
+
         # plot in highchart
+        new_df.to_csv("../data/user_df/data_frame_"+user_id+"_"+contact_id)
 
-        highchart_analyser(new_df,"M",user_id+contact_id)
-
-        #list_df.append(new_df)
+        #highchart_analyser(new_df,"D",user_id+"_"+contact_id)
+        print("appending dataframe for relationship "+user_id+"_"+contact_id)
+        list_df.append(new_df)
         list_df_high.append(high)
         list_df_low.append(low)
         list_df_high_reciprocity.append(high_reciprocity)
         list_df_low_reciprocity.append(low_reciprocity)
 
-    #result = pandas.concat(list_df)
-
-    #result.to_pickle("../data/relationship_features_forclustering.pandas_df")
-
-    #result = pandas.concat(list_df)
+    result = pandas.concat(list_df)
     result_high = pandas.concat(list_df_high)
     result_low = pandas.concat(list_df_low)
     result_high_reciprocity = pandas.concat(list_df_high_reciprocity)
-    result_low_reciprocity = pandas.concat(list_df_low_reciprocity
-    #result.to_pickle("../data/relationship_features_forclustering_daily.pandas_df")
+    result_low_reciprocity = pandas.concat(list_df_low_reciprocity)
 
     result.to_pickle("../data/relationship_features_forclustering_M.pandas_df")
     result_high.to_pickle("../data/relationship_features_high")
