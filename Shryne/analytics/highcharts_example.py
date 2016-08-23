@@ -178,13 +178,17 @@ def main():
         percentage = int(new_df.shape[0] /40.0);
 
         high =new_df.sort("message_count", ascending=False)[0:percentage]
-        low =new_df.sort("message_count", ascending=True)[0:percentage]
+
+        low_all =new_df.sort("message_count", ascending=True)
+
+        #only the get the % from the lowest non zeros
+        low = low_all[low_all["message_count"] > 0][0:percentage]
 
         # plot in highchart
 
         highchart_analyser(new_df,"M",user_id+contact_id)
 
-        list_df.append(new_df)
+        #list_df.append(new_df)
         list_df_high.append(high)
         list_df_low.append(low)
 
@@ -192,11 +196,11 @@ def main():
 
     #result.to_pickle("../data/relationship_features_forclustering.pandas_df")
 
-    result = pandas.concat(list_df)
+    #result = pandas.concat(list_df)
     result_high = pandas.concat(list_df_high)
     result_low = pandas.concat(list_df_low)
 
-    result.to_pickle("../data/relationship_features_forclustering_daily.pandas_df")
+    #result.to_pickle("../data/relationship_features_forclustering_daily.pandas_df")
     result_high.to_pickle("../data/relationship_features_high")
     result_low.to_pickle("../data/relationship_features_low")
 
