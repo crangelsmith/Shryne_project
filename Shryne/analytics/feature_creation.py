@@ -1,60 +1,15 @@
-from collections import Counter
-
+import pandas as pd
+import numpy as np
 
 def create_features(df):
-
     word_count = []
-    # You_count = []
-    # We_count = []
-    # Us_count = []
-    # I_count = []
-    # pet_count = []
-    # emoji_count = []
-
     for x in df['message']:
         x = str(x)
         split_string = x.split()
-
         word_count.append(len(split_string))
-        # I_count.append(x.lower().count(' i '))
-        # You_count.append(x.lower().count(" you "))
-        # We_count.append(x.lower().count(" we "))
-        # Us_count.append(x.lower().count(" us "))
-        #
-        # # now do the pet name analysis on the string
-        # total = 0
-        # counts = dict(Counter(split_string).most_common())
-        # intersection = filter(set(counts.keys()).__contains__, pet_names)
-        # for item in intersection:
-        #     total += counts[item]
-        # pet_count.append(total)
-        #
-        # total = 0
-        # counts = dict(Counter(split_string).most_common())
-        # intersection = filter(set(counts.keys()).__contains__, emoji_list)
-        # for item in intersection:
-        #     total += counts[item]
-        # emoji_count.append(total)
-
     df['word_count'] = word_count
-    # df['I_count'] = I_count
-    # df['You_count'] = You_count
-    # df['We_count'] = We_count
-    # df['Us_count'] = Us_count
-    # df['Pet_count'] = pet_count
-    # df['emoji_count'] = emoji_count
 
     return df
-
-
-# def count_emoji(msg):
-#     count = 0
-#
-#     emoticons = set(range(int('1f600', 16), int('1f650', 16)))
-#     for char in msg:
-#         if ord(char) in emoticons:
-#             count += 1
-#     return count
 
 
 def time_response(df):
@@ -81,6 +36,12 @@ def time_response(df):
     :param df:  input dataframe
     :return:  dataframe with response time between users
     '''
+    time_field = 'sent_at'
+    if isinstance(df[time_field].tolist()[0], str):
+        df[time_field] = pd.to_datetime(df[time_field])
+    else:
+        print("nothing to be done")
+
     df['response_time'] = 0
 
     unique_contacts = df['contact_id'].unique()
@@ -105,19 +66,9 @@ def time_response(df):
                                   (change_times - shifted_change_times).astype('timedelta64[s]').astype('float'),
                                   inplace=True)
 
+    # in case where the response time is zero (i.e. message sent at the same
+    # time which is highly unlikely) set the values to nan
+    zero_mask = df['response_time'].values == 0
+    df['response_time'].where(~zero_mask, np.nan, inplace=True)
+
     return df
-
-
-def identify_high_low_quantile(df,column,large=True):
-
-
-    percentage = df.size/10;
-
-
-    if large == True:
-        new = df.sort(column, ascending=False)
-    else:
-        new = df.sort(column, ascending=True)
-
-    return new[:10]
-
