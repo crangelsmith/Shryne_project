@@ -139,20 +139,32 @@ def highchart_analyser(df, period='M', name=""):
 
 def main():
 
-    df = pickle.load(open("../data/result", "rb"))
-    #df = pandas.read_pickle('../data/result_19August')
+    #df = pandas.read_csv("../data/result_csv_no_message.csv")
+    df = pandas.read_pickle('../data/result_19August')
 
     # setup pandas dataframe. It's not necessary, so replace this with what ever
     #  data source you have.
 
-    df = df[df['relationship'] == "Ex"]
-    #df = df[df['relationship'] != "General"]
-    #df = df[df['relationship'] != "Family"]
-    #df = df[df['relationship'] != "Friend"]
+    df = df[df['relationship'] != "General"]
+    df = df[df['relationship'] != "Family"]
+    df = df[df['relationship'] != "Friend"]
+
 
     df = clean_df.drop_one_sided(df)
+    
+
     df = feature_creation.create_features(df)
+
+    time_field = 'sent_at'
+    if isinstance(df[time_field].tolist()[0], str):
+        df[time_field] = pandas.to_datetime(df[time_field])
+    else:
+        print("nothing to be done")
+
     df = feature_creation.time_response(df)
+
+
+
 
     list_df =[]
     list_df_high =[]
@@ -173,12 +185,15 @@ def main():
 
         new_df = new_df[new_df["message_count"]!=0.0]
 
-        percentage = int(new_df.shape[0]*0.30);
+        percentage_30 = int(new_df.shape[0]*0.30);
 
-        high =new_df.sort_values("message_count", ascending=False)[0:percentage]
-        low =new_df.sort_values("message_count", ascending=True)[0:percentage]
+        percentage_40 = int(new_df.shape[0]*0.40);
 
-        percentage_reciprocity = int(high.shape[0]*0.50)
+
+        high =new_df.sort_values("message_count", ascending=False)[0:percentage_40]
+        low =new_df.sort_values("message_count", ascending=True)[0:percentage_30]
+
+        percentage_reciprocity = int(high.shape[0]*0.40)
 
         high_reciprocity = high.sort_values("message_count_reciprocity", ascending=False)[0:percentage_reciprocity]
         low_reciprocity = low.sort_values("message_count_reciprocity", ascending=False)[0:percentage_reciprocity]
@@ -186,7 +201,9 @@ def main():
 
 
         # plot in highchart
-       # highchart_analyser(new_df,"D",user_id+"_"+contact_id)
+        new_df.to_csv("../data/user_df/data_frame_"+user_id+"_"+contact_id)
+
+        #highchart_analyser(new_df,"D",user_id+"_"+contact_id)
         print("appending dataframe for relationship "+user_id+"_"+contact_id)
         list_df.append(new_df)
         list_df_high.append(high)
