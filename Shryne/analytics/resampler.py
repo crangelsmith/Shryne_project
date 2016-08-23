@@ -71,8 +71,6 @@ def find_ratio(df, variable):
     denominator_array[denominator_array == 0] = 1
     ratio_array = numerator_array / denominator_array
 
-    #TODO: IF DENOMINATOR IS ==0 WE SHOULD SET RATIO TO 0.
-
     return ratio_array
 
 
@@ -106,6 +104,8 @@ def resample_dataframe(df, period='D'):
     output_df["message_count_contact"] = df[df["to_from"]][time_field].value_counts().resample(period, how=_sum)
 
     output_df['sent_at'] = df[time_field]
+    output_df['relationship'] = df["relationship"]
+
 
     df.set_index(time_field, inplace=True, drop=False)
 
