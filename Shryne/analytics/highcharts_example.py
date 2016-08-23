@@ -145,7 +145,10 @@ def main():
     # setup pandas dataframe. It's not necessary, so replace this with what ever
     #  data source you have.
 
-    df = df[df['relationship'] == "Ex"]
+    df = df[df['relationship'] != "General"]
+    df = df[df['relationship'] != "Family"]
+    df = df[df['relationship'] != "Friend"]
+
 
     df = clean_df.drop_one_sided(df)
     
@@ -154,17 +157,15 @@ def main():
     df = feature_creation.create_features(df)
     df = feature_creation.time_response(df)
 
-    # df.dropna(inplace=True)
-    # df = df[df['response_time'] != 0]
-    # df = df[df['response_time'] < 1000]
-    # print df['response_time'].describe()
-    # g = sns.distplot(df['response_time'], kde=False)
-    # plt.show()
+
 
 
     list_df =[]
     list_df_high =[]
     list_df_low =[]
+
+    list_df_high_reciprocity = []
+    list_df_low_reciprocity = []
 
     unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
@@ -175,14 +176,19 @@ def main():
         user_id = str(sub_df['user_id'][0])
         contact_id = str(sub_df['contact_id'][0])
 
-        percentage = int(new_df.shape[0] /40.0);
 
-        high =new_df.sort("message_count", ascending=False)[0:percentage]
+        new_df = new_df[new_df["message_count"]!=0.0]
 
-        low_all =new_df.sort("message_count", ascending=True)
+        percentage = int(new_df.shape[0]*0.30);
 
-        #only the get the % from the lowest non zeros
-        low = low_all[low_all["message_count"] > 0][0:percentage]
+        high =new_df.sort_values("message_count", ascending=False)[0:percentage]
+        low =new_df.sort_values("message_count", ascending=True)[0:percentage]
+
+        percentage_reciprocity = int(high.shape[0]*0.50)
+
+        high_reciprocity = high.sort_values("message_count_reciprocity", ascending=False)[0:percentage_reciprocity]
+        low_reciprocity = low.sort_values("message_count_reciprocity", ascending=False)[0:percentage_reciprocity]
+
 
         # plot in highchart
 
@@ -191,6 +197,8 @@ def main():
         #list_df.append(new_df)
         list_df_high.append(high)
         list_df_low.append(low)
+        list_df_high_reciprocity.append(high_reciprocity)
+        list_df_low_reciprocity.append(low_reciprocity)
 
     #result = pandas.concat(list_df)
 
@@ -199,10 +207,19 @@ def main():
     #result = pandas.concat(list_df)
     result_high = pandas.concat(list_df_high)
     result_low = pandas.concat(list_df_low)
+    result_high_reciprocity = pandas.concat(list_df_high_reciprocity)
+    result_low_reciprocity = pandas.concat(list_df_low_reciprocity)
 
+<<<<<<< HEAD
     #result.to_pickle("../data/relationship_features_forclustering_daily.pandas_df")
+=======
+    result.to_pickle("../data/relationship_features_forclustering_M.pandas_df")
+>>>>>>> 903cafdd3ea65b1c53f91c7eccc3617c7df7afb6
     result_high.to_pickle("../data/relationship_features_high")
     result_low.to_pickle("../data/relationship_features_low")
+
+    result_low_reciprocity.to_pickle("../data/relationship_features_low_reciprocity")
+    result_high_reciprocity.to_pickle("../data/relationship_features_high_reciprocity")
 
 if __name__ == '__main__':
     main()
