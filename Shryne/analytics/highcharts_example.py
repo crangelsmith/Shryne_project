@@ -208,13 +208,10 @@ def main():
     result_high = pandas.concat(list_df_high)
     result_low = pandas.concat(list_df_low)
     result_high_reciprocity = pandas.concat(list_df_high_reciprocity)
-    result_low_reciprocity = pandas.concat(list_df_low_reciprocity)
-
-<<<<<<< HEAD
+    result_low_reciprocity = pandas.concat(list_df_low_reciprocity
     #result.to_pickle("../data/relationship_features_forclustering_daily.pandas_df")
-=======
+
     result.to_pickle("../data/relationship_features_forclustering_M.pandas_df")
->>>>>>> 903cafdd3ea65b1c53f91c7eccc3617c7df7afb6
     result_high.to_pickle("../data/relationship_features_high")
     result_low.to_pickle("../data/relationship_features_low")
 
