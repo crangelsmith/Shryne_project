@@ -145,20 +145,14 @@ def main():
     # setup pandas dataframe. It's not necessary, so replace this with what ever
     #  data source you have.
 
-    df = df[df['relationship'] != "General"]
-    df = df[df['relationship'] != "Family"]
-    df = df[df['relationship'] != "Friend"]
-
+    df = df[df['relationship'] == "Ex"]
+    #df = df[df['relationship'] != "General"]
+    #df = df[df['relationship'] != "Family"]
+    #df = df[df['relationship'] != "Friend"]
 
     df = clean_df.drop_one_sided(df)
-    
-    pet_names = pandas.read_csv('pet_names_short.txt', delimiter='\n')
-    emoji_list = pickle.load(open("emoji_list.p", "rb"))
     df = feature_creation.create_features(df)
     df = feature_creation.time_response(df)
-
-
-
 
     list_df =[]
     list_df_high =[]

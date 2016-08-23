@@ -22,10 +22,15 @@ def _average_sentiment(x):
 
 def _average_time(x):
 
-    #TODO we made need to tweak the time limit
-    time_limit = 1000  # in seconds
-    x_mean = np.mean(x)
+    #TODO we may need to tweak the time limit
+    time_limit = 6*3600  # in seconds
+    try:
+        x_mean = np.nanmean(x)
+    except:
+        return time_limit
     if x_mean > time_limit:
+        return time_limit
+    elif x_mean == 0:
         return time_limit
     else:
         return x_mean
@@ -65,6 +70,10 @@ def find_ratio(df, variable):
     # prevent div by 0 and compute ratio
     denominator_array[denominator_array == 0] = 1
     ratio_array = numerator_array / denominator_array
+
+    check_nan = np.isnan(ratio_array)
+    if np.max(check_nan):
+        hold = 1
 
     #TODO: IF DENOMINATOR IS ==0 WE SHOULD SET RATIO TO 0.
 
