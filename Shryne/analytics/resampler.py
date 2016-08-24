@@ -148,6 +148,5 @@ def resample_dataframe(df, period='D'):
         else:
             denom = output_df[k].dropna().size
         mean_time = output_df[k].sum(axis=0) / denom  # don't want to average with null months
-        output_df[k] = (output_df[k] - mean_time) / mean_time
-
+        output_df[k] = (output_df[k] - mean_time) / mean_time  # evals to 0 if avg. time is == time_limit
     return output_df

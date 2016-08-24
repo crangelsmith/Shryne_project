@@ -140,7 +140,7 @@ def highchart_analyser(df, period='M', name=""):
 def main():
 
     #df = pandas.read_csv("../data/result_csv_no_message.csv")
-    df = pandas.read_pickle('../data/result_19August')
+    df = pandas.read_pickle('../data/result')
 
     # setup pandas dataframe. It's not necessary, so replace this with what ever
     #  data source you have.
@@ -187,7 +187,6 @@ def main():
         list_df.append(new_df)
         list_df_high.append(high_high)
         list_df_low.append(low)
-
 
     result = pandas.concat(list_df)
     result_high = pandas.concat(list_df_high)
