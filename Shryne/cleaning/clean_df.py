@@ -39,7 +39,8 @@ def remove_signatures_and_after(df):
     """
     sep = ['\n--\n', 'Begin forwarded message', 'Forwarded message',
            '------', 'Sent from my iPhone', 'Sent from my iPad',
-           'Sent from my Windows Phone', 'Sent from my Samsung']
+           'Sent from my Windows Phone', 'Sent from my Samsung',
+           'Sent from my Sony']
 
     for s in sep:
         df['message'] = df['message'].apply(lambda x: x.split(s, 1)[0])
@@ -70,10 +71,13 @@ def remove_urls(df):
     :return df:
     """
     subs = ["On\s[A-Z][a-z]{2}\s[0-9]{1,3}[\s\S]*",
-            r'https?:\/\/[\S]*[\s\n\r]+', r'www\.[\S]*[\s\n\r]+']
+            r'https?:\/\/[\S]*[\s\n\r]+', r'www\.[\S]*[\s\n\r]+',
+            r'https?:\/\/[\S]*$', r'www\.[\S]*$']
     for s in subs:
         df['message'] = df['message'].str.replace(s, ' ', case=False,
                                                   flags=re.MULTILINE)
+
+    df = remove_excess_whitespace(df)
 
     return df
 

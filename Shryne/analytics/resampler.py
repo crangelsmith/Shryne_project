@@ -133,9 +133,6 @@ def resample_dataframe(df, period='D'):
     for k in ["message_count", "word_count", "response_time"]:
         output_df[k + "_reciprocity"] = find_ratio(output_df, k)
 
-    # calculate the no communication mask before the normalisaton of the data
-    no_comm_mask = (output_df['message_count_contact'] <= 1) | (output_df['message_count_user'] <= 1)
-
     # now normalise number of mesages, words, etc
     keys = ["word_count", "message_count",
             "message_count_user","message_count_contact",
@@ -151,15 +148,5 @@ def resample_dataframe(df, period='D'):
         else:
             denom = output_df[k].dropna().size
         mean_time = output_df[k].sum(axis=0) / denom  # don't want to average with null months
-        output_df[k] = (output_df[k] - mean_time) / mean_time
-
-    # now reset dataframe values where there is only a single communication during the month from
-    # each user.  This gets rid of comms where there are only single messages sent each month, which
-    # where leading to issues in the ananlysis.
-    keys = ['word_count_reciprocity', 'message_count_reciprocity', "response_time",
-            "response_time_reciprocity", "sentiment_reciprocity"]
-    values = [0, 0, 6*3600, 0, 1]
-    for k, v in zip(keys, values):
-        output_df[k].where(~no_comm_mask, v, inplace=True)
-
+        output_df[k] = (output_df[k] - mean_time) / mean_time  # evals to 0 if avg. time is == time_limit
     return output_df
