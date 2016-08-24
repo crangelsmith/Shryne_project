@@ -3,18 +3,13 @@ import numpy as np
 import Shryne.config as config
 
 
+# TODO these can be removed
 def _sum(x):
-    if len(x) == 0:
-        return 0
-    else:
-        return sum(x)
+    return np.nansum(x)
 
 
 def _average(x):
-    if len(x) == 0:
-        return 0
-    else:
-        return sum(x) / len(x)
+    return np.nanmean(x)
 
 
 def _average_sentiment(x):
@@ -29,12 +24,10 @@ def _average_time(x):
     elif config.model == 'romantic':
         time_limit = config.resampler['response_time_limit_romantic'] * 3600  # in seconds
 
-
-    try:
-        x_mean = np.nanmean(x)
-    except:
-        return time_limit
-    if x_mean > time_limit:
+    x_mean = np.nanmean(x)
+    if np.isnan(x_mean):
+        return time_limit  #FIXME this line was before returning nans, now returns time limit, may break model!
+    elif x_mean > time_limit:
         return time_limit
     elif x_mean == 0:
         return time_limit

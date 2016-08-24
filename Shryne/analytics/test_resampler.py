@@ -4,7 +4,10 @@
 import pandas as pd
 import numpy as np
 
+import Shryne.config as config
+
 from resampler import sentiment_cleaning
+from resampler import _sum, _average, _average_time
 from resampler import find_ratio
 
 
@@ -55,75 +58,68 @@ def test_find_ratio():
 
     assert find_ratio(one_zero_test, 'message_count') == 0
 
-
     zero_one_test = pd.DataFrame({'message_count_user': [0],
                                   'message_count_contact': [1]})
 
     assert find_ratio(zero_one_test, 'message_count') == 0
 
 
-    one_one_test = pd.DataFrame({'message_count_user': [1],
-                                  'message_count_contact': [1]})
+def test__sum():
+    empty_test = []
+    empty_pass = 0
 
-    assert find_ratio(one_one_test, 'message_count') == 1
+    sum_test = [1,2,3,4,5,6,7,8,9,10]
+    sum_pass = 55
 
+    nan_test = [np.nan, np.nan, np.nan]
+    nan_pass = 0
 
-    zero_zero_float_test = pd.DataFrame({'message_count_user': [0.0],
-                                         'message_count_contact': [0.0]})
-
-    assert find_ratio(zero_zero_float_test, 'message_count') == 0
-
-
-    zero_zero_int_test = pd.DataFrame({'message_count_user': [0],
-                                         'message_count_contact': [0]})
-
-    assert find_ratio(zero_zero_int_test, 'message_count') == 0
+    assert _sum(empty_test) == empty_pass
+    assert _sum(sum_test) == sum_pass
+    assert _sum(nan_test) == nan_pass
 
 
-    divide_two_equal_floats = pd.DataFrame({'message_count_user': [0.5],
-                                            'message_count_contact': [0.5]})
+def test__average():
+    empty_test = []
 
-    assert find_ratio(divide_two_equal_floats, 'message_count') == 1
+    avg_test = [1,2,3,4,5,6,7,8,9,10]
+    avg_pass = 5.5
 
-    div_two_floats_bottom = pd.DataFrame({'message_count_user': [0.5],
-                                            'message_count_contact': [0.6]})
+    nan_test = [np.nan, np.nan, np.nan]
 
-    assert find_ratio(div_two_floats_bottom, 'message_count') == 0.5/0.6
+    assert np.isnan(_average(empty_test))
+    assert _average(avg_test) == avg_pass
+    assert np.isnan(_average(nan_test))
 
-    div_two_floats_top = pd.DataFrame({'message_count_user': [0.6],
-                                            'message_count_contact': [0.5]})
 
-    assert find_ratio(div_two_floats_top, 'message_count') == 0.5/0.6
+def test__average_time():
 
-    div_zero_int = pd.DataFrame({'message_count_user': [0],
-                                            'message_count_contact': [20]})
-    assert find_ratio(div_zero_int, 'message_count') == 0
+    # set up correct time limit for testing
+    if config.model == 'not_romantic':
+        time_limit = config.resampler['response_time_limit_not_romantic'] * 3600  # in seconds
+    elif config.model == 'romantic':
+        time_limit = config.resampler['response_time_limit_romantic'] * 3600
 
-    div_int_zero = pd.DataFrame({'message_count_user': [20],
-                                            'message_count_contact': [0]})
-    assert find_ratio(div_int_zero, 'message_count') == 0
+    empty_test = []
+    empty_pass = time_limit
 
-    div_small_int_big_int = pd.DataFrame({'message_count_user': [1],
-                                 'message_count_contact': [20]})
-    assert find_ratio(div_small_int_big_int, 'message_count') == 0.05
+    greater_than_time_limit = [time_limit + 1] * 2
+    greater_than_time_limit_pass = time_limit
 
-    div_big_int_small_int = pd.DataFrame({'message_count_user': [20],
-                                 'message_count_contact': [1]})
-    assert find_ratio(div_big_int_small_int, 'message_count') == 0.05
+    zero_mean_time_limit = [0,0,0,0,0,0]
+    zero_mean_time_limit_pass = time_limit
 
-    div_big_float_little_int = pd.DataFrame({'message_count_user': [20.1],
-                                 'message_count_contact': [20]})
-    assert find_ratio(div_big_float_little_int, 'message_count') == 20/20.1
+    less_than_time_limit = [1,2,3,4,5,6,7,8,9,10]
+    less_than_time_limit_pass = 5.5
 
-    div_big_int_little_float = pd.DataFrame({'message_count_user': [20],
-                                 'message_count_contact': [20.1]})
-    assert find_ratio(div_big_int_little_float, 'message_count') == 20/20.1
+    nan_mean_time_limit = [np.nan,2,3,np.nan,np.nan,7,8,np.nan,np.nan,10]
+    nan_mean_pass = 6.0
 
-    swaps_OK_repeat = pd.DataFrame({'message_count_user': [1, 1, 2, 0, 1, 0],
-                                    'message_count_contact': [2, 1, 1, 0, 0,1]})
+    assert _average_time(empty_test) == empty_pass
+    assert _average_time(greater_than_time_limit) == greater_than_time_limit_pass
+    assert _average_time(zero_mean_time_limit) == zero_mean_time_limit_pass
+    assert _average_time(less_than_time_limit) == less_than_time_limit_pass
+    assert _average_time(nan_mean_time_limit) == nan_mean_pass
 
-    assert len(find_ratio(swaps_OK_repeat, 'message_count')) == 6
-    assert sorted(find_ratio(swaps_OK_repeat, 'message_count')) == [0,0,0,
-                                                                    0.5,0.5,1]
 
 
