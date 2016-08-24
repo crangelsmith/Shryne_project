@@ -55,7 +55,75 @@ def test_find_ratio():
 
     assert find_ratio(one_zero_test, 'message_count') == 0
 
+
     zero_one_test = pd.DataFrame({'message_count_user': [0],
                                   'message_count_contact': [1]})
 
     assert find_ratio(zero_one_test, 'message_count') == 0
+
+
+    one_one_test = pd.DataFrame({'message_count_user': [1],
+                                  'message_count_contact': [1]})
+
+    assert find_ratio(one_one_test, 'message_count') == 1
+
+
+    zero_zero_float_test = pd.DataFrame({'message_count_user': [0.0],
+                                         'message_count_contact': [0.0]})
+
+    assert find_ratio(zero_zero_float_test, 'message_count') == 0
+
+
+    zero_zero_int_test = pd.DataFrame({'message_count_user': [0],
+                                         'message_count_contact': [0]})
+
+    assert find_ratio(zero_zero_int_test, 'message_count') == 0
+
+
+    divide_two_equal_floats = pd.DataFrame({'message_count_user': [0.5],
+                                            'message_count_contact': [0.5]})
+
+    assert find_ratio(divide_two_equal_floats, 'message_count') == 1
+
+    div_two_floats_bottom = pd.DataFrame({'message_count_user': [0.5],
+                                            'message_count_contact': [0.6]})
+
+    assert find_ratio(div_two_floats_bottom, 'message_count') == 0.5/0.6
+
+    div_two_floats_top = pd.DataFrame({'message_count_user': [0.6],
+                                            'message_count_contact': [0.5]})
+
+    assert find_ratio(div_two_floats_top, 'message_count') == 0.5/0.6
+
+    div_zero_int = pd.DataFrame({'message_count_user': [0],
+                                            'message_count_contact': [20]})
+    assert find_ratio(div_zero_int, 'message_count') == 0
+
+    div_int_zero = pd.DataFrame({'message_count_user': [20],
+                                            'message_count_contact': [0]})
+    assert find_ratio(div_int_zero, 'message_count') == 0
+
+    div_small_int_big_int = pd.DataFrame({'message_count_user': [1],
+                                 'message_count_contact': [20]})
+    assert find_ratio(div_small_int_big_int, 'message_count') == 0.05
+
+    div_big_int_small_int = pd.DataFrame({'message_count_user': [20],
+                                 'message_count_contact': [1]})
+    assert find_ratio(div_big_int_small_int, 'message_count') == 0.05
+
+    div_big_float_little_int = pd.DataFrame({'message_count_user': [20.1],
+                                 'message_count_contact': [20]})
+    assert find_ratio(div_big_float_little_int, 'message_count') == 20/20.1
+
+    div_big_int_little_float = pd.DataFrame({'message_count_user': [20],
+                                 'message_count_contact': [20.1]})
+    assert find_ratio(div_big_int_little_float, 'message_count') == 20/20.1
+
+    swaps_OK_repeat = pd.DataFrame({'message_count_user': [1, 1, 2, 0, 1, 0],
+                                    'message_count_contact': [2, 1, 1, 0, 0,1]})
+
+    assert len(find_ratio(swaps_OK_repeat, 'message_count')) == 6
+    assert sorted(find_ratio(swaps_OK_repeat, 'message_count')) == [0,0,0,
+                                                                    0.5,0.5,1]
+
+
