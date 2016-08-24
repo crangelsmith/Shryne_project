@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import Shryne.config as config
 
 
 def _sum(x):
@@ -23,7 +24,12 @@ def _average_sentiment(x):
 def _average_time(x):
 
     #TODO we may need to tweak the time limit
-    time_limit = 6*3600  # in seconds
+    if config.model == 'not_romantic':
+        time_limit = config.resampler['response_time_limit_not_romantic'] * 3600  # in seconds
+    elif config.model == 'romantic':
+        time_limit = config.resampler['response_time_limit_romantic'] * 3600  # in seconds
+
+
     try:
         x_mean = np.nanmean(x)
     except:
