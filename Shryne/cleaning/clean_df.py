@@ -39,7 +39,8 @@ def remove_signatures_and_after(df):
     """
     sep = ['\n--\n', 'Begin forwarded message', 'Forwarded message',
            '------', 'Sent from my iPhone', 'Sent from my iPad',
-           'Sent from my Windows Phone', 'Sent from my Samsung']
+           'Sent from my Windows Phone', 'Sent from my Samsung',
+           'Sent from my Sony']
 
     for s in sep:
         df['message'] = df['message'].apply(lambda x: x.split(s, 1)[0])
