@@ -5,7 +5,7 @@ import pandas as pd
 # The idea is to use extreme behaviour for the labeling .
 # This extremes are: high volume of communication and reciprocity vs low level of communications
 
-def buid_labeled_samples(df,model):
+def build_labeled_samples(df, model):
 
     # select subset of resampled input dataframe based on the model we'll train
     selection_mask = (df['relationship'] != "Family") & (df['relationship'] != "Friend") & (df['relationship'] != "General")
@@ -14,7 +14,7 @@ def buid_labeled_samples(df,model):
     else:
         df = df[~selection_mask]
 
-    df = df[df["message_count"]!=0]
+    df = df[df["message_count"] != 0]
 
     list_good = []
     list_bad = []
