@@ -76,6 +76,8 @@ def remove_urls(df):
         df['message'] = df['message'].str.replace(s, ' ', case=False,
                                                   flags=re.MULTILINE)
 
+    df = remove_excess_whitespace(df)
+
     return df
 
 

@@ -62,7 +62,7 @@ def test_remove_signatures_and_after():
 
 def test_remove_urls():
     url_message = ['I like www.zombo.com/, really I do',
-                   'I like www.zombo.com...',
+                   'I like www.zombo.com',
                    'what is your favourite?https://www.google.co.uk/',
                    'I lovehttp://www.google.co.uk/',
                    'does this work http://pandas.pydata.org/pandas-docs/stable/dsintro.html I hope so']
