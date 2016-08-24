@@ -23,8 +23,10 @@ class ConnectDB(object):
                                     ssh_username=self.user_name,
                                     local_bind_address=self.local_bind_address,
                                     remote_bind_address=self.remote_bind_address)
-
+         
         self.server.start()
+        print "inside the remote server"
+        
         params = {
             'database': 'dreikanter_production',
             'user': 'analytics',
@@ -32,7 +34,8 @@ class ConnectDB(object):
             'port': 5432
         }
         conn = psycopg2.connect(**params)
-
+        print "connection made to the database"
+        
         self.conn = conn
 
     def get_connection(self):
