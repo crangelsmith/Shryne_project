@@ -1,5 +1,7 @@
 # based on http://stackoverflow.com/questions/5055042/whats-the-best-practice-using-a-settings-file-in-python
 
+# set flag for processing type
+
 # set the model type to be run
 model = 'romantic'  # 'not_romantic'
 
