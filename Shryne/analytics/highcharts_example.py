@@ -145,33 +145,14 @@ def main():
     # setup pandas dataframe. It's not necessary, so replace this with what ever
     #  data source you have.
 
-    df = df[df['relationship'] != "General"]
-    df = df[df['relationship'] != "Family"]
-    df = df[df['relationship'] != "Friend"]
-
 
     df = clean_df.drop_one_sided(df)
-    
-
     df = feature_creation.create_features(df)
-
-    time_field = 'sent_at'
-    if isinstance(df[time_field].tolist()[0], str):
-        df[time_field] = pandas.to_datetime(df[time_field])
-    else:
-        print("nothing to be done")
-
     df = feature_creation.time_response(df)
-
-
-
 
     list_df =[]
     list_df_high =[]
     list_df_low =[]
-
-    list_df_high_reciprocity = []
-    list_df_low_reciprocity = []
 
     unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
@@ -182,47 +163,39 @@ def main():
         user_id = str(sub_df['user_id'][0])
         contact_id = str(sub_df['contact_id'][0])
 
-
-        new_df = new_df[new_df["message_count"]!=0.0]
-
-        percentage_30 = int(new_df.shape[0]*0.30);
-
-        percentage_40 = int(new_df.shape[0]*0.40);
-
-
-        high =new_df.sort_values("message_count", ascending=False)[0:percentage_40]
-        low =new_df.sort_values("message_count", ascending=True)[0:percentage_30]
-
-        percentage_reciprocity = int(high.shape[0]*0.40)
-
-        high_reciprocity = high.sort_values("message_count_reciprocity", ascending=False)[0:percentage_reciprocity]
-        low_reciprocity = low.sort_values("message_count_reciprocity", ascending=False)[0:percentage_reciprocity]
-
-
-
         # plot in highchart
-        new_df.to_csv("../data/user_df/data_frame_"+user_id+"_"+contact_id)
+        new_df.to_csv("../data/user_df/data_frame_" + user_id + "_" + contact_id)
 
-        #highchart_analyser(new_df,"D",user_id+"_"+contact_id)
-        print("appending dataframe for relationship "+user_id+"_"+contact_id)
+        highchart_analyser(new_df, "D", user_id + "_" + contact_id)
+        print("appending dataframe for relationship " + user_id + "_" + contact_id)
+
+        only_Ex_Partners = new_df[new_df['relationship'] != "General"]
+        only_Ex_Partners = only_Ex_Partners[only_Ex_Partners['relationship'] != "Family"]
+        only_Ex_Partners = only_Ex_Partners[only_Ex_Partners['relationship'] != "Friend"]
+
+        only_Ex_Partners = only_Ex_Partners[only_Ex_Partners["message_count"]!=0.0]
+
+        percentage_30 = int(only_Ex_Partners.shape[0]*0.30)
+
+        percentage_50 = int(only_Ex_Partners.shape[0]*0.30)
+
+        high =only_Ex_Partners.sort_values("message_count", ascending=False)[0:percentage_50]
+        low =only_Ex_Partners.sort_values("message_count", ascending=True)[0:percentage_30]
+
+        high_high =high.sort_values("message_count_reciprocity", ascending=False)[0:int(high.shape[0]*0.5)]
+
         list_df.append(new_df)
-        list_df_high.append(high)
+        list_df_high.append(high_high)
         list_df_low.append(low)
-        list_df_high_reciprocity.append(high_reciprocity)
-        list_df_low_reciprocity.append(low_reciprocity)
+
 
     result = pandas.concat(list_df)
     result_high = pandas.concat(list_df_high)
     result_low = pandas.concat(list_df_low)
-    result_high_reciprocity = pandas.concat(list_df_high_reciprocity)
-    result_low_reciprocity = pandas.concat(list_df_low_reciprocity)
 
     result.to_pickle("../data/relationship_features_forclustering_M.pandas_df")
     result_high.to_pickle("../data/relationship_features_high")
     result_low.to_pickle("../data/relationship_features_low")
-
-    result_low_reciprocity.to_pickle("../data/relationship_features_low_reciprocity")
-    result_high_reciprocity.to_pickle("../data/relationship_features_high_reciprocity")
 
 if __name__ == '__main__':
     main()

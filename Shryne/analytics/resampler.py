@@ -71,12 +71,6 @@ def find_ratio(df, variable):
     denominator_array[denominator_array == 0] = 1
     ratio_array = numerator_array / denominator_array
 
-    check_nan = np.isnan(ratio_array)
-    if np.max(check_nan):
-        hold = 1
-
-    #TODO: IF DENOMINATOR IS ==0 WE SHOULD SET RATIO TO 0.
-
     return ratio_array
 
 
@@ -110,6 +104,8 @@ def resample_dataframe(df, period='D'):
     output_df["message_count_contact"] = df[df["to_from"]][time_field].value_counts().resample(period, how=_sum)
 
     output_df['sent_at'] = df[time_field]
+    output_df['relationship'] = df["relationship"]
+
 
     df.set_index(time_field, inplace=True, drop=False)
 
@@ -137,6 +133,9 @@ def resample_dataframe(df, period='D'):
     for k in ["message_count", "word_count", "response_time"]:
         output_df[k + "_reciprocity"] = find_ratio(output_df, k)
 
+    # calculate the no communication mask before the normalisaton of the data
+    no_comm_mask = (output_df['message_count_contact'] <= 1) | (output_df['message_count_user'] <= 1)
+
     # now normalise number of mesages, words, etc
     keys = ["word_count", "message_count",
             "message_count_user","message_count_contact",
@@ -153,5 +152,14 @@ def resample_dataframe(df, period='D'):
             denom = output_df[k].dropna().size
         mean_time = output_df[k].sum(axis=0) / denom  # don't want to average with null months
         output_df[k] = (output_df[k] - mean_time) / mean_time
+
+    # now reset dataframe values where there is only a single communication during the month from
+    # each user.  This gets rid of comms where there are only single messages sent each month, which
+    # where leading to issues in the ananlysis.
+    keys = ['word_count_reciprocity', 'message_count_reciprocity', "response_time",
+            "response_time_reciprocity", "sentiment_reciprocity"]
+    values = [0, 0, 6*3600, 0, 1]
+    for k, v in zip(keys, values):
+        output_df[k].where(~no_comm_mask, v, inplace=True)
 
     return output_df
