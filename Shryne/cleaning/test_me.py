@@ -48,12 +48,13 @@ def test_remove_signatures_and_after():
                'Hi Dawn \n--\n bye', 'Hi Elco Forwarded message bye',
                'Hi Frances Sent from my iPad bye',
                'Hi Grzegorz Sent from my Windows Phone bye',
-               'Hi Heidi Sent from my Samsung bye']
+               'Hi Heidi Sent from my Samsung bye',
+               'Hi Ignacio Sent from my Sony']
 
     sig_msg_pass = ['Hi Alex', 'Hi Ben', 'Hi Clara', 'Hi Dawn', 'Hi Elco',
-                    'Hi Frances', 'Hi Grzegorz', 'Hi Heidi']
+                    'Hi Frances', 'Hi Grzegorz', 'Hi Heidi', 'Hi Ignacio']
 
-    sig_time = [1, 2, 3, 4, 5, 6, 7, 8]
+    sig_time = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
     df = pd.DataFrame({'message': sig_msg, 'time': sig_time})
     df_pass = pd.DataFrame({'message': sig_msg_pass, 'time': sig_time})
