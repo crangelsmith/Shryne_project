@@ -4,4 +4,5 @@ Shryne/data
 *.xml
 *.iml
 *.ipynb_checkpoints
+Shryne/analytics/plot
 note_modules
