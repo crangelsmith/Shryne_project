@@ -8,6 +8,8 @@ import Shryne.config as config
 
 from resampler import sentiment_cleaning
 from resampler import _sum, _average, _average_time
+from resampler import find_ratio
+
 
 def test_sentiment_cleaning():
     """
@@ -15,13 +17,13 @@ def test_sentiment_cleaning():
     and neutral = 0 then replace with nan
     """
 
-    neutral_test = pd.DataFrame({'neutral' : [1,0,1.000001,0.999999,1.0],
-                                 'compound' : [1, 1, 1, 1, 1],
-                                 'positive' : [1,1,1,1,1],
+    neutral_test = pd.DataFrame({'neutral': [1, 0, 1.000001, 0.999999, 1.0],
+                                 'compound': [1, 1, 1, 1, 1],
+                                 'positive': [1, 1, 1, 1, 1],
                                  'negative': [1, 1, 1, 1, 1]})
 
-    neutral_pass = pd.DataFrame({'neutral' : [np.NaN, 0, 1.000001, 0.999999,
-                                              np.NaN],
+    neutral_pass = pd.DataFrame({'neutral': [np.NaN, 0, 1.000001, 0.999999,
+                                             np.NaN],
                                  'compound': [np.NaN, 1, 1 ,1, np.NaN],
                                  'positive': [np.NaN, 1, 1, 1, np.NaN],
                                  'negative': [np.NaN, 1, 1, 1, np.NaN]})
@@ -36,9 +38,9 @@ def test_sentiment_cleaning():
                                'negative': [np.NaN], 'compound': [np.NaN]})
 
     unchanged_test = pd.DataFrame({'positive': [0, 0, 0, 1, 1, 1, 1],
-                                      'neutral': [0, 1, 1, 0, 0, 1, 1],
-                                      'negative': [1, 0, 1, 0, 1, 0, 1],
-                                      'compound': [1, 1, 1, 1, 1, 1, 1]})
+                                   'neutral': [0, 1, 1, 0, 0, 1, 1],
+                                   'negative': [1, 0, 1, 0, 1, 0, 1],
+                                   'compound': [1, 1, 1, 1, 1, 1, 1]})
 
     assert sentiment_cleaning(neutral_test).equals(neutral_pass)
 
@@ -47,6 +49,19 @@ def test_sentiment_cleaning():
     assert sentiment_cleaning(unchanged_test).equals(unchanged_test)
 
     assert sentiment_cleaning(zeros_float_to_nan_test).equals(zeros_pass)
+
+
+def test_find_ratio():
+
+    one_zero_test = pd.DataFrame({'message_count_user': [1],
+                                  'message_count_contact': [0]})
+
+    assert find_ratio(one_zero_test, 'message_count') == 0
+
+    zero_one_test = pd.DataFrame({'message_count_user': [0],
+                                  'message_count_contact': [1]})
+
+    assert find_ratio(zero_one_test, 'message_count') == 0
 
 
 def test__sum():
