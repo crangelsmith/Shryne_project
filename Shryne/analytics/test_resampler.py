@@ -57,26 +57,24 @@ def test__sum():
     sum_pass = 55
 
     nan_test = [np.nan, np.nan, np.nan]
-    nan_pass = np.nan
+    nan_pass = 0
 
-    assert _sum(empty_test).equals(empty_pass)
-    assert _sum(sum_test).equals(sum_pass)
-    assert _sum(nan_test).equals(nan_pass)
+    assert _sum(empty_test) == empty_pass
+    assert _sum(sum_test) == sum_pass
+    assert _sum(nan_test) == nan_pass
 
 
 def test__average():
     empty_test = []
-    empty_pass = 0
 
     avg_test = [1,2,3,4,5,6,7,8,9,10]
     avg_pass = 5.5
 
     nan_test = [np.nan, np.nan, np.nan]
-    nan_pass = np.nan
 
-    assert _average(empty_test).equals(empty_pass)
-    assert _average(avg_test).equals(avg_pass)
-    assert _average(nan_test).equals(nan_pass)
+    assert np.isnan(_average(empty_test))
+    assert _average(avg_test) == avg_pass
+    assert np.isnan(_average(nan_test))
 
 
 def test__average_time():
@@ -99,14 +97,14 @@ def test__average_time():
     less_than_time_limit = [1,2,3,4,5,6,7,8,9,10]
     less_than_time_limit_pass = 5.5
 
-    nan_mean_time_limit = [np.nan,2,3,np.nan,np.nan,6,7,np.nan,np.nan,10]
-    nan_mean_pass = 6
+    nan_mean_time_limit = [np.nan,2,3,np.nan,np.nan,7,8,np.nan,np.nan,10]
+    nan_mean_pass = 6.0
 
-    assert _average_time(empty_test).equals(empty_pass)
-    assert _average_time(greater_than_time_limit).equals(greater_than_time_limit_pass)
-    assert _average_time(zero_mean_time_limit).equals(zero_mean_time_limit_pass)
-    assert _average_time(less_than_time_limit).equals(less_than_time_limit_pass)
-    assert _average_time(nan_mean_time_limit).equals(nan_mean_pass)
+    assert _average_time(empty_test) == empty_pass
+    assert _average_time(greater_than_time_limit) == greater_than_time_limit_pass
+    assert _average_time(zero_mean_time_limit) == zero_mean_time_limit_pass
+    assert _average_time(less_than_time_limit) == less_than_time_limit_pass
+    assert _average_time(nan_mean_time_limit) == nan_mean_pass
 
 
 
