@@ -140,19 +140,21 @@ def highchart_analyser(df, period='M', name=""):
 def main():
 
     #df = pandas.read_csv("../data/result_csv_no_message.csv")
-    df = pandas.read_pickle('../data/result')
+    df = pandas.read_pickle('../data/result_19August')
 
     # setup pandas dataframe. It's not necessary, so replace this with what ever
     #  data source you have.
-
 
     df = clean_df.drop_one_sided(df)
     df = feature_creation.create_features(df)
     df = feature_creation.time_response(df)
 
     list_df =[]
-    list_df_high =[]
-    list_df_low =[]
+    list_df_high_romantic =[]
+    list_df_low_romantic =[]
+
+    list_df_high_non_romantic = []
+    list_df_low_non_romantic = []
 
     unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
@@ -163,38 +165,55 @@ def main():
         user_id = str(sub_df['user_id'][0])
         contact_id = str(sub_df['contact_id'][0])
 
+        new_df = new_df[new_df["message_count"]!=0.0]
+
         # plot in highchart
         new_df.to_csv("../data/user_df/data_frame_" + user_id + "_" + contact_id)
 
         highchart_analyser(new_df, "D", user_id + "_" + contact_id)
         print("appending dataframe for relationship " + user_id + "_" + contact_id)
 
-        only_Ex_Partners = new_df[new_df['relationship'] != "General"]
-        only_Ex_Partners = only_Ex_Partners[only_Ex_Partners['relationship'] != "Family"]
+
+        #    relationship_dic = {"Ex": 0, "Partner": 1, "Family": 2, "Friend": 2,"General": 2}
+
+        only_Ex_Partners = new_df[new_df['relationship'] != "Family"]
         only_Ex_Partners = only_Ex_Partners[only_Ex_Partners['relationship'] != "Friend"]
+        only_Ex_Partners = only_Ex_Partners[only_Ex_Partners['relationship'] != "General"]
 
-        only_Ex_Partners = only_Ex_Partners[only_Ex_Partners["message_count"]!=0.0]
 
-        percentage_30 = int(only_Ex_Partners.shape[0]*0.30)
 
-        percentage_50 = int(only_Ex_Partners.shape[0]*0.30)
-
-        high =only_Ex_Partners.sort_values("message_count", ascending=False)[0:percentage_50]
-        low =only_Ex_Partners.sort_values("message_count", ascending=True)[0:percentage_30]
-
+        high =only_Ex_Partners.sort_values("message_count", ascending=False)[0:int(only_Ex_Partners.shape[0]*0.50)]
         high_high =high.sort_values("message_count_reciprocity", ascending=False)[0:int(high.shape[0]*0.5)]
+        low =only_Ex_Partners.sort_values("message_count", ascending=True)[0:int(only_Ex_Partners.shape[0]*0.30)]
 
         list_df.append(new_df)
-        list_df_high.append(high_high)
-        list_df_low.append(low)
+        list_df_high_romantic.append(high_high)
+        list_df_low_romantic.append(low)
+
+        non_romantic = new_df[new_df['relationship'] != "Partner"]
+        non_romantic = non_romantic[non_romantic['relationship'] != "Ex"]
+
+        high_nonromantic = non_romantic.sort_values("message_count", ascending=False)[0:int(non_romantic.shape[0] * 0.50)]
+        high_high_non_romantic = high_nonromantic.sort_values("message_count_reciprocity", ascending=False)[0:int(high_nonromantic.shape[0] * 0.5)]
+        low_non_romantic = non_romantic.sort_values("message_count", ascending=True)[0:int(non_romantic.shape[0] * 0.30)]
+
+        list_df_high_non_romantic.append(high_high_non_romantic)
+        list_df_low_non_romantic.append(low_non_romantic)
 
     result = pandas.concat(list_df)
-    result_high = pandas.concat(list_df_high)
-    result_low = pandas.concat(list_df_low)
+    result_high = pandas.concat(list_df_high_romantic)
+    result_low = pandas.concat(list_df_low_romantic)
 
-    result.to_pickle("../data/relationship_features_forclustering_M.pandas_df")
-    result_high.to_pickle("../data/relationship_features_high")
-    result_low.to_pickle("../data/relationship_features_low")
+    result_high_nonromantic = pandas.concat(list_df_high_non_romantic)
+    result_low_nonromantic = pandas.concat(list_df_low_non_romantic)
+
+    result.to_pickle("../data/relationship_features_all")
+    result_high.to_pickle("../data/relationship_features_high_romantic")
+    result_low.to_pickle("../data/relationship_features_low_romantic")
+
+    result_high_nonromantic.to_pickle("../data/relationship_features_high_non_romantic")
+    result_low_nonromantic.to_pickle("../data/relationship_features_low_non_romantic")
+
 
 if __name__ == '__main__':
     main()
