@@ -67,7 +67,7 @@ def test_remove_urls():
                    'I lovehttp://www.google.co.uk/',
                    'does this work http://pandas.pydata.org/pandas-docs/stable/dsintro.html I hope so']
 
-    url_message_pass = ['I like, really I do', 'I like ...',
+    url_message_pass = ['I like really I do', 'I like',
                         'what is your favourite?',
                         'I love',
                         'does this work I hope so']

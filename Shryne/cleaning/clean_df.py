@@ -71,7 +71,8 @@ def remove_urls(df):
     :return df:
     """
     subs = ["On\s[A-Z][a-z]{2}\s[0-9]{1,3}[\s\S]*",
-            r'https?:\/\/[\S]*[\s\n\r]+', r'www\.[\S]*[\s\n\r]+']
+            r'https?:\/\/[\S]*[\s\n\r]+', r'www\.[\S]*[\s\n\r]+',
+            r'https?:\/\/[\S]*$', r'www\.[\S]*$']
     for s in subs:
         df['message'] = df['message'].str.replace(s, ' ', case=False,
                                                   flags=re.MULTILINE)
