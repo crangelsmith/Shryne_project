@@ -322,7 +322,6 @@ JOIN contacts ON feed_items.from_id = contacts.id
 JOIN contact_types ON contacts.contact_type_id = contact_types.id
 JOIN users ON contacts.user_id = users.id
 WHERE contacts.is_fake = false
-AND user_id = 12284
 UNION
 SELECT DISTINCT users.id AS user_id,
 contacts.id AS contact_id, contact_types.name AS relationship, channels.name
@@ -335,5 +334,4 @@ JOIN contact_types ON contacts.contact_type_id = contact_types.id
 JOIN users ON contacts.user_id = users.id
 WHERE contacts.is_fake = false
 AND feed_items.from_id = 0
-AND user_id = 12284
 ORDER BY user_id, contact_id, sent_at;
