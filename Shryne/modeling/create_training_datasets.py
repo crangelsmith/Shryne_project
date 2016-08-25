@@ -3,11 +3,11 @@ import resampler as resampler
 import pandas as pd
 
 
-# this function creates labeled samples for training the model.
-# The idea is to use extreme behaviour for the labeling .
-# This extremes are: high volume of communication and reciprocity vs low level of communications
-
 def build_labeled_samples(df, model):
+    """Create labeled samples for training the model
+    using extreme behaviour. The extremes are: high volume
+    of communication and reciprocity vs low level of
+    communication"""
 
     # select subset of resampled input dataframe based on the model we'll train
     selection_mask = (df['relationship'] != "Family") & (df['relationship'] != "Friend") & (df['relationship'] != "General")
@@ -68,7 +68,7 @@ def build_labeled_samples(df, model):
     if (labelled_df.empty == False) & (labelled_df.isnull().values.any() == False):
         return labelled_df
 
-    else: print "Dataframe has nans or is empty"
+    else: print "Warning! Dataframe has nans or is empty"
 
 
 
