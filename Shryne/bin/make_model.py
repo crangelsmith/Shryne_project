@@ -6,7 +6,8 @@ import Shryne.mining.query as query
 import Shryne.cleaning.clean_df as clean_df
 import Shryne.sentiment_analysis.vader_sentiment_analysis as vsa
 import Shryne.analytics.feature_creation as feature_creator
-import Shryne.out.
+import Shryne.modeling.create_training_datasets as labeller
+import Shryne.modeling.build_model as model_builder
 
 import Shryne.config as config
 
@@ -22,8 +23,13 @@ def main():
     conn = db_connection.get_connection()
 
     # run query and get dataframe
-    current_query = querier(conn, the_query)
-    df = current_query.get_query_dataframe()
+    try:
+        pickle.load("")
+    except:
+        current_query = querier(conn, the_query)
+        df = current_query.get_query_dataframe()
+        pickle.dump(df, '')
+
 
     # clean df
     cleaned_df = clean_df.run_cleaning(df)
@@ -34,16 +40,17 @@ def main():
     # feature generation
     cleaned_df_with_sentiment_and_features = feature_creator.create_features(cleaned_df_with_sentiment)
 
-    # check relationship type, load correct model based on type and run model
-    if cleaned_df['relationship'][0] in ['Family', 'Friends', 'General']:
-        model = pickle.load(config.not_romantic_model_file_path)
-    else:
-        model = pickle.load(config.romantic_model_file_path)
-    result = model.predict_proba(cleaned_df_with_sentiment_and_features)
+    # create datasets
+    labelled_df_romantic = labeller.build_labeled_samples(cleaned_df_with_sentiment_and_features, 'romantic')
+    labelled_df_not_romantic = labeller.build_labeled_samples(cleaned_df_with_sentiment_and_features, 'not_romantic')
 
-    # return json output
+    # build model
+    romatic_model = model_builder.build_model(labelled_df_romantic)
+    not_romatic_model = model_builder.build_model(labelled_df_not_romantic)
 
-
+    # dump models
+    pickle.dump(romatic_model, config.romantic_model_file_path)
+    pickle.dump(not_romatic_model, config.not_romantic_model_file_path)
 
 if __name__ == "__main__":
     sys.exit(main())
