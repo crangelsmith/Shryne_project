@@ -82,6 +82,7 @@ def resample_dataframe(df, period='D'):
 
     # get the message counts total and for the user and contact
     output_df["message_count"] = df[time_field].value_counts().resample(period).apply(np.nansum)
+    output_df["message_count_not_normalised"] = output_df["message_count"].copy()
     output_df["message_count_user"] = df[~df["to_from"]][time_field].value_counts().resample(period).apply(np.nansum)
     output_df["message_count_contact"] = df[df["to_from"]][time_field].value_counts().resample(period).apply(np.nansum)
 
