@@ -36,8 +36,8 @@ def main():
     cleaned_df_with_sentiment_and_features = feature_creator.create_features(cleaned_df_with_sentiment)
 
     # create datasets
-    labelled_df_romantic = labeller.build_labeled_samples(df, 'romantic')
-    labelled_df_not_romantic = labeller.build_labeled_samples(df, 'not_romantic')
+    labelled_df_romantic = labeller.build_labeled_samples(cleaned_df_with_sentiment_and_features, 'romantic')
+    labelled_df_not_romantic = labeller.build_labeled_samples(cleaned_df_with_sentiment_and_features, 'not_romantic')
 
     # build model
     romatic_model = model_builder.build_model(labelled_df_romantic)
@@ -46,7 +46,6 @@ def main():
     # dump models
     pickle.dump(romatic_model, config.romantic_model_fp)
     pickle.dump(not_romatic_model, config.not_romantic_model_fp)
-
 
 
 if __name__ == "__main__":
