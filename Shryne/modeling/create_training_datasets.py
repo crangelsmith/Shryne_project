@@ -54,18 +54,21 @@ def build_labeled_samples(df, model):
     ## Predictor labels are found in the config file
 
     good_df = pd.concat(list_good)
-    good_df = good_df[predictors]
+    good_df = good_df[config.predictors]
     good_df.dropna(axis=0, inplace=True)
     good_df['label'] = 1
 
     bad_df = pd.concat(list_bad)
-    bad_df = bad_df[predictors]
+    bad_df = bad_df[config.predictors]
     bad_df.dropna(axis=0, inplace=True)
     bad_df['label'] = 0
 
     labelled_df = pd.concat([good_df, bad_df])
 
-    return labelled_df
+    if (labelled_df.empty == False) & (labelled_df.isnull().values.any() == False):
+        return labelled_df
+
+    else: print "Dataframe has nans or is empty"
 
 
 
