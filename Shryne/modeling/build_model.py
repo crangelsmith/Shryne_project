@@ -1,9 +1,11 @@
-import Shryne.config as config
+import config as config
 from sklearn.linear_model import LogisticRegression
 from sklearn.cross_validation import cross_val_score
 
-#Build logistic regression model and run cross validation to check goodness of the model
+#
 def build_model(df):
+    """Build logistic regression model and run cross validation
+    to check goodness of the model"""
 
     model = LogisticRegression()
 
