@@ -3,15 +3,6 @@ import numpy as np
 import Shryne.config as config
 
 
-# TODO these can be removed
-def _sum(x):
-    return np.nansum(x)
-
-
-def _average_sentiment(x):
-    return np.nanmean(x)
-
-
 def _average_time(x):
 
     #TODO we may need to tweak the time limit
@@ -90,34 +81,33 @@ def resample_dataframe(df, period='D'):
     output_df = pd.DataFrame()
 
     # get the message counts total and for the user and contact
-    output_df["message_count"] = df[time_field].value_counts().resample(period, how=_sum)
-    output_df["message_count_user"] = df[~df["to_from"]][time_field].value_counts().resample(period, how=_sum)
-    output_df["message_count_contact"] = df[df["to_from"]][time_field].value_counts().resample(period, how=_sum)
+    output_df["message_count"] = df[time_field].value_counts().resample(period).apply(np.nansum)
+    output_df["message_count_user"] = df[~df["to_from"]][time_field].value_counts().resample(period).apply(np.nansum)
+    output_df["message_count_contact"] = df[df["to_from"]][time_field].value_counts().resample(period).apply(np.nansum)
 
     output_df['sent_at'] = df[time_field]
     output_df['relationship'] = df["relationship"]
-
 
     df.set_index(time_field, inplace=True, drop=False)
 
     # get the total word counts and for the user and contact
     keys = ["word_count"]
     for k in keys:
-        output_df[k] = df[k].resample(period, how=_sum)
-        output_df[k + "_user"] = df[~df["to_from"]][k].resample(period, how=_sum)
-        output_df[k + "_contact"] = df[df["to_from"]][k].resample(period, how=_sum)
+        output_df[k] = df[k].resample(period).apply(np.nansum)
+        output_df[k + "_user"] = df[~df["to_from"]][k].resample(period).apply(np.nansum)
+        output_df[k + "_contact"] = df[df["to_from"]][k].resample(period).apply(np.nansum)
 
     # get the sentiments overall and for the user and contact individually
     keys = ["positive", "negative", "neutral", "compound"]
     for k in keys:
-        output_df[k] = df[k].resample(period, how=_average_sentiment)
-        output_df[k + "_user"] = df[~df["to_from"]][k].resample(period, how=_average_sentiment)
-        output_df[k + "_contact"] = df[df["to_from"]][k].resample(period, how=_average_sentiment)
+        output_df[k] = df[k].resample(period).apply(np.nanmean)
+        output_df[k + "_user"] = df[~df["to_from"]][k].resample(period).apply(np.nanmean)
+        output_df[k + "_contact"] = df[df["to_from"]][k].resample(period).apply(np.nanmean)
 
     # get the time differences
-    output_df["response_time"] = df["response_time"].resample(period, how=_average_time)
-    output_df["response_time_user"] = df[~df["to_from"]]["response_time"].resample(period, how=_average_time)
-    output_df["response_time_contact"] = df[df["to_from"]]["response_time"].resample(period, how=_average_time)
+    output_df["response_time"] = df["response_time"].resample(period).apply(_average_time)
+    output_df["response_time_user"] = df[~df["to_from"]]["response_time"].resample(period).apply(_average_time)
+    output_df["response_time_contact"] = df[df["to_from"]]["response_time"].resample(period).apply(_average_time)
 
     # now compute reciprocity between users
     output_df["sentiment_reciprocity"] = (output_df["compound_contact"] - output_df["compound_user"]).abs()

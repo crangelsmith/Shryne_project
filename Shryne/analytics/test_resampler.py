@@ -80,21 +80,6 @@ def test_find_ratio():
         assert find_ratio(test, 'message_count') == ratio_pass[x]
 
 
-def test__sum():
-    empty_test = []
-    empty_pass = 0
-
-    sum_test = [1,2,3,4,5,6,7,8,9,10]
-    sum_pass = 55
-
-    nan_test = [np.nan, np.nan, np.nan]
-    nan_pass = 0
-
-    assert _sum(empty_test) == empty_pass
-    assert _sum(sum_test) == sum_pass
-    assert _sum(nan_test) == nan_pass
-
-
 def test__average_time():
 
     # set up correct time limit for testing
