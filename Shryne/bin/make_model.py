@@ -6,8 +6,6 @@ import Shryne.mining.query as query
 import Shryne.cleaning.clean_df as clean_df
 import Shryne.sentiment_analysis.vader_sentiment_analysis as vsa
 import Shryne.analytics.feature_creation as feature_creator
-import Shryne.modeling.create_training_datasets as labeller
-import Shryne.modeling.build_model as model_builder
 import Shryne.out.
 
 import Shryne.config as config
