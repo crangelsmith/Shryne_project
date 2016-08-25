@@ -103,7 +103,6 @@ def test__average_time():
     assert np.isnan(_average_time(empty_test))
     assert _average_time(greater_than_time_limit) == greater_than_time_limit_pass
     assert _average_time(less_than_time_limit) == less_than_time_limit_pass
-<<<<<<< HEAD
     assert _average_time(nan_mean_time_limit) == nan_mean_pass
 
 def test_resample_dataframe():
@@ -116,11 +115,7 @@ def test_resample_dataframe():
                      '2016-09-01','2016-09-02','2016-09-03','2016-09-04',
                      '2016-10-01''2016-10-02']
 
-    output_df['sent_at'] =
 
-    df['relationship'] = ['Ex','Ex','Ex','Ex','Ex','Ex','Ex','Ex','Ex','Ex','Ex','Ex','Ex','Ex']
-
-    output_df['relationship'] = ['Ex','Ex','Ex','Ex','Ex','Ex']
 
     df['to_from'] = [True, False, True, False, True, True, True, True, True,
                      False, True, False, True, True]
@@ -178,6 +173,3 @@ def test_resample_dataframe():
     output_df['sentiment_reciprocity'] = [0,0,0,0,0.2,0]
 
     assert resample_dataframe(df, 'M').equals(output_df)
-=======
-    assert _average_time(nan_mean_time_limit) == nan_mean_pass
->>>>>>> 3203b7a555388ff45db39e65125bb48263d018ea
