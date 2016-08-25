@@ -14,7 +14,7 @@ def test__word_count_feature():
     assert _word_count_feature(word_count_test).equals(word_count_pass)
 
 
-def test__time_response():
+def test__time_response_feature():
     hours_24 = 24*3600
 
     time_response_test = pd.DataFrame({'sent_at': [datetime.date(2011, 5, 1),
