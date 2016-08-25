@@ -117,13 +117,9 @@ def test__average_time():
         time_limit = config.resampler['response_time_limit_romantic'] * 3600
 
     empty_test = []
-    empty_pass = time_limit
 
     greater_than_time_limit = [time_limit + 1] * 2
     greater_than_time_limit_pass = time_limit
-
-    zero_mean_time_limit = [0,0,0,0,0,0]
-    zero_mean_time_limit_pass = time_limit
 
     less_than_time_limit = [1,2,3,4,5,6,7,8,9,10]
     less_than_time_limit_pass = 5.5
@@ -131,9 +127,8 @@ def test__average_time():
     nan_mean_time_limit = [np.nan,2,3,np.nan,np.nan,7,8,np.nan,np.nan,10]
     nan_mean_pass = 6.0
 
-    assert _average_time(empty_test) == empty_pass
+    assert np.isnan(_average_time(empty_test))
     assert _average_time(greater_than_time_limit) == greater_than_time_limit_pass
-    assert _average_time(zero_mean_time_limit) == zero_mean_time_limit_pass
     assert _average_time(less_than_time_limit) == less_than_time_limit_pass
     assert _average_time(nan_mean_time_limit) == nan_mean_pass
 

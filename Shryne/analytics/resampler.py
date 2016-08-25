@@ -24,12 +24,8 @@ def _average_time(x):
     elif config.model == 'romantic':
         time_limit = config.resampler['response_time_limit_romantic'] * 3600  # in seconds
 
-    x_mean = np.nanmean(x)
-    if np.isnan(x_mean):
-        return time_limit  #FIXME this line was before returning nans, now returns time limit, may break model!
-    elif x_mean > time_limit:
-        return time_limit
-    elif x_mean == 0:
+    x_mean = np.nanmean(x)  # if all nans returns nan
+    if x_mean > time_limit:
         return time_limit
     else:
         return x_mean
