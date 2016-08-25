@@ -8,10 +8,6 @@ def _sum(x):
     return np.nansum(x)
 
 
-def _average(x):
-    return np.nanmean(x)
-
-
 def _average_sentiment(x):
     return np.nanmean(x)
 

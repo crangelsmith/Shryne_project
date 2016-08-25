@@ -95,19 +95,6 @@ def test__sum():
     assert _sum(nan_test) == nan_pass
 
 
-def test__average():
-    empty_test = []
-
-    avg_test = [1,2,3,4,5,6,7,8,9,10]
-    avg_pass = 5.5
-
-    nan_test = [np.nan, np.nan, np.nan]
-
-    assert np.isnan(_average(empty_test))
-    assert _average(avg_test) == avg_pass
-    assert np.isnan(_average(nan_test))
-
-
 def test__average_time():
 
     # set up correct time limit for testing
