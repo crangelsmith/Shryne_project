@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import Shryne.config as config
+import config as config
 
 
 def _average_time(x):
@@ -76,7 +76,7 @@ def resample_dataframe(df, period='D'):
     if isinstance(df[time_field].tolist()[0], str):
         df[time_field] = pd.to_datetime(df[time_field])
     else:
-        print("nothing to be done")
+        pass#print("nothing to be done")
 
     output_df = pd.DataFrame()
 

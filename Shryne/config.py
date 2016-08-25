@@ -14,3 +14,5 @@ resampler = {'response_time_limit_romantic': 6,  # max time for response in hour
 extremes_sample = {'top': 0.5,  # choose the top 50 %
              'bottom': 0.3,  # choose the bottom 30%
                    }
+predictors = ["label", "message_count", "compound", "word_count", "message_count_reciprocity", "word_count_reciprocity",
+         "response_time", "response_time_reciprocity", "sentiment_reciprocity"]

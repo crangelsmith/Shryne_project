@@ -9,6 +9,7 @@ import Shryne.config as config
 from resampler import sentiment_cleaning
 from resampler import _average_time
 from resampler import find_ratio
+from resampler import resample_dataframe
 
 
 def test_sentiment_cleaning():
@@ -103,3 +104,72 @@ def test__average_time():
     assert _average_time(greater_than_time_limit) == greater_than_time_limit_pass
     assert _average_time(less_than_time_limit) == less_than_time_limit_pass
     assert _average_time(nan_mean_time_limit) == nan_mean_pass
+
+def test_resample_dataframe():
+
+    df = pd.DataFrame()
+    output_df = pd.DataFrame()
+
+    df['sent_at'] = ['2016-05-01','2016-05-02','2016-05-03','2016-05-04',
+                     '2016-06-02','2016-06-03','2016-07-02','2016-07-03',
+                     '2016-09-01','2016-09-02','2016-09-03','2016-09-04',
+                     '2016-10-01''2016-10-02']
+
+
+
+    df['to_from'] = [True, False, True, False, True, True, True, True, True,
+                     False, True, False, True, True]
+
+    df['positive'] = [0,0,0,0,0,0,0,0,0.5,0.2,0.2,0.3,0.1,0.1]
+
+    df['negative'] = [0,0,0,0,0,0,0,0,0.5,0.9,0.9,0.3,0.1,0.2]
+
+    df['neutral'] = [ 0,0,0,0,0,0,0,0,0.5,0.5,0.2,0.3,0.1,0.1]
+
+    df['compound'] = [0,0,0,0,0,0,0,0,0.5,-0.5,-0.3,0.3,0.1,-0.1]
+
+    df['word_count'] = [20,0,10,2,10,10,0,0,0,0,0,0,0,0]
+
+    output_df['message_count_user'] = [0.5,0.25,0.25,0,0,0]
+
+    output_df['message_count_contact'] = [1,0,0,0,0,0]
+
+    output_df['message_count'] = [0.6,0.2,0.2,0,0,0]
+
+    output_df['word_count'] = [52/72,20/72,0,0,0,0]
+
+    output_df['word_count_user'] = [5/7, 2/7, 0, 0,0,0]
+
+    output_df['word_count_contact'] = [1,0,0,0,0,0]
+
+    output_df['message_count_reciprocity'] = [0.5,0,0,0,0,0]
+
+    output_df['word_count_reciprocity'] = [0.04,0,0,0,0,0]
+
+    output_df['positive'] = [0,0,0,0,0.3,0.1]
+
+    output_df['negative'] = [0,0,0,0,0.65,0.15]
+
+    output_df['neutral'] = [0,0,0,0,0.375,0.1]
+
+    output_df['compound'] = [0,0,0,0,0,0]
+
+    output_df['positive_user'] = [0,0,0,0,0.35,0.1]
+
+    output_df['negative_user'] = [0,0,0,0,0.7,0.15]
+
+    output_df['neutral_user'] = [0,0,0,0,0.35,0.1]
+
+    output_df['compound_user'] = [0,0,0,0,0.1,0]
+
+    output_df['positive_contact'] = [0,0,0,0,0.25,0]
+
+    output_df['negative_contact'] = [0,0,0,0,0.6,0]
+
+    output_df['neutral_contact'] = [0,0,0,0,0.4,0]
+
+    output_df['compound_contact'] = [0,0,0,0,-0.1,0]
+
+    output_df['sentiment_reciprocity'] = [0,0,0,0,0.2,0]
+
+    assert resample_dataframe(df, 'M').equals(output_df)
