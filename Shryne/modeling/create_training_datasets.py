@@ -1,5 +1,5 @@
-import Shryne.config as config
-import Shryne.analytics.resampler as resampler
+import config as config
+import resampler as resampler
 import pandas as pd
 
 
@@ -51,16 +51,24 @@ def build_labeled_samples(df, model):
         list_bad.append(low_volume_sample)
 
     ## create labels
+    ## Predictor labels are found in the config file
 
     good_df = pd.concat(list_good)
+    good_df = good_df[config.predictors]
+    good_df.dropna(axis=0, inplace=True)
     good_df['label'] = 1
 
     bad_df = pd.concat(list_bad)
+    bad_df = bad_df[config.predictors]
+    bad_df.dropna(axis=0, inplace=True)
     bad_df['label'] = 0
 
-    labeled_sample = pd.concat([good_df, bad_df])
+    labelled_df = pd.concat([good_df, bad_df])
 
-    return labeled_sample
+    if (labelled_df.empty == False) & (labelled_df.isnull().values.any() == False):
+        return labelled_df
+
+    else: print "Dataframe has nans or is empty"
 
 
 
