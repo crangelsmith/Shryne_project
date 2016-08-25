@@ -2,12 +2,12 @@ import pandas as pd
 import numpy as np
 
 def create_features(df):
-    df = word_count_feature(df)
-    df = time_response(df)
+    df = _word_count_feature(df)
+    df = _time_response_feature(df)
     return df
 
 
-def word_count_feature(df):
+def _word_count_feature(df):
     word_count = []
     for x in df['message']:
         x = str(x)
@@ -17,7 +17,7 @@ def word_count_feature(df):
     return df
 
 
-def time_response(df):
+def _time_response_feature(df):
     '''
     Vectorised response time calculator.  Algorithm is:
 
