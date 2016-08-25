@@ -103,6 +103,3 @@ def test__average_time():
     assert _average_time(greater_than_time_limit) == greater_than_time_limit_pass
     assert _average_time(less_than_time_limit) == less_than_time_limit_pass
     assert _average_time(nan_mean_time_limit) == nan_mean_pass
-
-
-
