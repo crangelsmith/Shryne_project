@@ -7,7 +7,7 @@ import numpy as np
 import Shryne.config as config
 
 from resampler import sentiment_cleaning
-from resampler import _sum, _average, _average_time
+from resampler import _average_time
 from resampler import find_ratio
 
 
