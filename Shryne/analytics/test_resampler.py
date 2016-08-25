@@ -63,6 +63,22 @@ def test_find_ratio():
 
     assert find_ratio(zero_one_test, 'message_count') == 0
 
+    one_one_test = pd.DataFrame({'message_count_user': [1],
+                                 'message_count_contact': [1]})
+
+    assert find_ratio(one_one_test, 'message_count') == 1
+
+    user = [1, 0, 0, 1, 0.5, 1.0, 0.0, 0.5, 0.6, 2, 1]
+
+    contact = [0, 1, 0, 1, 0.5, 1.0, 0.0, 0.6, 0.5, 1, 2]
+
+    ratio_pass = [0, 0 ,0 ,1, 1, 1, 0, 0.5/0.6, 0.5/0.6, 0.5, 0.5]
+
+    for x in range(len(user)):
+        test = pd.DataFrame({'message_count_user': [user[x]],
+                             'message_count_contact': [contact[x]]})
+        assert find_ratio(test, 'message_count') == ratio_pass[x]
+
 
 def test__sum():
     empty_test = []
