@@ -16,3 +16,5 @@ extremes_sample = {'top': 0.5,  # choose the top 50 %
                    }
 predictors = ["message_count", "compound", "word_count", "message_count_reciprocity", "word_count_reciprocity",
          "response_time", "response_time_reciprocity", "sentiment_reciprocity"]
+
+robust_model = {'mean':0.65, 'std':0.1}
