@@ -7,7 +7,7 @@ import numpy as np
 import Shryne.config as config
 
 from resampler import sentiment_cleaning
-from resampler import _sum, _average, _average_time
+from resampler import _average_time
 from resampler import find_ratio
 from resampler import resample_dataframe
 
@@ -81,34 +81,6 @@ def test_find_ratio():
         assert find_ratio(test, 'message_count') == ratio_pass[x]
 
 
-def test__sum():
-    empty_test = []
-    empty_pass = 0
-
-    sum_test = [1,2,3,4,5,6,7,8,9,10]
-    sum_pass = 55
-
-    nan_test = [np.nan, np.nan, np.nan]
-    nan_pass = 0
-
-    assert _sum(empty_test) == empty_pass
-    assert _sum(sum_test) == sum_pass
-    assert _sum(nan_test) == nan_pass
-
-
-def test__average():
-    empty_test = []
-
-    avg_test = [1,2,3,4,5,6,7,8,9,10]
-    avg_pass = 5.5
-
-    nan_test = [np.nan, np.nan, np.nan]
-
-    assert np.isnan(_average(empty_test))
-    assert _average(avg_test) == avg_pass
-    assert np.isnan(_average(nan_test))
-
-
 def test__average_time():
 
     # set up correct time limit for testing
@@ -118,13 +90,9 @@ def test__average_time():
         time_limit = config.resampler['response_time_limit_romantic'] * 3600
 
     empty_test = []
-    empty_pass = time_limit
 
     greater_than_time_limit = [time_limit + 1] * 2
     greater_than_time_limit_pass = time_limit
-
-    zero_mean_time_limit = [0,0,0,0,0,0]
-    zero_mean_time_limit_pass = time_limit
 
     less_than_time_limit = [1,2,3,4,5,6,7,8,9,10]
     less_than_time_limit_pass = 5.5
@@ -132,10 +100,10 @@ def test__average_time():
     nan_mean_time_limit = [np.nan,2,3,np.nan,np.nan,7,8,np.nan,np.nan,10]
     nan_mean_pass = 6.0
 
-    assert _average_time(empty_test) == empty_pass
+    assert np.isnan(_average_time(empty_test))
     assert _average_time(greater_than_time_limit) == greater_than_time_limit_pass
-    assert _average_time(zero_mean_time_limit) == zero_mean_time_limit_pass
     assert _average_time(less_than_time_limit) == less_than_time_limit_pass
+<<<<<<< HEAD
     assert _average_time(nan_mean_time_limit) == nan_mean_pass
 
 def test_resample_dataframe():
@@ -210,3 +178,6 @@ def test_resample_dataframe():
     output_df['sentiment_reciprocity'] = [0,0,0,0,0.2,0]
 
     assert resample_dataframe(df, 'M').equals(output_df)
+=======
+    assert _average_time(nan_mean_time_limit) == nan_mean_pass
+>>>>>>> 3203b7a555388ff45db39e65125bb48263d018ea
