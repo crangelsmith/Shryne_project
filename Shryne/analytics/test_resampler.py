@@ -111,14 +111,14 @@ def test_resample_dataframe():
     df = pd.DataFrame()
     output_df = pd.DataFrame()
 
-    df['sent_at'] = ['2016-05-01 12:00:00','2016-05-01 12:01:00',
+    df['sent_at'] = ['2016-05-01 12:00','2016-05-01 12:01:00',
                      '2016-05-01 12:02:00','2016-05-01 12:03:00',
                      '2016-06-02','2016-06-03','2016-07-02','2016-07-03',
                      '2016-09-01 12:00:00','2016-09-01 12:00:01',
                      '2016-09-01 12:00:02','2016-09-01 12:00:03',
                      '2016-10-01','2016-10-02']
 
-    df['response_time'] = [0, 60, 60, 60, 0, 0, 0, 0, 0, 60, 60, 60, 0, 0]
+    df['response_time'] = [np.nan, 60, 60, 60, np.nan, np.nan, np.nan, np.nan, np.nan, 60, 60, 60, np.nan, np.nan]
 
     df['to_from'] = [True, False, True, False, True, True, True, True, True,
                      False, True, False, True, True]
