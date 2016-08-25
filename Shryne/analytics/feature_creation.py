@@ -2,13 +2,18 @@ import pandas as pd
 import numpy as np
 
 def create_features(df):
+    df = word_count_feature(df)
+    df = time_response(df)
+    return df
+
+
+def word_count_feature(df):
     word_count = []
     for x in df['message']:
         x = str(x)
         split_string = x.split()
         word_count.append(len(split_string))
     df['word_count'] = word_count
-
     return df
 
 
@@ -39,8 +44,6 @@ def time_response(df):
     time_field = 'sent_at'
     if isinstance(df[time_field].tolist()[0], str):
         df[time_field] = pd.to_datetime(df[time_field])
-    else:
-        print("nothing to be done")
 
     df['response_time'] = 0
 
