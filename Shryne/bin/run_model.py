@@ -22,7 +22,7 @@ def main():
     conn = db_connection.get_connection()
 
     # run query and get dataframe
-    current_query = querier(conn, the_query)
+    current_query = querier(conn, q_run)
     df = current_query.get_query_dataframe()
 
     # clean df

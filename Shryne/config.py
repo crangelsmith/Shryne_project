@@ -2,6 +2,13 @@
 
 # set flag for processing type
 
+# Query for make_model.py
+q_make = "SELECT * FROM all_msgs_tf"
+
+# Query for run_model.py
+# Contact id must be changed to the contact you wish to analyse.
+q_run = "SELECT * FROM all_msgs_tf WHERE contact_id = 25364"
+
 # set the model type to be run
 model = 'romantic'  # 'not_romantic'
 
