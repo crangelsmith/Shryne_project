@@ -9,9 +9,12 @@ import Shryne.analytics.feature_creation as feature_creator
 import Shryne.out.make_json as js
 import Shryne.analytics.resampler as resampler
 import Shryne.config as config
+import sys
 
 
 def main():
+
+    contact_id = sys.argv[1:]
 
     # setup some objects
     db_connection = connector.ConnectDB()
@@ -21,7 +24,7 @@ def main():
     conn = db_connection.get_connection()
 
     # run query and get dataframe
-    df = query.Query(conn, config.q_run).get_query_dataframe()
+    df = query.Query(conn, config.q_run+contact_id).get_query_dataframe()
 
     # clean df
     df = clean_df.run_cleaning(df)
@@ -46,7 +49,7 @@ def main():
         with open(config.not_romantic_model_file_path, 'rb') as f:
             model = pickle.load(f)
     else:
-        with open(config.romantic_model_file_path, 'rb') as f:
+        with open("../data/model", 'rb') as f:
             model = pickle.load(f)
 
     df_prediction = df[config.predictors]
@@ -56,7 +59,7 @@ def main():
     df['probs'] = model.predict_proba(df_prediction)[:, 1]
 
     # return json output
-    js.make_json(df,33008)
+    js.make_json(df,contact_id)
 
 
 
