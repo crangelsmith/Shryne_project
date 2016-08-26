@@ -1,63 +1,52 @@
 import sys
-import os
-import pickle
+import cPickle as pickle
 
-module_path = os.path.abspath(os.path.join('..'))
-if module_path not in sys.path:
-    sys.path.append(module_path)
+import Shryne.mining.connector as connector
+import Shryne.mining.query as query
+import Shryne.cleaning.clean_df as clean_df
+import Shryne.sentiment_analysis.vader_sentiment_analysis as vsa
+import Shryne.analytics.feature_creation as feature_creator
+import Shryne.modeling.create_training_datasets as labeller
+import Shryne.modeling.build_model as model_builder
 
-import mining.connector as connector
-import mining.query as query
-import cleaning.clean_df as clean_df
-import sentiment_analysis.vader_sentiment_analysis as vsa
-import analytics.feature_creation as feature_creator
-import modeling.create_training_datasets as labeller
-import modeling.build_model as model_builder
-
-import config as config
+import Shryne.config as config
 
 
 def main():
 
     # setup some objects
     db_connection = connector.ConnectDB()
+    sentiment_analyser = vsa.SentimentAnalyser()
 
     # connect to database
     conn = db_connection.get_connection()
 
-    sentiment_analyser = vsa.SentimentAnalyser()
-    querier = query.Query(conn, config.q_make)
-
     # run query and get dataframe
     # query found in the config
-    try:
-        pickle.load("../data/result_10000.p")
-    except:
-        #current_query = querier(conn, config.q_make)
-        df = querier.get_query_dataframe()
-        pickle.dump(df, open('../data/result_10000.p', 'wb'))
-
+    df = query.Query(conn, config.q_make).get_query_dataframe()
 
     # clean df
-    cleaned_df = clean_df.run_cleaning(df)
+    df = clean_df.run_cleaning(df)
 
     # sentiment analysis
-    cleaned_df_with_sentiment = sentiment_analyser.run_vader(cleaned_df, 'message')
+    df = sentiment_analyser.run_vader(df, 'message')
 
     # feature generation
-    cleaned_df_with_sentiment_and_features = feature_creator.create_features(cleaned_df_with_sentiment)
+    df = feature_creator.create_features(df)
 
     # create datasets
-    labelled_df_romantic = labeller.build_labeled_samples(cleaned_df_with_sentiment_and_features, 'romantic')
-    labelled_df_not_romantic = labeller.build_labeled_samples(cleaned_df_with_sentiment_and_features, 'not_romantic')
+    labelled_df_romantic = labeller.build_labeled_samples(df, 'romantic')
+    labelled_df_not_romantic = labeller.build_labeled_samples(df, 'not_romantic')
 
     # build model
     romatic_model = model_builder.build_model(labelled_df_romantic)
     not_romatic_model = model_builder.build_model(labelled_df_not_romantic)
 
     # dump models
-    pickle.dump(romatic_model, config.romantic_model_file_path)
-    pickle.dump(not_romatic_model, config.not_romantic_model_file_path)
+    with open(config.romantic_model_file_path, 'wb') as f:
+        pickle.dump(romatic_model, f)
+    with open(config.not_romantic_model_file_path, 'wb') as f:
+        pickle.dump(not_romatic_model, f)
 
 if __name__ == "__main__":
     sys.exit(main())

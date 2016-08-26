@@ -1,12 +1,6 @@
-import os
-import sys
+import Shryne.config as config
+import Shryne.analytics.resampler as resampler
 
-module_path = os.path.abspath(os.path.join('..'))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
-import config as config
-import analytics.resampler as resampler
 import pandas as pd
 
 

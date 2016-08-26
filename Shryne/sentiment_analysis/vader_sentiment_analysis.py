@@ -1,8 +1,4 @@
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-import pandas as pd
-import math
-
-import matplotlib.pyplot as plt
 
 class SentimentAnalyser(object):
 

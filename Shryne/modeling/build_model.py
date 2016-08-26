@@ -1,12 +1,4 @@
-import os
-import sys
-
-module_path = os.path.abspath(os.path.join('..'))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
-
-import config as config
+import Shryne.config as config
 from sklearn.linear_model import LogisticRegression
 from sklearn.cross_validation import cross_val_score
 

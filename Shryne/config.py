@@ -7,7 +7,7 @@ q_make = "SELECT * FROM all_msgs_tf LIMIT 10000"
 
 # Query for run_model.py
 # Contact id must be changed to the contact you wish to analyse.
-q_run = "SELECT * FROM all_msgs_tf WHERE contact_id = 25364"
+q_run = "SELECT * FROM all_msgs_tf WHERE contact_id = 33008"
 
 # set the model type to be run
 model = 'romantic'  # 'not_romantic'
@@ -25,3 +25,7 @@ predictors = ["message_count", "compound", "word_count", "message_count_reciproc
          "response_time", "response_time_reciprocity", "sentiment_reciprocity"]
 
 robust_model = {'mean':0.65, 'std':0.1}
+
+# file paths
+romantic_model_file_path = '../data/romantic_model.p'
+not_romantic_model_file_path = '../data/not_romantic_model.p'
