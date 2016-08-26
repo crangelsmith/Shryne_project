@@ -45,12 +45,13 @@ def main():
         with open(config.romantic_model_file_path, 'rb') as f:
             model = pickle.load(f)
 
-    df = df[config.predictors]
+    df_prediction = df[config.predictors]
+
     df.dropna(inplace=True)
-    df['probs'] = model.predict_proba(df)
+    df_prediction.dropna(inplace=True)
+    df['probs'] = model.predict_proba(df_prediction)[:, 1]
 
     # return json output
-
     js.make_json(df,33008)
 
 
