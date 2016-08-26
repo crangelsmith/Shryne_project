@@ -105,7 +105,7 @@ Make sure we are using all the right versions of software
 
 Copy Shryne into the site package folder of the virtualenv
 
-- `cp path-to-Shyrne path-to-virtualenv/lib/python2.7/sitepackages/`
+- `cp -r path-to-Shyrne/Shryne_Project/Shryne path-to-virtualenv/lib/python2.7/sitepackages/`
 
 
 ### Building two seperate models (romantic and non romantic)
