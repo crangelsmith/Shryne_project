@@ -84,9 +84,6 @@ Install virtualenv
 
 - `pip install virtualenv`
 
-Make sure we are using all the right versions of software
-
-- `pip install -r requirements.txt`
 
 Create the virtualenv whilst in Shryne_project/Shryne
 
@@ -96,12 +93,21 @@ Activate the the virtualenv
 
 - `source venv/bin/activate`
 
+Make sure we are using all the right versions of software
+
+- `pip install -r requirements.txt`
+
+Copy Shryne into the site package folder of the virtualenv
+
+- `cp path-to-Shyrne path-to-virtualenv/lib/python2.7/sitepackages/Shryne/bin`
+
+
 ### Building two seperate models (romantic and non romantic)
 
 Make the romantic and non-romantic models. This will take at least a few hours (possibly 6) 
 to run on a laptop and output to pickle : Shryne/data/romantic_model.p 
 
-- `cd Shryne/bin`
+- `cd path-to-virtualenv/lib/python2.7/sitepackages/Shryne/bin`
 - `python make_model.py`
 
 
@@ -110,7 +116,7 @@ to run on a laptop and output to pickle : Shryne/data/romantic_model.p
 in the same way as make_model.py. Then, this data is fed through the model to make a
 prediction which is output as a .json file in ../out folder. 
 
-- `cd Shryne/bin`
+- `cd path-to-virtualenv/lib/python2.7/sitepackages/Shryne/bin`
 
 Change the numbers 12367 for the contact_id you wish to query.
 - `python run_model.py 12367`
