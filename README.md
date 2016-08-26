@@ -73,7 +73,7 @@ The structure of this repo is the following:
 - **bin**: contains run_model.py and make_model.py scripts to be ran.
 
 Steps to run this code:
-
+-
 
 
 
