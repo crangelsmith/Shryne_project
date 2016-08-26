@@ -27,7 +27,7 @@ def main():
     try:
         pickle.load("")
     except:
-        current_query = querier(conn, q_make)
+        current_query = querier(conn, config.q_make)
         df = current_query.get_query_dataframe()
         pickle.dump(df, '')
 
