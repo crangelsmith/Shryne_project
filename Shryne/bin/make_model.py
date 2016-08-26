@@ -23,10 +23,11 @@ def main():
     conn = db_connection.get_connection()
 
     # run query and get dataframe
+    # query found in the config
     try:
         pickle.load("")
     except:
-        current_query = querier(conn, the_query)
+        current_query = querier(conn, q_make)
         df = current_query.get_query_dataframe()
         pickle.dump(df, '')
 
