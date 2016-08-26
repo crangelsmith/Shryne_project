@@ -14,7 +14,7 @@ import sys
 
 def main():
 
-    contact_id = str(33008)  # sys.argv[1]
+    contact_id = sys.argv[1]
 
     # setup some objects
     db_connection = connector.ConnectDB()
@@ -59,7 +59,7 @@ def main():
     df['probs'] = model.predict_proba(df_prediction)[:, 1]
 
     # return json output
-    js.make_json(df,contact_id)
+    js.make_json(df, contact_id)
 
 
 
