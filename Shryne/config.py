@@ -7,7 +7,7 @@ q_make = "SELECT * FROM all_msgs_tf LIMIT 10000"
 
 # Query for run_model.py
 # Contact id must be changed to the contact you wish to analyse.
-q_run = "SELECT * FROM all_msgs_tf WHERE contact_id = 33008"
+q_run = "SELECT * FROM all_msgs_tf WHERE contact_id = "
 
 #set the proessing parameters for resampler
 resampler = {'response_time_limit_romantic': 6,  # max time for response in hours

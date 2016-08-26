@@ -8,9 +8,9 @@ def make_json(df, contact_id):
         'dates':df.index.strftime('%Y/%m/%d/').tolist(),
         'MessageCount':df['message_count'].tolist(),
         'MessageCountReciprocity':df['message_count_reciprocity'].tolist(),
-        'Sentiment':df['sentiment'].tolist(),
-        'SentimentUser':df['sentiment_user'].tolist(),
-        'SentimentContact':df['sentiment_contact'].tolist(),
+        'Sentiment':df['compound'].tolist(),
+        'SentimentUser':df['compound_user'].tolist(),
+        'SentimentContact':df['compound_contact'].tolist(),
         'HealthScore':df['probs'].tolist()
     }
 
