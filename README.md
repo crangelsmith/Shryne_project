@@ -75,6 +75,12 @@ The structure of this repo is the following:
 
 Steps to run this code:
 
+The system has been developed in Python 2.7
+
+To run psycopg2 the following command need to be run:
+
+- 'sudo apt-get install libpq-dev python-dev'
+
 ### Setting up the virtualenv inside Shryne_project
 Install pip (if you don't have already)
 
@@ -99,7 +105,7 @@ Make sure we are using all the right versions of software
 
 Copy Shryne into the site package folder of the virtualenv
 
-- `cp path-to-Shyrne path-to-virtualenv/lib/python2.7/sitepackages/Shryne/bin`
+- `cp path-to-Shyrne path-to-virtualenv/lib/python2.7/sitepackages/`
 
 
 ### Building two seperate models (romantic and non romantic)

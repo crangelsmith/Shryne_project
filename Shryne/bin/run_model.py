@@ -14,7 +14,7 @@ import sys
 
 def main():
 
-    contact_id = sys.argv[1:]
+    contact_id = sys.argv[1]
 
     # setup some objects
     db_connection = connector.ConnectDB()
@@ -34,18 +34,22 @@ def main():
 
     # check relationship type, load correct model based on type and run model
     relationship = df['relationship'][0]
+    if relationship in ['Family', 'Friend', 'General', 'Other']:
+        model_type = 'romantic'
+    else:
+        model_type = 'not_romantic'
 
     # feature generation
     df = feature_creator.create_features(df)
 
-    df = resampler.resample_dataframe(df, config.resampler['period'])
+    df = resampler.resample_dataframe(df, model_type, config.resampler['period'])
 
     # check relationship type, load correct model based on type and run model
     if relationship in ['Family', 'Friends', 'General']:
         with open(config.not_romantic_model_file_path, 'rb') as f:
             model = pickle.load(f)
     else:
-        with open("../data/model", 'rb') as f:
+        with open(config.romantic_model_file_path, 'rb') as f:
             model = pickle.load(f)
 
     df_prediction = df[config.predictors]
@@ -55,9 +59,7 @@ def main():
     df['probs'] = model.predict_proba(df_prediction)[:, 1]
 
     # return json output
-    js.make_json(df,contact_id)
-
-
+    js.make_json(df, contact_id)
 
 
 

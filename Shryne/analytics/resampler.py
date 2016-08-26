@@ -1,20 +1,15 @@
-import os
-import sys
-module_path = os.path.abspath(os.path.join('..'))
-if module_path not in sys.path:
-    sys.path.append(module_path)
-
 import pandas as pd
 import numpy as np
-import config as config
+
+import Shryne.config as config
 
 
-def _average_time(x):
+def _average_time(x, model_type):
 
     #TODO we may need to tweak the time limit
-    if config.model == 'not_romantic':
+    if model_type == 'not_romantic':
         time_limit = config.resampler['response_time_limit_not_romantic'] * 3600  # in seconds
-    elif config.model == 'romantic':
+    elif model_type == 'romantic':
         time_limit = config.resampler['response_time_limit_romantic'] * 3600  # in seconds
 
     x_mean = np.nanmean(x)  # if all nans returns nan
@@ -62,7 +57,7 @@ def find_ratio(df, variable):
     return ratio_array
 
 
-def resample_dataframe(df, period='D'):
+def resample_dataframe(df, model_type, period='D'):
     '''
     This function resamples the features
     in the dataframe to the defined timeseries
@@ -109,9 +104,9 @@ def resample_dataframe(df, period='D'):
         output_df[k + "_contact"] = df[df["to_from"]][k].resample(period).apply(np.nanmean)
 
     # get the time differences
-    output_df["response_time"] = df["response_time"].resample(period).apply(_average_time)
-    output_df["response_time_user"] = df[~df["to_from"]]["response_time"].resample(period).apply(_average_time)
-    output_df["response_time_contact"] = df[df["to_from"]]["response_time"].resample(period).apply(_average_time)
+    output_df["response_time"] = df["response_time"].resample(period).apply(_average_time, model_type=model_type)
+    output_df["response_time_user"] = df[~df["to_from"]]["response_time"].resample(period).apply(_average_time, model_type=model_type)
+    output_df["response_time_contact"] = df[df["to_from"]]["response_time"].resample(period).apply(_average_time, model_type=model_type)
 
     # now compute reciprocity between users
     output_df["sentiment_reciprocity"] = (output_df["compound_contact"] - output_df["compound_user"]).abs()
