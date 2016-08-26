@@ -98,11 +98,22 @@ Activate the the virtualenv
 
 ### Building two seperate models (romantic and non romantic)
 
+Make the romantic and non-romantic models. This will take at least a few hours (possibly 6) 
+to run on a laptop and output to pickle : ..data/romantic_model.p 
+
+- `cd Shryne/bin`
+- `python make_model.py`
 
 
 ### Making a prediction for a contact
+`run_model.py` queries the database for a particular contact and prepares their data
+in the same way as make_model.py. Then, this data is fed through the model to make a
+prediction which is output as a .json file in ../out folder. 
 
+- `cd Shryne/bin`
 
+Change the numbers 12367 for the contact_id you wish to query.
+- `python run_model.py 12367`
 
 
 
