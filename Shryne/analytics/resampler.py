@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import config as config
+import Shryne.config as config
 
 
 def _average_time(x):
