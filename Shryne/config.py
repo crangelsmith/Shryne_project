@@ -25,3 +25,7 @@ predictors = ["message_count", "compound", "word_count", "message_count_reciproc
          "response_time", "response_time_reciprocity", "sentiment_reciprocity"]
 
 robust_model = {'mean':0.65, 'std':0.1}
+
+# file paths
+romantic_model_file_path = '../data/romantic_model.p'
+not_romantic_model_file_path = '../data/not_romantic_model.p'
