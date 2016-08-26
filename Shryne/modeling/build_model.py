@@ -11,6 +11,9 @@ def build_model(df):
 
     X = df[config.predictors]
     y = df["label"]
+
+    model = model.fit(X, y)
+
     scores = cross_val_score(model, X, y, scoring='accuracy', cv=5)
 
     if scores.mean()<config.robust_model.mean or scores.std()>config.robust_model.std:
