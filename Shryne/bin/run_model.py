@@ -29,13 +29,16 @@ def main():
     # sentiment analysis
     df = sentiment_analyser.run_vader(df, 'message')
 
+    # check relationship type, load correct model based on type and run model
+    relationship = df['relationship'][0]
+
     # feature generation
     df = feature_creator.create_features(df)
 
     df = resampler.resample_dataframe(df, config.resampler['period'])
 
     # check relationship type, load correct model based on type and run model
-    if df['relationship'][0] in ['Family', 'Friends', 'General']:
+    if relationship in ['Family', 'Friends', 'General']:
         with open(config.not_romantic_model_file_path, 'rb') as f:
             model = pickle.load(f)
     else:
