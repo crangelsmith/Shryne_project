@@ -37,6 +37,13 @@ def main():
 
     # sentiment analysis
     df = sentiment_analyser.run_vader(df, 'message')
+    try:
+        pickle.load("../data/all_messages_with_sentiment.p")
+    except:
+        cleaned_df_with_sentiment = sentiment_analyser.run_vader(cleaned_df,'message')
+        pickle.dump(cleaned_df_with_sentiment, '../data/all_messages_with_sentiment.p')
+
+
 
     # feature generation
     df = feature_creator.create_features(df)

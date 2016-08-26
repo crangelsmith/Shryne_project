@@ -118,15 +118,17 @@ def replace_emojis(df):
                         '\xf0\x9f\x98\xa6': u':(',
                         '\xf0\x9f\x98\xae': u':o'}
 
-    return df.str.replace({'message': emoji_dictionary})
+    df['message'] = df['message'].replace(emoji_dictionary)
+
+    return df
 
 
 def run_cleaning(df):
-    df = drop_one_sided(df)
-    df = remove_empty_messages(df)
-    df = remove_signatures_and_after(df)
-    df = remove_urls(df)
-    df.message = replace_emojis(df.message)
-    df = remove_excess_whitespace(df)
+    two_sided_df = drop_one_sided(df)
+    empties_removed = remove_empty_messages(two_sided_df)
+    sigs_removed = remove_signatures_and_after(empties_removed)
+    urls_removed = remove_urls(sigs_removed)
+    emojis_replaced = replace_emojis(urls_removed)
+    output_df = remove_excess_whitespace(emojis_replaced)
 
-    return df
+    return output_df
