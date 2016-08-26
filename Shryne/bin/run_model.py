@@ -7,7 +7,7 @@ import Shryne.cleaning.clean_df as clean_df
 import Shryne.sentiment_analysis.vader_sentiment_analysis as vsa
 import Shryne.analytics.feature_creation as feature_creator
 import Shryne.out.make_json as js
-
+import Shryne.analytics.resampler as resampler
 import Shryne.config as config
 
 
@@ -24,26 +24,31 @@ def main():
     df = query.Query(conn, config.q_run).get_query_dataframe()
 
     # clean df
-    cleaned_df = clean_df.run_cleaning(df)
+    df = clean_df.run_cleaning(df)
 
     # sentiment analysis
-    cleaned_df_with_sentiment = sentiment_analyser.run_vader(cleaned_df, 'message')
+    df = sentiment_analyser.run_vader(df, 'message')
 
     # feature generation
-    cleaned_df_with_sentiment_and_features = feature_creator.create_features(cleaned_df_with_sentiment)
+    df = feature_creator.create_features(df)
+
+    df = resampler.resample_dataframe(df, config.resampler['period'])
 
     # check relationship type, load correct model based on type and run model
-    if cleaned_df['relationship'][0] in ['Family', 'Friends', 'General']:
+    if df['relationship'][0] in ['Family', 'Friends', 'General']:
         with open(config.not_romantic_model_file_path, 'rb') as f:
             model = pickle.load(f)
     else:
-        with open(config.romantic_model_file_path, 'rb') as f:
+        with open("../data/model", 'rb') as f:
             model = pickle.load(f)
-    cleaned_df_with_sentiment_and_features['probs'] = model.predict_proba(cleaned_df_with_sentiment_and_features)
+
+    df = df[config.predictors]
+    df.dropna(inplace=True)
+    df['probs'] = model.predict_proba(df)
 
     # return json output
 
-    js.make_json(cleaned_df_with_sentiment_and_features,33008)
+    js.make_json(df,33008)
 
 
 
