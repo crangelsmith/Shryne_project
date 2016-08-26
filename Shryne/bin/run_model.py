@@ -39,6 +39,9 @@ def main():
     else:
         with open(config.romantic_model_file_path, 'rb') as f:
             model = pickle.load(f)
+
+    # drop the nans and run model
+    cleaned_df_with_sentiment_and_features.dropna(inplace=True)
     cleaned_df_with_sentiment_and_features['probs'] = model.predict_proba(cleaned_df_with_sentiment_and_features)
 
     # return json output
