@@ -47,7 +47,7 @@ def main():
 
     df = df[config.predictors]
     df.dropna(inplace=True)
-    df['probs'] = model.predict_proba(df)
+    df['probs'] = model.predict_proba(df)[:,1]
 
     # return json output
 
