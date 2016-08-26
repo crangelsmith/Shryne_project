@@ -5,7 +5,7 @@ def make_json(df, contact_id):
      and output to the data folder"""
 
     d = {
-        'dates':df.index.tolist(),
+        'dates':df.index.strftime('%Y/%m/%d/').tolist(),
         'MessageCount':df['message_count'].tolist(),
         'MessageCountReciprocity':df['message_count_reciprocity'].tolist(),
         'Sentiment':df['sentiment'].tolist(),
@@ -14,5 +14,5 @@ def make_json(df, contact_id):
         'HealthScore':df['probs'].tolist()
     }
 
-    with open(contact_id + '_json_output.txt', 'wb') as f:
-        json.dumps(d, f)
+    with open(str(contact_id) + '_json_output.txt', 'wb') as f:
+        json.dump(d, f)
