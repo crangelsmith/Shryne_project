@@ -1,5 +1,6 @@
-import config as config
-import resampler as resampler
+import Shryne.config as config
+import Shryne.analytics.resampler as resampler
+
 import pandas as pd
 
 

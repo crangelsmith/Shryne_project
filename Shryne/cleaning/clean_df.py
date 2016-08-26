@@ -90,33 +90,33 @@ def replace_emojis(df):
     :param df:
     :return:
     """
-    emoji_dictionary = {'\xe2\x9d\xa4\xef\xb8\x8f': u'<3',
-                        '\xf0\x9f\x91\xa8': u':3',
-                        '\xf0\x9f\x92\x94': u'</3',
-                        '\xf0\x9f\x98\x82': u":')",
-                        '\xf0\x9f\x98\x83': u':)',
-                        '\xf0\x9f\x98\x84': u':D',
-                        '\xf0\x9f\x98\x87': u'o:)',
-                        '\xf0\x9f\x98\x89': u';)',
-                        '\xf0\x9f\x98\x8d': u':*',
-                        '\xf0\x9f\x98\x8e': u'8)',
-                        '\xf0\x9f\x98\x90': u':|',
-                        '\xf0\x9f\x98\x92': u':$',
-                        '\xf0\x9f\x98\x95': u':/',
-                        '\xf0\x9f\x98\x97': u':*',
-                        '\xf0\x9f\x98\x98': u':*',
-                        '\xf0\x9f\x98\x99': u':*',
-                        '\xf0\x9f\x98\x9a': u':*',
-                        '\xf0\x9f\x98\x9b': u':p',
-                        '\xf0\x9f\x98\x9c': u';d',
-                        '\xf0\x9f\x98\x9d': u'x-p',
-                        '\xf0\x9f\x98\x9e': u":'(",
-                        '\xf0\x9f\x98\xa0': u'>:(',
-                        '\xf0\x9f\x98\xa1': u':@',
-                        '\xf0\x9f\x98\xa2': u":'(",
-                        '\xf0\x9f\x98\xa5': u":'(",
-                        '\xf0\x9f\x98\xa6': u':(',
-                        '\xf0\x9f\x98\xae': u':o'}
+    emoji_dictionary = {'\xe2\x9d\xa4\xef\xb8\x8f': str(u'<3'),
+                        '\xf0\x9f\x91\xa8': str(u':3'),
+                        '\xf0\x9f\x92\x94': str(u'</3'),
+                        '\xf0\x9f\x98\x82': str(u":')"),
+                        '\xf0\x9f\x98\x83': str(u':)'),
+                        '\xf0\x9f\x98\x84': str(u':D'),
+                        '\xf0\x9f\x98\x87': str(u'o:)'),
+                        '\xf0\x9f\x98\x89': str(u';)'),
+                        '\xf0\x9f\x98\x8d': str(u':*'),
+                        '\xf0\x9f\x98\x8e': str(u'8)'),
+                        '\xf0\x9f\x98\x90': str(u':|'),
+                        '\xf0\x9f\x98\x92': str(u':$'),
+                        '\xf0\x9f\x98\x95': str(u':/'),
+                        '\xf0\x9f\x98\x97': str(u':*'),
+                        '\xf0\x9f\x98\x98': str(u':*'),
+                        '\xf0\x9f\x98\x99': str(u':*'),
+                        '\xf0\x9f\x98\x9a': str(u':*'),
+                        '\xf0\x9f\x98\x9b': str(u':p'),
+                        '\xf0\x9f\x98\x9c': str(u';d'),
+                        '\xf0\x9f\x98\x9d': str(u'x-p'),
+                        '\xf0\x9f\x98\x9e': str(u":'("),
+                        '\xf0\x9f\x98\xa0': str(u'>:('),
+                        '\xf0\x9f\x98\xa1': str(u':@'),
+                        '\xf0\x9f\x98\xa2': str(u":'("),
+                        '\xf0\x9f\x98\xa5': str(u":'("),
+                        '\xf0\x9f\x98\xa6': str(u':('),
+                        '\xf0\x9f\x98\xae': str(u':o')}
 
     df['message'] = df['message'].replace(emoji_dictionary)
 
@@ -124,11 +124,11 @@ def replace_emojis(df):
 
 
 def run_cleaning(df):
-    two_sided_df = drop_one_sided(df)
-    empties_removed = remove_empty_messages(two_sided_df)
-    sigs_removed = remove_signatures_and_after(empties_removed)
-    urls_removed = remove_urls(sigs_removed)
-    emojis_replaced = replace_emojis(urls_removed)
-    output_df = remove_excess_whitespace(emojis_replaced)
+    df = drop_one_sided(df)
+    df = remove_empty_messages(df)
+    df = remove_signatures_and_after(df)
+    df = remove_urls(df)
+    df = replace_emojis(df)
+    df = remove_excess_whitespace(df)
 
-    return output_df
+    return df

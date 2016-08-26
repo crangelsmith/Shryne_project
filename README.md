@@ -17,7 +17,7 @@ the months with the bottom 30% of the communication volume are labeled as "bad".
 
 Once we have our labeled dataset we build our Logistic Regression Model based in the following features:
 
-- Average sentiment of the messages during that month (scorers for neutral, positive, negative and compound value).
+- Average sentiment of the messages during that month (scores for neutral, positive, negative and compound value).
 - Average reciprocity in the sentiment between both sides of the relationship, defined as: |sentiment_user - sentiment_contact|
 - Proportion of words sent in that month wrt the whole relationship.
 - Average of the word reciprocity during that month. Word reciprocity is the ratio of words sent vs recieved.
@@ -34,7 +34,7 @@ created two python scripts.
 1. **make_model.py**: This script does the model training and consist of the following steps:
     - Connect to the Shryne database
     - Run query to access the relevant data from the database, dumps it into a dataframe.
-    - Performs the cleaning of the data: selects relationships with 2-sided comunication, clean text for sentiment
+    - Performs the cleaning of the data: selects relationships with 2-sided communication, clean text for sentiment
      analysis.
     - Run the sentiment analysis to all cleaned messages.
     - Generate the features needed in the model.
@@ -52,6 +52,7 @@ created two python scripts.
     - Depending on the relationship type (romantic or non-romantic), loads the train model and evaluates it
     for every month of the relationship.
     - Returns a json object with the results for each month of the relationship in the following format:
+
         d = {
         'dates':df.index.strftime('%Y/%m/%d/').tolist(),
         'MessageCount':df['message_count'].tolist(),
@@ -73,7 +74,46 @@ The structure of this repo is the following:
 - **bin**: contains run_model.py and make_model.py scripts to be ran.
 
 Steps to run this code:
--
+
+### Setting up the virtualenv inside Shryne_project
+Install pip (if you don't have already)
+
+- `sudo easy_install pip`
+
+Install virtualenv
+
+- `pip install virtualenv`
+
+Make sure we are using all the right versions of software
+
+- `pip install -r requirements.txt`
+
+Create the virtualenv whilst in Shryne_project/Shryne
+
+- `virtualenv venv`
+
+Activate the the virtualenv
+
+- `source venv/bin/activate`
+
+### Building two seperate models (romantic and non romantic)
+
+Make the romantic and non-romantic models. This will take at least a few hours (possibly 6) 
+to run on a laptop and output to pickle : Shryne/data/romantic_model.p 
+
+- `cd Shryne/bin`
+- `python make_model.py`
+
+
+### Making a prediction for a contact
+`run_model.py` queries the database for a particular contact and prepares their data
+in the same way as make_model.py. Then, this data is fed through the model to make a
+prediction which is output as a .json file in ../out folder. 
+
+- `cd Shryne/bin`
+
+Change the numbers 12367 for the contact_id you wish to query.
+- `python run_model.py 12367`
 
 
 

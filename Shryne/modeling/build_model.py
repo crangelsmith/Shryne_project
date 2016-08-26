@@ -1,4 +1,4 @@
-import config as config
+import Shryne.config as config
 from sklearn.linear_model import LogisticRegression
 from sklearn.cross_validation import cross_val_score
 
@@ -11,9 +11,12 @@ def build_model(df):
 
     X = df[config.predictors]
     y = df["label"]
+
+    model = model.fit(X, y)
+
     scores = cross_val_score(model, X, y, scoring='accuracy', cv=5)
 
-    if scores.mean()<config.robust_model.mean or scores.std()>config.robust_model.std:
+    if scores.mean() < config.robust_model['mean'] or scores.std() > config.robust_model['std']:
         print "Model is broken. Call a data scientist."
 
     return model
