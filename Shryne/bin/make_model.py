@@ -17,7 +17,6 @@ def main():
     # setup some objects
     db_connection = connector.ConnectDB()
     sentiment_analyser = vsa.SentimentAnalyser()
-    querier = query.Query()
 
     # connect to database
     conn = db_connection.get_connection()
@@ -25,25 +24,26 @@ def main():
     # run query and get dataframe
     # query found in the config
     try:
-        pickle.load("")
-    except:
-        current_query = querier(conn, config.q_make)
-        df = current_query.get_query_dataframe()
-        pickle.dump(df, '')
-
+        with open('../data/query_df.pickle.', 'rb') as f:
+            df = pickle.load(f)
+    except Exception, e:
+        print 'could not load query with error:', e
+        df = query.Query(conn, config.q_make).get_query_dataframe()
+        with open('../data/query_df.pickle.', 'wb') as f:
+            pickle.dump(df, f)
 
     # clean df
-    cleaned_df = clean_df.run_cleaning(df)
+    df = clean_df.run_cleaning(df)
 
     # sentiment analysis
-    cleaned_df_with_sentiment = sentiment_analyser.run_vader(cleaned_df, 'message')
+    df = sentiment_analyser.run_vader(df, 'message')
 
     # feature generation
-    cleaned_df_with_sentiment_and_features = feature_creator.create_features(cleaned_df_with_sentiment)
+    df = feature_creator.create_features(df)
 
     # create datasets
-    labelled_df_romantic = labeller.build_labeled_samples(cleaned_df_with_sentiment_and_features, 'romantic')
-    labelled_df_not_romantic = labeller.build_labeled_samples(cleaned_df_with_sentiment_and_features, 'not_romantic')
+    labelled_df_romantic = labeller.build_labeled_samples(df, 'romantic')
+    labelled_df_not_romantic = labeller.build_labeled_samples(df, 'not_romantic')
 
     # build model
     romatic_model = model_builder.build_model(labelled_df_romantic)

@@ -122,11 +122,11 @@ def replace_emojis(df):
 
 
 def run_cleaning(df):
-    two_sided_df = drop_one_sided(df)
-    empties_removed = remove_signatures_and_after(two_sided_df)
-    sigs_removed = remove_signatures_and_after(empties_removed)
-    urls_removed = remove_urls(sigs_removed)
-    emojis_replaced = replace_emojis(urls_removed)
-    output_df = remove_excess_whitespace(emojis_replaced)
+    df = drop_one_sided(df)
+    df = remove_empty_messages(df)
+    df = remove_signatures_and_after(df)
+    df = remove_urls(df)
+    df.message = replace_emojis(df.message)
+    df = remove_excess_whitespace(df)
 
-    return output_df
+    return df
