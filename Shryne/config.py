@@ -7,7 +7,7 @@ q_make = "SELECT * FROM all_msgs_tf LIMIT 10000"
 
 # Query for run_model.py
 # Contact id must be changed to the contact you wish to analyse.
-q_run = "SELECT * FROM all_msgs_tf WHERE contact_id = 25364"
+q_run = "SELECT * FROM all_msgs_tf WHERE contact_id = 33008"
 
 # set the model type to be run
 model = 'romantic'  # 'not_romantic'

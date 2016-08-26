@@ -6,7 +6,7 @@ import Shryne.mining.query as query
 import Shryne.cleaning.clean_df as clean_df
 import Shryne.sentiment_analysis.vader_sentiment_analysis as vsa
 import Shryne.analytics.feature_creation as feature_creator
-import Shryne.out.
+import Shryne.out.make_json as js
 
 import Shryne.config as config
 
@@ -22,7 +22,7 @@ def main():
     conn = db_connection.get_connection()
 
     # run query and get dataframe
-    current_query = querier(conn, q_run)
+    current_query = querier(conn, config.q_run)
     df = current_query.get_query_dataframe()
 
     # clean df
@@ -38,10 +38,13 @@ def main():
     if cleaned_df['relationship'][0] in ['Family', 'Friends', 'General']:
         model = pickle.load(config.not_romantic_model_file_path)
     else:
-        model = pickle.load(config.romantic_model_file_path)
+        #model = pickle.load(config.romantic_model_file_path)
+        model = pickle.load("../data/model")
     cleaned_df_with_sentiment_and_features['probs'] = model.predict_proba(cleaned_df_with_sentiment_and_features)
 
     # return json output
+
+    js.make_json(cleaned_df_with_sentiment_and_features,33008)
 
 
 
