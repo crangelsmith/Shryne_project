@@ -23,27 +23,13 @@ def main():
 
     # run query and get dataframe
     # query found in the config
-    try:
-        with open('../data/query_df.pickle', 'rb') as f:
-            df = pickle.load(f)
-    except Exception, e:
-        print 'could not load query with error:', e
-        df = query.Query(conn, config.q_make).get_query_dataframe()
-        with open('../data/query_df.pickle', 'wb') as f:
-            pickle.dump(df, f)
+    df = query.Query(conn, config.q_make).get_query_dataframe()
 
     # clean df
     df = clean_df.run_cleaning(df)
 
     # sentiment analysis
-    try:
-        with open('../data/sentiment_df.pickle', 'rb') as f:
-            df = pickle.load(f)
-    except Exception, e:
-        print 'could not load sentiment df:', e
-        df = sentiment_analyser.run_vader(df, 'message')
-        with open('../data/sentiment_df.pickle', 'wb') as f:
-            pickle.dump(df, f)
+    df = sentiment_analyser.run_vader(df, 'message')
 
     # feature generation
     df = feature_creator.create_features(df)
