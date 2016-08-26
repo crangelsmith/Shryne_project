@@ -1,5 +1,3 @@
-import os
-import sys
 import pandas as pd
 import numpy as np
 
@@ -59,7 +57,7 @@ def find_ratio(df, variable):
     return ratio_array
 
 
-def resample_dataframe(df, model, period='D'):
+def resample_dataframe(df, model_type, period='D'):
     '''
     This function resamples the features
     in the dataframe to the defined timeseries
@@ -106,9 +104,9 @@ def resample_dataframe(df, model, period='D'):
         output_df[k + "_contact"] = df[df["to_from"]][k].resample(period).apply(np.nanmean)
 
     # get the time differences
-    output_df["response_time"] = df["response_time"].resample(period).apply(_average_time, args=(model))
-    output_df["response_time_user"] = df[~df["to_from"]]["response_time"].resample(period).apply(_average_time, args=(model))
-    output_df["response_time_contact"] = df[df["to_from"]]["response_time"].resample(period).apply(_average_time, args=(model))
+    output_df["response_time"] = df["response_time"].resample(period).apply(_average_time, model_type=model_type)
+    output_df["response_time_user"] = df[~df["to_from"]]["response_time"].resample(period).apply(_average_time, model_type=model_type)
+    output_df["response_time_contact"] = df[df["to_from"]]["response_time"].resample(period).apply(_average_time, model_type=model_type)
 
     # now compute reciprocity between users
     output_df["sentiment_reciprocity"] = (output_df["compound_contact"] - output_df["compound_user"]).abs()
