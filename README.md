@@ -113,7 +113,8 @@ Copy Shryne into the site package folder of the virtualenv
 Make the romantic and non-romantic models. This will take at least a few hours (possibly 6) 
 to run on a laptop and output to pickle : Shryne/data/romantic_model.p 
 
-- `cd path-to-virtualenv/lib/python2.7/sitepackages/Shryne/bin`
+- `cd path-to-virtualenv/lib/python2.7/sitepackages/`
+- `cp path-to-virtualenv/lib/python2.7/sitepackages/Shryne/bin/make_model.py .`
 - `python make_model.py`
 
 
@@ -122,7 +123,9 @@ to run on a laptop and output to pickle : Shryne/data/romantic_model.p
 in the same way as make_model.py. Then, this data is fed through the model to make a
 prediction which is output as a .json file in ../out folder. 
 
-- `cd path-to-virtualenv/lib/python2.7/sitepackages/Shryne/bin`
+- `cd path-to-virtualenv/lib/python2.7/sitepackages/`
+- `cp path-to-virtualenv/lib/python2.7/sitepackages/Shryne/bin/run_model.py .`
+
 
 Change the numbers 12367 for the contact_id you wish to query.
 - `python run_model.py 12367`
