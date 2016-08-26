@@ -74,7 +74,41 @@ The structure of this repo is the following:
 - **bin**: contains run_model.py and make_model.py scripts to be ran.
 
 Steps to run this code:
--
+
+### Setting up the virtualenv inside Shryne_project
+Install pip (if you don't have already)
+
+- `sudo easy_install pip`
+
+Install virtualenv
+
+-`pip install virtualenv`
+
+Make sure we are using all the right versions of software
+
+-`pip install -r requirements.txt`
+
+Create the virtualenv whilst in Shryne_project/Shryne
+
+- `virtualenv venv`
+
+Activate the the virtualenv
+
+- `source venv/bin/activate`
+
+### Building two seperate models (romantic and non romantic)
+
+
+
+### Making a prediction for a contact
+
+
+
+
+
+
+
+- 
 
 
 
