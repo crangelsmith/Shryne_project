@@ -101,7 +101,7 @@ Activate the the virtualenv
 
 Make sure we are using all the right versions of software
 
-- `pip install -r requirements.txt`
+- `pip install -r Shryne/requirements.txt`
 
 Copy Shryne into the site package folder of the virtualenv
 
