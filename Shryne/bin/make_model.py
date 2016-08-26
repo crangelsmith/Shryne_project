@@ -1,35 +1,41 @@
 import sys
-import cPickle as pickle
+import os
+import pickle
 
-import Shryne.mining.connector as connector
-import Shryne.mining.query as query
-import Shryne.cleaning.clean_df as clean_df
-import Shryne.sentiment_analysis.vader_sentiment_analysis as vsa
-import Shryne.analytics.feature_creation as feature_creator
-import Shryne.modeling.create_training_datasets as labeller
-import Shryne.modeling.build_model as model_builder
+module_path = os.path.abspath(os.path.join('..'))
+if module_path not in sys.path:
+    sys.path.append(module_path)
 
-import Shryne.config as config
+import mining.connector as connector
+import mining.query as query
+import cleaning.clean_df as clean_df
+import sentiment_analysis.vader_sentiment_analysis as vsa
+import analytics.feature_creation as feature_creator
+import modeling.create_training_datasets as labeller
+import modeling.build_model as model_builder
+
+import config as config
 
 
 def main():
 
     # setup some objects
     db_connection = connector.ConnectDB()
-    sentiment_analyser = vsa.SentimentAnalyser()
-    querier = query.Query()
 
     # connect to database
     conn = db_connection.get_connection()
 
+    sentiment_analyser = vsa.SentimentAnalyser()
+    querier = query.Query(conn, config.q_make)
+
     # run query and get dataframe
     # query found in the config
     try:
-        pickle.load("")
+        pickle.load("../data/result_10000.p")
     except:
-        current_query = querier(conn, q_make)
-        df = current_query.get_query_dataframe()
-        pickle.dump(df, '')
+        #current_query = querier(conn, config.q_make)
+        df = querier.get_query_dataframe()
+        pickle.dump(df, open('../data/result_10000.p', 'wb'))
 
 
     # clean df
