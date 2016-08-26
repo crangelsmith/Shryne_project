@@ -57,8 +57,10 @@ def main():
     not_romatic_model = model_builder.build_model(labelled_df_not_romantic)
 
     # dump models
-    pickle.dump(romatic_model, config.romantic_model_file_path)
-    pickle.dump(not_romatic_model, config.not_romantic_model_file_path)
+    with open(config.romantic_model_file_path, 'wb') as f:
+        pickle.dump(romatic_model, f)
+    with open(config.not_romantic_model_file_path, 'wb') as f:
+        pickle.dump(not_romatic_model, f)
 
 if __name__ == "__main__":
     sys.exit(main())

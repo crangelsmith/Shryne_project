@@ -13,7 +13,7 @@ def build_model(df):
     y = df["label"]
     scores = cross_val_score(model, X, y, scoring='accuracy', cv=5)
 
-    if scores.mean()<config.robust_model.mean or scores.std()>config.robust_model.std:
+    if scores.mean() < config.robust_model['mean'] or scores.std() > config.robust_model['std']:
         print "Model is broken. Call a data scientist."
 
     return model
