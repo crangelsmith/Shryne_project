@@ -4,7 +4,7 @@ import Shryne.analytics.resampler as resampler
 import pandas as pd
 
 
-def build_labeled_samples(df, model):
+def build_labeled_samples(df, model_type):
     """Create labeled samples for training the model
     using extreme behaviour. The extremes are: high volume
     of communication and reciprocity vs low level of
@@ -12,9 +12,9 @@ def build_labeled_samples(df, model):
 
     # select subset of resampled input dataframe based on the model we'll train
     selection_mask = (df['relationship'] != "Family") & (df['relationship'] != "Friend") & (df['relationship'] != "General")
-    if model == "romantic":
+    if model_type == "romantic":
         df = df[selection_mask]
-    else:
+    elif model_type == 'not_romantic':
         df = df[~selection_mask]
 
 
@@ -29,7 +29,7 @@ def build_labeled_samples(df, model):
         df_rel = df[df['contact_id'] == unique_contact]
 
         # resample per relationship
-        df_rel = resampler.resample_dataframe(df_rel, config.resampler['period'])
+        df_rel = resampler.resample_dataframe(df_rel, model_type, config.resampler['period'])
 
         df_rel = df_rel[df_rel["message_count"] != 0]
 

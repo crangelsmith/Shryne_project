@@ -31,11 +31,15 @@ def main():
 
     # check relationship type, load correct model based on type and run model
     relationship = df['relationship'][0]
+    if relationship in ['Family', 'Friend', 'General', 'Other']:
+        model_type = 'romantic'
+    else:
+        model_type = 'not_romantic'
 
     # feature generation
     df = feature_creator.create_features(df)
 
-    df = resampler.resample_dataframe(df, config.resampler['period'])
+    df = resampler.resample_dataframe(df, model_type, config.resampler['period'])
 
     # check relationship type, load correct model based on type and run model
     if relationship in ['Family', 'Friends', 'General']:
