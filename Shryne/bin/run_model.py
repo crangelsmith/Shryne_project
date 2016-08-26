@@ -16,14 +16,12 @@ def main():
     # setup some objects
     db_connection = connector.ConnectDB()
     sentiment_analyser = vsa.SentimentAnalyser()
-    querier = query.Query()
 
     # connect to database
     conn = db_connection.get_connection()
 
     # run query and get dataframe
-    current_query = querier(conn, config.q_run)
-    df = current_query.get_query_dataframe()
+    df = query.Query(conn, config.q_run).get_query_dataframe()
 
     # clean df
     cleaned_df = clean_df.run_cleaning(df)
@@ -36,10 +34,11 @@ def main():
 
     # check relationship type, load correct model based on type and run model
     if cleaned_df['relationship'][0] in ['Family', 'Friends', 'General']:
-        model = pickle.load(config.not_romantic_model_file_path)
+        with open(config.not_romantic_model_file_path, 'rb') as f:
+            model = pickle.load(f)
     else:
-        #model = pickle.load(config.romantic_model_file_path)
-        model = pickle.load("../data/model")
+        with open(config.romantic_model_file_path, 'rb') as f:
+            model = pickle.load(f)
     cleaned_df_with_sentiment_and_features['probs'] = model.predict_proba(cleaned_df_with_sentiment_and_features)
 
     # return json output
