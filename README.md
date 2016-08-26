@@ -99,7 +99,7 @@ Activate the the virtualenv
 ### Building two seperate models (romantic and non romantic)
 
 Make the romantic and non-romantic models. This will take at least a few hours (possibly 6) 
-to run on a laptop and output to pickle : ..data/romantic_model.p 
+to run on a laptop and output to pickle : Shryne/data/romantic_model.p 
 
 - `cd Shryne/bin`
 - `python make_model.py`
