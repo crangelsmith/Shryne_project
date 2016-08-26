@@ -82,11 +82,11 @@ Install pip (if you don't have already)
 
 Install virtualenv
 
--`pip install virtualenv`
+- `pip install virtualenv`
 
 Make sure we are using all the right versions of software
 
--`pip install -r requirements.txt`
+- `pip install -r requirements.txt`
 
 Create the virtualenv whilst in Shryne_project/Shryne
 
@@ -114,12 +114,6 @@ prediction which is output as a .json file in ../out folder.
 
 Change the numbers 12367 for the contact_id you wish to query.
 - `python run_model.py 12367`
-
-
-
-
-
-- 
 
 
 
