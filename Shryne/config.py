@@ -3,7 +3,7 @@
 # set flag for processing type
 
 # Query for make_model.py
-q_make = "SELECT * FROM all_msgs_tf LIMIT 10000"
+q_make = "SELECT * FROM all_msgs_tf"
 
 # Query for run_model.py
 # Contact id must be changed to the contact you wish to analyse.
@@ -26,5 +26,5 @@ predictors =["neutral","negative","positive","compound","message_count_reciproci
 robust_model = {'mean':0.65, 'std':0.1}
 
 # file paths
-romantic_model_file_path = '../data/romantic_model.p'
-not_romantic_model_file_path = '../data/not_romantic_model.p'
+models_file_path = '/home/dan/S2DS/test/model/'
+json_path = '/home/dan/S2DS/test/outputs/'

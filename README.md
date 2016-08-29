@@ -103,26 +103,41 @@ Make sure we are using all the right versions of software
 
 - `pip install -r requirements.txt`
 
-Copy Shryne into the site package folder of the virtualenv
+After installing the required python packages it is necessary to install the vader nltk library.
+To do this, start up the Python interpreter by typing python at the command prompt.  Then run the
+following command:
 
-- `cp path-to-Shryne path-to-virtualenv/lib/python2.7/sitepackages/Shryne/bin`
+- '>>> import nltk'
+- '>>> nltk.download()'
+
+This will start up a gui.  On the gui navigate to models and download the vadder_sentiment lexicon.
+
+Next copy Shryne into the site package folder of the virtualenv
+
+- `cp -r path-to-Shyrne/Shryne_Project/Shryne path-to-virtualenv/lib/python2.7/sitepackages/`
 
 
 ### Building two seperate models (romantic and non romantic)
 
 Make the romantic and non-romantic models. This will take at least a few hours (possibly 6) 
-to run on a laptop and output to pickle : Shryne/data/romantic_model.p 
+to run on a laptop and output to pickle.
 
-- `cd path-to-virtualenv/lib/python2.7/sitepackages/Shryne/bin`
+Before running model generation or prediction edit the files paths that will hold the
+models and the outputs in the config file that is in the top level of the Shryne folder.
+
+- `cd path-to-virtualenv/lib/python2.7/sitepackages/`
+- `cp path-to-virtualenv/lib/python2.7/sitepackages/Shryne/bin/make_model.py .`
 - `python make_model.py`
 
-
 ### Making a prediction for a contact
+
 `run_model.py` queries the database for a particular contact and prepares their data
 in the same way as make_model.py. Then, this data is fed through the model to make a
 prediction which is output as a .json file in ../out folder. 
 
-- `cd path-to-virtualenv/lib/python2.7/sitepackages/Shryne/bin`
+- `cd path-to-virtualenv/lib/python2.7/sitepackages/`
+- `cp path-to-virtualenv/lib/python2.7/sitepackages/Shryne/bin/run_model.py .`
+
 
 Change the numbers 12367 for the contact_id you wish to query.
 - `python run_model.py 12367`

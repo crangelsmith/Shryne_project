@@ -11,6 +11,10 @@ def _average_time(x, model_type):
         time_limit = config.resampler['response_time_limit_not_romantic'] * 3600  # in seconds
     elif model_type == 'romantic':
         time_limit = config.resampler['response_time_limit_romantic'] * 3600  # in seconds
+    else:
+        print '''WARNING: there is an error in the model_type setting.  Setting model
+        communication time_limit to default of 6 hours'''
+        time_limit = 6 * 3600
 
     x_mean = np.nanmean(x)  # if all nans returns nan
     if x_mean > time_limit:
