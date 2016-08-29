@@ -1,15 +1,12 @@
 import pandas
 from highcharts import Highchart
-import resampler
-import feature_creation
-import sys
-import seaborn as sns
-import matplotlib.pyplot as plt
-import Shryne.modeling.create_training_datasets as datasets
+import Shryne.cleaning.clean_df as clean_df
+import Shryne.analytics.feature_creation as feature_creator
+import Shryne.analytics.resampler as resampler
+import Shryne.config as config
+import Shryne.modeling.create_training_datasets as labeller
+import Shryne.modeling.build_model as model_builder
 
-sys.path.insert(0, '../cleaning')
-import cPickle as pickle
-import clean_df
 
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
 
@@ -117,7 +114,7 @@ def highchart_analyser(df, period='M', name=""):
     time_vs_word_length = list(zip(x, df["response_time"]))
 
     time_vs_message_reciprocity = list(zip(x, df["message_count_reciprocity"]))
-    time_vs_word_length_reciprocity = list(zip(x, df["response_time_reciprocity"]))
+    time_vs_word_length_reciprocity = list(zip(x, df["probs"]))
 
 
     charts.set_dict_options(options)
@@ -129,7 +126,7 @@ def highchart_analyser(df, period='M', name=""):
 
     charts.add_data_set(time_vs_message_reciprocity, series_type='spline', yAxis=1, name="Message Count reciprocity",
                         color='red')
-    charts.add_data_set(time_vs_word_length_reciprocity, series_type='spline', yAxis=1, name="response_time_reciprocity",
+    charts.add_data_set(time_vs_word_length_reciprocity, series_type='spline', yAxis=1, name="Health Score",
                         color='black')
 
 
@@ -140,22 +137,47 @@ def highchart_analyser(df, period='M', name=""):
 
 def main():
 
-    #df = pandas.read_csv("../data/result_csv_no_message.csv")
-    df = pandas.read_pickle('../data/result')
+    df = pandas.read_pickle('../Shryne/data/result')
 
     # setup pandas dataframe. It's not necessary, so replace this with what ever
     #  data source you have.
 
     df = clean_df.drop_one_sided(df)
-    df = feature_creation.create_features(df)
-    df = feature_creation.time_response(df)
+    df = feature_creator.create_features(df)
 
-    result_romantic = datasets.build_labeled_samples(df, "romantic")
-    result_non_romantic = datasets.build_labeled_samples(df, "non_romantic")
+    result_romantic = labeller.build_labeled_samples(df, "romantic")
+    result_non_romantic = labeller.build_labeled_samples(df, "non_romantic")
 
-    result_romantic.to_pickle("../data/relationship_features_romantic")
-    result_non_romantic.to_pickle("../data/relationship_features_non_romantic")
+    romatic_model = model_builder.build_model(result_romantic)
+    not_romatic_model = model_builder.build_model(result_non_romantic)
 
+    unique_contacts = df['contact_id'].unique()
+    for unique_contact in unique_contacts:
+        df = df[df['contact_id'] == unique_contact]
+
+        relationship = df['relationship'][0]
+        if relationship in ['Family', 'Friend', 'General', 'Other']:
+            model_type = 'romantic'
+        else:
+            model_type = 'not_romantic'
+
+        # feature generation
+        df = resampler.resample_dataframe(df, model_type, config.resampler['period'])
+
+        # check relationship type, load correct model based on type and run model
+        if relationship in ['Family', 'Friends', 'General']:
+                model = romatic_model
+        else:
+                model = not_romatic_model
+
+        df_prediction = df[config.predictors]
+
+        df.dropna(inplace=True)
+        df_prediction.dropna(inplace=True)
+        df['probs'] = model.predict_proba(df_prediction)[:, 1]
+
+        highchart_analyser(df,"M",unique_contact)
+        break
 
 
 if __name__ == '__main__':
