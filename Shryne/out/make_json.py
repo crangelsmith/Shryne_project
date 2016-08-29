@@ -1,5 +1,7 @@
 import json
 
+import Shryne.config as config
+
 def make_json(df, contact_id):
     """Make json file from a dataframe
      and output to the data folder"""
@@ -14,5 +16,5 @@ def make_json(df, contact_id):
         'HealthScore':df['probs'].tolist()
     }
 
-    with open(str(contact_id) + '_json_output.txt', 'wb') as f:
+    with open(config.json_path + str(contact_id) + '_json_output.txt', 'wb') as f:
         json.dump(d, f)
