@@ -26,6 +26,5 @@ predictors =["neutral","negative","positive","compound","message_count_reciproci
 robust_model = {'mean':0.65, 'std':0.1}
 
 # file paths
-romantic_model_file_path = 'Shryne/modeling/data/'
-not_romantic_model_file_path = 'Shryne/modeling/data/'
+models_file_path = '/home/dan/S2DS/test/model'
 json_path = 'path_to_json'
