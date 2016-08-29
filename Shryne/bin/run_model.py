@@ -46,10 +46,10 @@ def main():
 
     # check relationship type, load correct model based on type and run model
     if relationship in ['Family', 'Friends', 'General']:
-        with open(config.not_romantic_model_file_path, 'rb') as f:
+        with open(config.not_romantic_model_file_path + 'not_romantic_model.p', 'rb') as f:
             model = pickle.load(f)
     else:
-        with open(config.romantic_model_file_path, 'rb') as f:
+        with open(config.romantic_model_file_path + 'romantic_model.p', 'rb') as f:
             model = pickle.load(f)
 
     df_prediction = df[config.predictors]
