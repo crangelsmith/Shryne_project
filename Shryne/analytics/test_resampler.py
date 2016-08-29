@@ -84,26 +84,27 @@ def test_find_ratio():
 def test__average_time():
 
     # set up correct time limit for testing
-    if config.model == 'not_romantic':
-        time_limit = config.resampler['response_time_limit_not_romantic'] * 3600  # in seconds
-    elif config.model == 'romantic':
-        time_limit = config.resampler['response_time_limit_romantic'] * 3600
+    nr_time_limit = config.resampler['response_time_limit_not_romantic'] * 3600  # in seconds
+    r_time_limit = config.resampler['response_time_limit_romantic'] * 3600
 
-    empty_test = []
+    for time_limit, model_type in zip([r_time_limit, nr_time_limit],
+                                      ['romantic', 'not_romantic']):
 
-    greater_than_time_limit = [time_limit + 1] * 2
-    greater_than_time_limit_pass = time_limit
+        empty_test = []
 
-    less_than_time_limit = [1,2,3,4,5,6,7,8,9,10]
-    less_than_time_limit_pass = 5.5
+        greater_than_time_limit = [time_limit + 1] * 2
+        greater_than_time_limit_pass = time_limit
 
-    nan_mean_time_limit = [np.nan,2,3,np.nan,np.nan,7,8,np.nan,np.nan,10]
-    nan_mean_pass = 6.0
+        less_than_time_limit = [1,2,3,4,5,6,7,8,9,10]
+        less_than_time_limit_pass = 5.5
 
-    assert np.isnan(_average_time(empty_test))
-    assert _average_time(greater_than_time_limit) == greater_than_time_limit_pass
-    assert _average_time(less_than_time_limit) == less_than_time_limit_pass
-    assert _average_time(nan_mean_time_limit) == nan_mean_pass
+        nan_mean_time_limit = [np.nan,2,3,np.nan,np.nan,7,8,np.nan,np.nan,10]
+        nan_mean_pass = 6.0
+
+        assert np.isnan(_average_time(empty_test, model_type))
+        assert _average_time(greater_than_time_limit, model_type) == greater_than_time_limit_pass
+        assert _average_time(less_than_time_limit, model_type) == less_than_time_limit_pass
+        assert _average_time(nan_mean_time_limit, model_type) == nan_mean_pass
 
 
 def test_resample_dataframe():
