@@ -27,4 +27,4 @@ robust_model = {'mean':0.65, 'std':0.1}
 
 # file paths
 models_file_path = '/home/dan/S2DS/test/model'
-json_path = 'path_to_json'
+json_path = '/home/dan/S2DS/test/outputs'
