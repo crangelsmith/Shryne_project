@@ -156,7 +156,7 @@ def main():
     unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
         df = df[df['contact_id'] == unique_contact]
-
+        print ' '
         relationship = df['relationship'].iloc[0]
         if relationship in ['Family', 'Friend', 'General', 'Other']:
             model_type = 'not_romantic'
