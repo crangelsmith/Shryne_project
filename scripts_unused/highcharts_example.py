@@ -1,24 +1,11 @@
 import pandas
 from highcharts import Highchart
-import sys
-sys.path.insert(1,'../Shryne/cleaning')
-sys.path.insert(1,'../Shryne/analytics')
-sys.path.insert(1,'../Shryne/resampler')
-sys.path.insert(1,'../Shryne/')
-sys.path.insert(1,'../Shryne/modeling')
-import clean_df
-import feature_creation as feature_creator
-import resampler
-import config
-import create_training_datasets as labeller
-import build_model as model_builder
-
-# import Shryne.cleaning.clean_df as clean_df
-# import Shryne.analytics.feature_creation as feature_creator
-# import Shryne.analytics.resampler as resampler
-# import Shryne.config as config
-# import Shryne.modeling.create_training_datasets as labeller
-# import Shryne.modeling.build_model as model_builder
+import Shryne.cleaning.clean_df as clean_df
+import Shryne.analytics.feature_creation as feature_creator
+import Shryne.analytics.resampler as resampler
+import Shryne.config as config
+import Shryne.modeling.create_training_datasets as labeller
+import Shryne.modeling.build_model as model_builder
 
 
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
