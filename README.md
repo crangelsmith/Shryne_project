@@ -101,7 +101,7 @@ Activate the the virtualenv
 
 Make sure we are using all the right versions of software
 
-- `pip install -r requirements.txt`
+- `pip install -r Shryne/requirements.txt`
 
 After installing the required python packages it is necessary to install the vader nltk library.
 To do this, start up the Python interpreter by typing python at the command prompt.  Then run the

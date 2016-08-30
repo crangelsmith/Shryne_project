@@ -32,11 +32,11 @@ def main():
     df = sentiment_analyser.run_vader(df, 'message')
 
     # check relationship type, load correct model based on type and run model
-    relationship = df['relationship'][0]
+    relationship = df['relationship'].iloc[0]
     if relationship in ['Family', 'Friend', 'General', 'Other']:
-        model_type = 'romantic'
-    else:
         model_type = 'not_romantic'
+    else:
+        model_type = 'romantic'
 
     df = feature_creator.create_features(df)
     df = resampler.resample_dataframe(df, model_type, config.resampler['period'])
@@ -50,7 +50,7 @@ def main():
             model = pickle.load(f)
 
     df_prediction = df[config.predictors]
-    df.dropna(inplace=True)
+    df.dropna(inplace=True,subset=config.predictors)
     df_prediction.dropna(inplace=True)
     df['probs'] = model.predict_proba(df_prediction)[:, 1]
 

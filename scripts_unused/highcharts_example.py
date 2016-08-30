@@ -34,7 +34,7 @@ def highchart_analyser(df, period='M', name=""):
         'yAxis': [{
             'gridLineWidth': 0,
             'title': {
-                'text': 'Number of Messages',
+                'text': 'Messages (% of total)',
                 'style': {
                     'color': 'Highcharts.getOptions().colors[1]'
                 }
@@ -49,7 +49,7 @@ def highchart_analyser(df, period='M', name=""):
 
                 'gridLineWidth': 0,
                 'title': {
-                    'text': 'Reciprocity',
+                    'text': 'Sentiment',
                     'style': {
                         'color': 'Highcharts.getOptions().colors[1]'
                     }
@@ -67,7 +67,7 @@ def highchart_analyser(df, period='M', name=""):
 
             'gridLineWidth': 0,
             'title': {
-                'text': 'Number of Words',
+                'text': 'Response Time',
                 'style': {
                     'color': 'Highcharts.getOptions().colors[1]'
                 }
@@ -101,13 +101,12 @@ def highchart_analyser(df, period='M', name=""):
             'x': 80,
             'verticalAlign': 'top',
             'y': 55,
-            'floating': True,
+            'floating': False,
             'backgroundColor': "(Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'"
         }
     }
-    x = df["sent_at"].index.values.tolist()
+    x = df.index.values.tolist()
     x = [int(i)/1000000 for i in x]
-
 
     time_vs_counts = list(zip(x, df["message_count"]))
     time_vs_pos_sent = list(zip(x, df["compound"]))
@@ -118,9 +117,11 @@ def highchart_analyser(df, period='M', name=""):
 
 
     charts.set_dict_options(options)
-    charts.add_data_set(time_vs_pos_sent, 'column', name="sentiment", yAxis=2, stack='sentiment', color='yellow')
+
 
     charts.add_data_set(time_vs_counts, series_type='spline', yAxis=0, name="Message Count", color='rgba(0,191,255, 1)')
+
+    charts.add_data_set(time_vs_pos_sent, 'column', name="sentiment", yAxis=2,stack='sentiment', color='brown')
 
     charts.add_data_set(time_vs_word_length, series_type='spline', yAxis=2, name="Response time", color='rgba(186,85,211, 1)')
 
@@ -132,7 +133,7 @@ def highchart_analyser(df, period='M', name=""):
 
 
 
-    charts.save_file('plot/_time_series_'+period+str(name))
+    charts.save_file('plots/_time_series_'+period+str(name))
 
 
 def main():
@@ -146,38 +147,41 @@ def main():
     df = feature_creator.create_features(df)
 
     result_romantic = labeller.build_labeled_samples(df, "romantic")
-    result_non_romantic = labeller.build_labeled_samples(df, "non_romantic")
+    result_non_romantic = labeller.build_labeled_samples(df, "not_romantic")
 
     romatic_model = model_builder.build_model(result_romantic)
     not_romatic_model = model_builder.build_model(result_non_romantic)
 
     unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
-        df = df[df['contact_id'] == unique_contact]
-
-        relationship = df['relationship'][0]
+        df_contact = df[df['contact_id'] == unique_contact]
+        print ' '
+        relationship = df_contact['relationship'].iloc[0]
         if relationship in ['Family', 'Friend', 'General', 'Other']:
-            model_type = 'romantic'
-        else:
             model_type = 'not_romantic'
+        else:
+            model_type = 'romantic'
 
         # feature generation
-        df = resampler.resample_dataframe(df, model_type, config.resampler['period'])
+        df_res = resampler.resample_dataframe(df_contact, model_type, config.resampler['period'])
 
         # check relationship type, load correct model based on type and run model
-        if relationship in ['Family', 'Friends', 'General']:
-                model = romatic_model
-        else:
+        if relationship in ['Family', 'Friend', 'General', 'Other']:
                 model = not_romatic_model
+        else:
+                model = romatic_model
 
-        df_prediction = df[config.predictors]
+        df_prediction = df_res[config.predictors]
 
-        df.dropna(inplace=True)
+        df_res.dropna(inplace=True,subset=config.predictors)
         df_prediction.dropna(inplace=True)
-        df['probs'] = model.predict_proba(df_prediction)[:, 1]
 
-        highchart_analyser(df,"M",unique_contact)
-        break
+        if len(df_prediction.index)==0:
+            print "cant do anything"
+        else:
+            df_res['probs'] = model.predict_proba(df_prediction)[:, 1]
+            highchart_analyser(df_res,"M",unique_contact+relationship)
+
 
 
 if __name__ == '__main__':
