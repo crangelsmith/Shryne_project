@@ -101,7 +101,7 @@ def highchart_analyser(df, period='M', name=""):
             'x': 80,
             'verticalAlign': 'top',
             'y': 55,
-            'floating': True,
+            'floating': False,
             'backgroundColor': "(Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'"
         }
     }
@@ -121,7 +121,7 @@ def highchart_analyser(df, period='M', name=""):
 
     charts.add_data_set(time_vs_counts, series_type='spline', yAxis=0, name="Message Count", color='rgba(0,191,255, 1)')
 
-    charts.add_data_set(time_vs_pos_sent, 'column', name="sentiment", yAxis=2,stack='sentiment', color='yellow')
+    charts.add_data_set(time_vs_pos_sent, 'column', name="sentiment", yAxis=2,stack='sentiment', color='brown')
 
     charts.add_data_set(time_vs_word_length, series_type='spline', yAxis=2, name="Response time", color='rgba(186,85,211, 1)')
 
@@ -155,29 +155,32 @@ def main():
     unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
         df_contact = df[df['contact_id'] == unique_contact]
-        if df_contact.size[0]!=0:
-            relationship = df_contact['relationship'].iloc[0]
-            if relationship in ['Family', 'Friend', 'General', 'Other']:
-                model_type = 'not_romantic'
-            else:
-                model_type = 'romantic'
+        print ' '
+        relationship = df_contact['relationship'].iloc[0]
+        if relationship in ['Family', 'Friend', 'General', 'Other']:
+            model_type = 'not_romantic'
+        else:
+            model_type = 'romantic'
 
-            # feature generation
-            df_res = resampler.resample_dataframe(df_contact, model_type, config.resampler['period'])
+        # feature generation
+        df_res = resampler.resample_dataframe(df_contact, model_type, config.resampler['period'])
 
-            # check relationship type, load correct model based on type and run model
-            if relationship in ['Family', 'Friends', 'General', 'Other']:
-                    model = not_romatic_model
-            else:
-                    model = romatic_model
+        # check relationship type, load correct model based on type and run model
+        if relationship in ['Family', 'Friend', 'General', 'Other']:
+                model = not_romatic_model
+        else:
+                model = romatic_model
 
-            df_prediction = df_res[config.predictors]
+        df_prediction = df_res[config.predictors]
 
-            df_res.dropna(inplace=True,subset=config.predictors)
-            df_prediction.dropna(inplace=True)
+        df_res.dropna(inplace=True,subset=config.predictors)
+        df_prediction.dropna(inplace=True)
+
+        if len(df_prediction.index)==0:
+            print "cant do anything"
+        else:
             df_res['probs'] = model.predict_proba(df_prediction)[:, 1]
-
-            highchart_analyser(df_res,"M",unique_contact)
+            highchart_analyser(df_res,"M",unique_contact+relationship)
 
 
 
