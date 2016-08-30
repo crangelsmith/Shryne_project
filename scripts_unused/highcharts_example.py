@@ -133,7 +133,7 @@ def highchart_analyser(df, period='M', name=""):
 
 
 
-    charts.save_file('plot/_time_series_'+period+str(name))
+    charts.save_file('plots/_time_series_'+period+str(name))
 
 
 def main():
@@ -154,30 +154,30 @@ def main():
 
     unique_contacts = df['contact_id'].unique()
     for unique_contact in unique_contacts:
-        df = df[df['contact_id'] == unique_contact]
-        print ' '
-        relationship = df['relationship'].iloc[0]
-        if relationship in ['Family', 'Friend', 'General', 'Other']:
-            model_type = 'not_romantic'
-        else:
-            model_type = 'romantic'
+        df_contact = df[df['contact_id'] == unique_contact]
+        if df_contact.size[0]!=0:
+            relationship = df_contact['relationship'].iloc[0]
+            if relationship in ['Family', 'Friend', 'General', 'Other']:
+                model_type = 'not_romantic'
+            else:
+                model_type = 'romantic'
 
-        # feature generation
-        df_res = resampler.resample_dataframe(df, model_type, config.resampler['period'])
+            # feature generation
+            df_res = resampler.resample_dataframe(df_contact, model_type, config.resampler['period'])
 
-        # check relationship type, load correct model based on type and run model
-        if relationship in ['Family', 'Friends', 'General', 'Other']:
-                model = not_romatic_model
-        else:
-                model = romatic_model
+            # check relationship type, load correct model based on type and run model
+            if relationship in ['Family', 'Friends', 'General', 'Other']:
+                    model = not_romatic_model
+            else:
+                    model = romatic_model
 
-        df_prediction = df_res[config.predictors]
+            df_prediction = df_res[config.predictors]
 
-    #   df_res.dropna(inplace=True)
-        df_prediction.dropna(inplace=True)
-        df_res['probs'] = model.predict_proba(df_prediction)[:, 1]
+            df_res.dropna(inplace=True,subset=config.predictors)
+            df_prediction.dropna(inplace=True)
+            df_res['probs'] = model.predict_proba(df_prediction)[:, 1]
 
-        highchart_analyser(df_res,"M",unique_contact)
+            highchart_analyser(df_res,"M",unique_contact)
 
 
 

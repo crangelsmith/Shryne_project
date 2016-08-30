@@ -50,7 +50,7 @@ def main():
             model = pickle.load(f)
 
     df_prediction = df[config.predictors]
-    df.dropna(inplace=True)
+    df.dropna(inplace=True,subset=config.predictors)
     df_prediction.dropna(inplace=True)
     df['probs'] = model.predict_proba(df_prediction)[:, 1]
 
