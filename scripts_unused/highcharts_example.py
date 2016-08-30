@@ -124,7 +124,7 @@ def highchart_analyser(df, period='M', name=""):
 
     charts.add_data_set(time_vs_word_length, series_type='spline', yAxis=2, name="Response time", color='rgba(186,85,211, 1)')
 
-    charts.add_data_set(time_vs_message_reciprocity, series_type='spline', yAxis=1, name="Message Count reciprocity",
+    charts.add_data_set(time_vs_message_reciprocity, series_type='spline', yAxis=1, name="Reciprocity",
                         color='red')
     charts.add_data_set(time_vs_word_length_reciprocity, series_type='spline', yAxis=1, name="Health Score",
                         color='black')
@@ -137,7 +137,7 @@ def highchart_analyser(df, period='M', name=""):
 
 def main():
 
-    df = pandas.read_pickle('../Shryne/data/result')
+    df = pandas.read_pickle('../Shryne/data/result_19August')
 
     # setup pandas dataframe. It's not necessary, so replace this with what ever
     #  data source you have.
@@ -146,7 +146,7 @@ def main():
     df = feature_creator.create_features(df)
 
     result_romantic = labeller.build_labeled_samples(df, "romantic")
-    result_non_romantic = labeller.build_labeled_samples(df, "non_romantic")
+    result_non_romantic = labeller.build_labeled_samples(df, "not_romantic")
 
     romatic_model = model_builder.build_model(result_romantic)
     not_romatic_model = model_builder.build_model(result_non_romantic)
@@ -155,7 +155,7 @@ def main():
     for unique_contact in unique_contacts:
         df = df[df['contact_id'] == unique_contact]
 
-        relationship = df['relationship'][0]
+        relationship = df['relationship'].iloc[0]
         if relationship in ['Family', 'Friend', 'General', 'Other']:
             model_type = 'romantic'
         else:
@@ -177,7 +177,6 @@ def main():
         df['probs'] = model.predict_proba(df_prediction)[:, 1]
 
         highchart_analyser(df,"M",unique_contact)
-        break
 
 
 if __name__ == '__main__':
