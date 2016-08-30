@@ -108,7 +108,6 @@ def highchart_analyser(df, period='M', name=""):
     x = df.index.values.tolist()
     x = [int(i)/1000000 for i in x]
 
-
     time_vs_counts = list(zip(x, df["message_count"]))
     time_vs_pos_sent = list(zip(x, df["compound"]))
     time_vs_word_length = list(zip(x, df["response_time"]))
@@ -164,7 +163,7 @@ def main():
             model_type = 'romantic'
 
         # feature generation
-        df = resampler.resample_dataframe(df, model_type, config.resampler['period'])
+        df_res = resampler.resample_dataframe(df, model_type, config.resampler['period'])
 
         # check relationship type, load correct model based on type and run model
         if relationship in ['Family', 'Friends', 'General', 'Other']:
@@ -172,13 +171,13 @@ def main():
         else:
                 model = romatic_model
 
-        df_prediction = df[config.predictors]
+        df_prediction = df_res[config.predictors]
 
-        df.dropna(inplace=True)
+    #   df_res.dropna(inplace=True)
         df_prediction.dropna(inplace=True)
-        df['probs'] = model.predict_proba(df_prediction)[:, 1]
+        df_res['probs'] = model.predict_proba(df_prediction)[:, 1]
 
-        highchart_analyser(df,"M",unique_contact)
+        highchart_analyser(df_res,"M",unique_contact)
 
 
 
