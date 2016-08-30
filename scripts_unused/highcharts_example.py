@@ -1,11 +1,24 @@
 import pandas
 from highcharts import Highchart
-import Shryne.cleaning.clean_df as clean_df
-import Shryne.analytics.feature_creation as feature_creator
-import Shryne.analytics.resampler as resampler
-import Shryne.config as config
-import Shryne.modeling.create_training_datasets as labeller
-import Shryne.modeling.build_model as model_builder
+import sys
+sys.path.insert(1,'../Shryne/cleaning')
+sys.path.insert(1,'../Shryne/analytics')
+sys.path.insert(1,'../Shryne/resampler')
+sys.path.insert(1,'../Shryne/')
+sys.path.insert(1,'../Shryne/modeling')
+import clean_df
+import feature_creation as feature_creator
+import resampler
+import config
+import create_training_datasets as labeller
+import build_model as model_builder
+
+# import Shryne.cleaning.clean_df as clean_df
+# import Shryne.analytics.feature_creation as feature_creator
+# import Shryne.analytics.resampler as resampler
+# import Shryne.config as config
+# import Shryne.modeling.create_training_datasets as labeller
+# import Shryne.modeling.build_model as model_builder
 
 
 ### TO MAKE A TIME SERIES HIGHCHARTS PLOT FOR EVERY FIELD IN A PANDAS DATAFRAME
@@ -34,7 +47,7 @@ def highchart_analyser(df, period='M', name=""):
         'yAxis': [{
             'gridLineWidth': 0,
             'title': {
-                'text': 'Number of Messages',
+                'text': 'Messages (% of total)',
                 'style': {
                     'color': 'Highcharts.getOptions().colors[1]'
                 }
@@ -49,7 +62,7 @@ def highchart_analyser(df, period='M', name=""):
 
                 'gridLineWidth': 0,
                 'title': {
-                    'text': 'Reciprocity',
+                    'text': 'Sentiment',
                     'style': {
                         'color': 'Highcharts.getOptions().colors[1]'
                     }
@@ -67,7 +80,7 @@ def highchart_analyser(df, period='M', name=""):
 
             'gridLineWidth': 0,
             'title': {
-                'text': 'Number of Words',
+                'text': 'Response Time',
                 'style': {
                     'color': 'Highcharts.getOptions().colors[1]'
                 }
@@ -105,7 +118,7 @@ def highchart_analyser(df, period='M', name=""):
             'backgroundColor': "(Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'"
         }
     }
-    x = df["sent_at"].index.values.tolist()
+    x = df.index.values.tolist()
     x = [int(i)/1000000 for i in x]
 
 
@@ -118,9 +131,11 @@ def highchart_analyser(df, period='M', name=""):
 
 
     charts.set_dict_options(options)
-    charts.add_data_set(time_vs_pos_sent, 'column', name="sentiment", yAxis=2, stack='sentiment', color='yellow')
+
 
     charts.add_data_set(time_vs_counts, series_type='spline', yAxis=0, name="Message Count", color='rgba(0,191,255, 1)')
+
+    charts.add_data_set(time_vs_pos_sent, 'column', name="sentiment", yAxis=2,stack='sentiment', color='yellow')
 
     charts.add_data_set(time_vs_word_length, series_type='spline', yAxis=2, name="Response time", color='rgba(186,85,211, 1)')
 
@@ -146,7 +161,7 @@ def main():
     df = feature_creator.create_features(df)
 
     result_romantic = labeller.build_labeled_samples(df, "romantic")
-    result_non_romantic = labeller.build_labeled_samples(df, "non_romantic")
+    result_non_romantic = labeller.build_labeled_samples(df, "not_romantic")
 
     romatic_model = model_builder.build_model(result_romantic)
     not_romatic_model = model_builder.build_model(result_non_romantic)
@@ -155,20 +170,20 @@ def main():
     for unique_contact in unique_contacts:
         df = df[df['contact_id'] == unique_contact]
 
-        relationship = df['relationship'][0]
+        relationship = df['relationship'].iloc[0]
         if relationship in ['Family', 'Friend', 'General', 'Other']:
-            model_type = 'romantic'
-        else:
             model_type = 'not_romantic'
+        else:
+            model_type = 'romantic'
 
         # feature generation
         df = resampler.resample_dataframe(df, model_type, config.resampler['period'])
 
         # check relationship type, load correct model based on type and run model
-        if relationship in ['Family', 'Friends', 'General']:
-                model = romatic_model
-        else:
+        if relationship in ['Family', 'Friends', 'General', 'Other']:
                 model = not_romatic_model
+        else:
+                model = romatic_model
 
         df_prediction = df[config.predictors]
 
@@ -177,7 +192,7 @@ def main():
         df['probs'] = model.predict_proba(df_prediction)[:, 1]
 
         highchart_analyser(df,"M",unique_contact)
-        break
+
 
 
 if __name__ == '__main__':
