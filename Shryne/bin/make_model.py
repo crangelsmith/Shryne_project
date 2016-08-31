@@ -25,6 +25,9 @@ def main():
     # query found in the config
     df = query.Query(conn, config.q_make).get_query_dataframe()
 
+    # close database connection
+    db_connection.close_connection()
+
     # clean df
     df = clean_df.run_cleaning(df)
 

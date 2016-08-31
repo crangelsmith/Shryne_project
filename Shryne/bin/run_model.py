@@ -25,6 +25,10 @@ def main():
     # run query and get dataframe
     df = query.Query(conn, config.q_run+contact_id).get_query_dataframe()
 
+
+    db_connection.close_connection()
+
+
     # clean df
     df = clean_df.run_cleaning(df)
 
